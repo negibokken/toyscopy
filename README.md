@@ -5,3 +5,9 @@
 
 A toy browser written in C++.
 
+## development
+
+```
+brew install gtk+3.0
+```
+
