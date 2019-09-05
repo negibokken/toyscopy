@@ -168,6 +168,19 @@ depend:
 .PHONY : depend
 
 #=============================================================================
+# Target rules for targets named MyTest
+
+# Build rule for target.
+MyTest: cmake_check_build_system
+	$(MAKE) -f CMakeFiles/Makefile2 MyTest
+.PHONY : MyTest
+
+# fast build rule for target.
+MyTest/fast:
+	$(MAKE) -f CMakeFiles/MyTest.dir/build.make CMakeFiles/MyTest.dir/build
+.PHONY : MyTest/fast
+
+#=============================================================================
 # Target rules for targets named main
 
 # Build rule for target.
@@ -299,6 +312,33 @@ flash/html/html_document_parser.cc.s:
 	$(MAKE) -f CMakeFiles/flash.dir/build.make CMakeFiles/flash.dir/flash/html/html_document_parser.cc.s
 .PHONY : flash/html/html_document_parser.cc.s
 
+test/test_main.o: test/test_main.cc.o
+
+.PHONY : test/test_main.o
+
+# target to build an object file
+test/test_main.cc.o:
+	$(MAKE) -f CMakeFiles/MyTest.dir/build.make CMakeFiles/MyTest.dir/test/test_main.cc.o
+.PHONY : test/test_main.cc.o
+
+test/test_main.i: test/test_main.cc.i
+
+.PHONY : test/test_main.i
+
+# target to preprocess a source file
+test/test_main.cc.i:
+	$(MAKE) -f CMakeFiles/MyTest.dir/build.make CMakeFiles/MyTest.dir/test/test_main.cc.i
+.PHONY : test/test_main.cc.i
+
+test/test_main.s: test/test_main.cc.s
+
+.PHONY : test/test_main.s
+
+# target to generate assembly for a file
+test/test_main.cc.s:
+	$(MAKE) -f CMakeFiles/MyTest.dir/build.make CMakeFiles/MyTest.dir/test/test_main.cc.s
+.PHONY : test/test_main.cc.s
+
 # Help Target
 help:
 	@echo "The following are some of the valid targets for this Makefile:"
@@ -311,6 +351,7 @@ help:
 	@echo "... edit_cache"
 	@echo "... install/local"
 	@echo "... test"
+	@echo "... MyTest"
 	@echo "... main"
 	@echo "... list_install_components"
 	@echo "... flash"
@@ -324,6 +365,9 @@ help:
 	@echo "... flash/html/html_document_parser.o"
 	@echo "... flash/html/html_document_parser.i"
 	@echo "... flash/html/html_document_parser.s"
+	@echo "... test/test_main.o"
+	@echo "... test/test_main.i"
+	@echo "... test/test_main.s"
 .PHONY : help
 
 

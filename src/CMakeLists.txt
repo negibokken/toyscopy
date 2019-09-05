@@ -27,9 +27,9 @@ add_subdirectory(${CMAKE_CURRENT_BINARY_DIR}/googletest-src
 # dependencies automatically when using CMake 2.8.11 or
 # later. Otherwise we have to add them here ourselves.
 cmake_minimum_required(VERSION 3.14)
-# if (CMAKE_VERSION VERSION_LESS 2.8.11)
+if (CMAKE_VERSION VERSION_LESS 2.8.11)
   include_directories("${gtest_SOURCE_DIR}/include")
-# endif()
+endif()
 
 
 # Gtk3.0
@@ -40,9 +40,9 @@ LINK_DIRECTORIES(${GTK3_LIBRARY_DIRS})
 ADD_DEFINITIONS(${GTK3_CFLAGS_OTHER})
 
 
+set (CMAKE_CXX_STANDARD 14)
 # Now simply link against gtest or gtest_main as needed. Eg
 # add_executable(main core/test.cc)
-enable_testing()
 add_library(flash flash/html/html_document_parser.cc)
 
 ## Main
@@ -51,5 +51,10 @@ TARGET_LINK_LIBRARIES(main ${GTK3_LIBRARIES})
 TARGET_LINK_LIBRARIES(main flash)
 
 ## Test
-add_test(NAME example_test COMMAND mytest)
+enable_testing()
+INCLUDE_DIRECTORIES(${CMAKE_CURRENT_BINARY_DIR}/googletest-src/googletest/include/)
+add_executable(MyTest test/test_main.cc)
+target_link_libraries(MyTest gtest_main)
+target_link_libraries(MyTest gtest)
+add_test(NAME example_test COMMAND func_sum)
 

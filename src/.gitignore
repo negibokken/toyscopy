@@ -6,3 +6,4 @@ googletest-download
 googletest-src
 googletest-build
 *.cmake
+MyTest
