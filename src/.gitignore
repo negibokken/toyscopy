@@ -1,1 +1,8 @@
 main
+CMakeCache.txt
+CMakeFiles
+google-test-build
+googletest-download
+googletest-src
+googletest-build
+*.cmake
