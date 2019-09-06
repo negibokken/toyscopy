@@ -312,6 +312,33 @@ flash/html/html_document_parser.cc.s:
 	$(MAKE) -f CMakeFiles/flash.dir/build.make CMakeFiles/flash.dir/flash/html/html_document_parser.cc.s
 .PHONY : flash/html/html_document_parser.cc.s
 
+test/flash/html/test_html_document_parser.o: test/flash/html/test_html_document_parser.cc.o
+
+.PHONY : test/flash/html/test_html_document_parser.o
+
+# target to build an object file
+test/flash/html/test_html_document_parser.cc.o:
+	$(MAKE) -f CMakeFiles/MyTest.dir/build.make CMakeFiles/MyTest.dir/test/flash/html/test_html_document_parser.cc.o
+.PHONY : test/flash/html/test_html_document_parser.cc.o
+
+test/flash/html/test_html_document_parser.i: test/flash/html/test_html_document_parser.cc.i
+
+.PHONY : test/flash/html/test_html_document_parser.i
+
+# target to preprocess a source file
+test/flash/html/test_html_document_parser.cc.i:
+	$(MAKE) -f CMakeFiles/MyTest.dir/build.make CMakeFiles/MyTest.dir/test/flash/html/test_html_document_parser.cc.i
+.PHONY : test/flash/html/test_html_document_parser.cc.i
+
+test/flash/html/test_html_document_parser.s: test/flash/html/test_html_document_parser.cc.s
+
+.PHONY : test/flash/html/test_html_document_parser.s
+
+# target to generate assembly for a file
+test/flash/html/test_html_document_parser.cc.s:
+	$(MAKE) -f CMakeFiles/MyTest.dir/build.make CMakeFiles/MyTest.dir/test/flash/html/test_html_document_parser.cc.s
+.PHONY : test/flash/html/test_html_document_parser.cc.s
+
 test/test_main.o: test/test_main.cc.o
 
 .PHONY : test/test_main.o
@@ -365,6 +392,9 @@ help:
 	@echo "... flash/html/html_document_parser.o"
 	@echo "... flash/html/html_document_parser.i"
 	@echo "... flash/html/html_document_parser.s"
+	@echo "... test/flash/html/test_html_document_parser.o"
+	@echo "... test/flash/html/test_html_document_parser.i"
+	@echo "... test/flash/html/test_html_document_parser.s"
 	@echo "... test/test_main.o"
 	@echo "... test/test_main.i"
 	@echo "... test/test_main.s"
