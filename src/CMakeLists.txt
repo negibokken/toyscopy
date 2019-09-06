@@ -22,6 +22,7 @@ set(gtest_force_shared_crt ON CACHE BOOL "" FORCE)
 add_subdirectory(${CMAKE_CURRENT_BINARY_DIR}/googletest-src
                  ${CMAKE_CURRENT_BINARY_DIR}/googletest-build
                  EXCLUDE_FROM_ALL)
+INCLUDE_DIRECTORIES(${CMAKE_CURRENT_BINARY_DIR}/googletest-src/googletest/include/)
 
 # The gtest/gtest_main targets carry header search path
 # dependencies automatically when using CMake 2.8.11 or
@@ -45,6 +46,8 @@ set (CMAKE_CXX_STANDARD 14)
 # add_executable(main core/test.cc)
 add_library(flash flash/html/html_document_parser.cc)
 
+project(toyscopy)
+
 ## Main
 add_executable(main core/main.cc)
 TARGET_LINK_LIBRARIES(main ${GTK3_LIBRARIES})
@@ -52,9 +55,9 @@ TARGET_LINK_LIBRARIES(main flash)
 
 ## Test
 enable_testing()
-INCLUDE_DIRECTORIES(${CMAKE_CURRENT_BINARY_DIR}/googletest-src/googletest/include/)
-add_executable(MyTest test/test_main.cc)
-target_link_libraries(MyTest gtest_main)
+add_executable(MyTest test/test_main.cc test/flash/html/test_html_document_parser.cc)
+target_link_libraries(MyTest flash)
+INCLUDE_DIRECTORIES(test/flash)
 target_link_libraries(MyTest gtest)
-add_test(NAME example_test COMMAND func_sum)
+target_link_libraries(MyTest gtest_main)
 

@@ -7,3 +7,4 @@ googletest-src
 googletest-build
 *.cmake
 MyTest
+Testing
