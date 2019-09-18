@@ -7,6 +7,7 @@
 
 class HTMLDocumentParser {
   public:
+  // described here: https://html.spec.whatwg.org/multipage/parsing.html#parse-state
   enum State {
     initial, before_html, before_head, in_head, in_head_noscript, after_head, in_body, text,
     in_table, in_table_text, in_caption, in_column_group, in_table_body, in_row, in_cell, in_select,
