@@ -4,10 +4,12 @@
 #include <stdio.h>
 #include <string>
 #include <vector>
+#include "dom.h"
 #include "tag.h"
 
-class HTMLDocumentParser {
-  public:
+class HTMLDocumentParser
+{
+public:
   // described here:
   // https://html.spec.whatwg.org/multipage/parsing.html#parse-state
   // clang-format off
@@ -24,7 +26,9 @@ class HTMLDocumentParser {
   int itr = 0;
   std::string doc;
   Mode insertion_mode;
-  std::vector<Tag::ElementType> elements;
+  std::vector<DOM::Node *> open_elements;
+
+  DOM::Document document;
 
   void parse();
   void consumeIgnoreToken();

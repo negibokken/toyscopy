@@ -5,8 +5,9 @@
 #include <string>
 #define MAX_NAME 256
 
-class Tag {
-  public:
+class Tag
+{
+public:
   // clang-format off
   enum Type { StartTag, EndTag };
   enum ElementType { html, none };
@@ -16,13 +17,14 @@ class Tag {
   Type type;
   ElementType elementType;
 
-  Tag() { type = Type::StartTag; }
+  Tag(Type t = Type::StartTag) { type = t; }
 
   void print() { std::cout << type << ":" << tagName << std::endl; }
 
   static ElementType str2ElementType(std::string str)
   {
-    if (str == "html") {
+    if (str == "html")
+    {
       return ElementType::html;
     }
     return ElementType::none;
@@ -31,10 +33,12 @@ class Tag {
   void setTagName(std::string str)
   {
     this->tagName = str;
-    if (str == "html") {
+    if (str == "html")
+    {
       this->elementType = ElementType::html;
     }
-    else {
+    else
+    {
       this->elementType = ElementType::none;
     }
   }
