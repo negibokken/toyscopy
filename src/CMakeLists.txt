@@ -1,3 +1,6 @@
+# set(CMAKE_OSX_SYSROOT macosx10.14)
+# set(CMAKE_OSX_DEPLOYMENT_TARGET "10.5")
+
 # Download and unpack googletest at configure time
 configure_file(CMakeLists.txt.in googletest-download/CMakeLists.txt)
 execute_process(COMMAND ${CMAKE_COMMAND} -G "${CMAKE_GENERATOR}" .
@@ -28,6 +31,7 @@ INCLUDE_DIRECTORIES(${CMAKE_CURRENT_BINARY_DIR}/googletest-src/googletest/includ
 # dependencies automatically when using CMake 2.8.11 or
 # later. Otherwise we have to add them here ourselves.
 cmake_minimum_required(VERSION 3.14)
+project(toyscopy)
 if (CMAKE_VERSION VERSION_LESS 2.8.11)
   include_directories("${gtest_SOURCE_DIR}/include")
 endif()
@@ -40,13 +44,11 @@ INCLUDE_DIRECTORIES(${GTK3_INCLUDE_DIRS})
 LINK_DIRECTORIES(${GTK3_LIBRARY_DIRS})
 ADD_DEFINITIONS(${GTK3_CFLAGS_OTHER})
 
-
 set (CMAKE_CXX_STANDARD 14)
 # Now simply link against gtest or gtest_main as needed. Eg
 # add_executable(main core/test.cc)
 add_library(flash flash/html/html_document_parser.cc)
 
-project(toyscopy)
 
 ## Main
 add_executable(main core/main.cc)
@@ -55,7 +57,7 @@ TARGET_LINK_LIBRARIES(main flash)
 
 ## Test
 enable_testing()
-add_executable(MyTest test/test_main.cc test/flash/html/test_html_document_parser.cc)
+add_executable(MyTest test/test_main.cc test/flash/html/test_html_document_parser.cc test/flash/html/test_dom.cc)
 target_link_libraries(MyTest flash)
 INCLUDE_DIRECTORIES(test/flash)
 target_link_libraries(MyTest gtest)
