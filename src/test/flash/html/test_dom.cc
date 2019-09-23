@@ -11,6 +11,7 @@ TEST(DOM, DOMappendChildDOM)
   EXPECT_EQ(node->nodeType, DOM::NodeType::ELEMENT_NODE);
   EXPECT_EQ(node->nodeName, ret.nodeName);
   EXPECT_EQ(parent->childNodes.size(), 1);
+  DOM::Node r = parent->appendChild(node);
 }
 
 TEST(DOM, DOMappendChildText)
