@@ -13,7 +13,7 @@ TEST(HTMLDocumentParser, ParseSimpleHtml)
   h.parse();
 
   std::queue<DOM::Node *> q;
-  q.push(&h.document);
+  q.push(h.document);
   while (!q.empty()) {
     DOM::Node *node = q.front();
     q.pop();

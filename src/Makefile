@@ -312,6 +312,33 @@ flash/html/html_document_parser.cc.s:
 	$(MAKE) -f CMakeFiles/flash.dir/build.make CMakeFiles/flash.dir/flash/html/html_document_parser.cc.s
 .PHONY : flash/html/html_document_parser.cc.s
 
+flash/html/renderer.o: flash/html/renderer.cc.o
+
+.PHONY : flash/html/renderer.o
+
+# target to build an object file
+flash/html/renderer.cc.o:
+	$(MAKE) -f CMakeFiles/flash.dir/build.make CMakeFiles/flash.dir/flash/html/renderer.cc.o
+.PHONY : flash/html/renderer.cc.o
+
+flash/html/renderer.i: flash/html/renderer.cc.i
+
+.PHONY : flash/html/renderer.i
+
+# target to preprocess a source file
+flash/html/renderer.cc.i:
+	$(MAKE) -f CMakeFiles/flash.dir/build.make CMakeFiles/flash.dir/flash/html/renderer.cc.i
+.PHONY : flash/html/renderer.cc.i
+
+flash/html/renderer.s: flash/html/renderer.cc.s
+
+.PHONY : flash/html/renderer.s
+
+# target to generate assembly for a file
+flash/html/renderer.cc.s:
+	$(MAKE) -f CMakeFiles/flash.dir/build.make CMakeFiles/flash.dir/flash/html/renderer.cc.s
+.PHONY : flash/html/renderer.cc.s
+
 test/flash/html/test_dom.o: test/flash/html/test_dom.cc.o
 
 .PHONY : test/flash/html/test_dom.o
@@ -419,6 +446,9 @@ help:
 	@echo "... flash/html/html_document_parser.o"
 	@echo "... flash/html/html_document_parser.i"
 	@echo "... flash/html/html_document_parser.s"
+	@echo "... flash/html/renderer.o"
+	@echo "... flash/html/renderer.i"
+	@echo "... flash/html/renderer.s"
 	@echo "... test/flash/html/test_dom.o"
 	@echo "... test/flash/html/test_dom.i"
 	@echo "... test/flash/html/test_dom.s"

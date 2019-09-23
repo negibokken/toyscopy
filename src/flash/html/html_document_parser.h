@@ -7,9 +7,8 @@
 #include "dom.h"
 #include "tag.h"
 
-class HTMLDocumentParser
-{
-public:
+class HTMLDocumentParser {
+  public:
   // described here:
   // https://html.spec.whatwg.org/multipage/parsing.html#parse-state
   // clang-format off
@@ -20,7 +19,11 @@ public:
     in_frameset, after_frameset, after_after_body, after_after_frameset
   };
   // clang-format on
-  HTMLDocumentParser(std::string _doc) { this->doc = _doc; };
+  HTMLDocumentParser(std::string _doc)
+  {
+    this->doc = _doc;
+    this->document = new DOM::Document();
+  };
 
   int *head = NULL;
   int itr = 0;
@@ -28,7 +31,7 @@ public:
   Mode insertion_mode;
   std::vector<DOM::Node *> open_elements;
 
-  DOM::Document document;
+  DOM::Document *document;
 
   void parse();
   void consumeIgnoreToken();

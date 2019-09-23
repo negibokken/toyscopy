@@ -1,0 +1,7 @@
+-DDEBUG
+-include "flash/html/dom.h"
+-include "flash/html/html_document_parser.h"
+-include "flash/html/renderer.h"
+-include "flash/html/tag.h"
+-include "flash/html/css.h"
+-I/usr/local/Cellar/gtk+3/3.24.10/include/gtk-3.0/

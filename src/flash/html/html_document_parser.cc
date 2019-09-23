@@ -46,7 +46,7 @@ void HTMLDocumentParser::parse()
         // html tag
         if (type == Tag::Type::StartTag) {
           this->open_elements.push_back(element);
-          this->document.appendChild(element);
+          this->document->appendChild(element);
         }
         // An end tag whose tag name is one of:
         // "head", "body", "html", "br"
@@ -97,7 +97,7 @@ void HTMLDocumentParser::parse()
   // The end
   std::cout << "end" << std::endl;
   {
-    this->document.readyState = DOM::DocumentReadyState::interactive;
+    this->document->readyState = DOM::DocumentReadyState::interactive;
     while (!this->open_elements.empty()) {
       this->open_elements.pop_back();
     }
