@@ -82,12 +82,14 @@ void HTMLDocumentParser::parse()
       this->itr++;
       int it = 0;
       while (('a' <= this->doc[this->itr] && this->doc[this->itr] <= 'z') ||
-             ('A' <= this->doc[this->itr] && this->doc[this->itr] <= 'Z')) {
+             ('A' <= this->doc[this->itr] && this->doc[this->itr] <= 'Z') ||
+             this->doc[this->itr] == ' ') {
         txt[it++] = this->doc[this->itr++];
         consumeIgnoreToken();
       }
     }
     DOM::Text *text = new DOM::Text(txt);
+    std::cout << txt << std::endl;
     if (!open_elements.empty()) {
       std::cout << open_elements[0]->nodeType << std::endl;
       open_elements[0]->appendChild(text);
@@ -111,7 +113,8 @@ void HTMLDocumentParser::consumeIgnoreToken()
   // (FF), U+000D CARRIAGE RETURN (CR), or U+0020 SPACE
   while (doc[this->itr] == '\t' || doc[this->itr] == '\n' ||
          doc[this->itr] == '\f' || doc[this->itr] == '\r' ||
-         doc[this->itr] == ' ') {
+         // doc[this->itr] == ' ') {
+         doc[this->itr] == '\f') {
     if (doc[this->itr] == '\0') break;
     this->itr++;
   }
