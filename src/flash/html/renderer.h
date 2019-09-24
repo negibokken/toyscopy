@@ -3,6 +3,7 @@
 
 #include "css.h"
 #include "dom.h"
+#include "gtk/gtk.h"
 
 #include <iostream>
 #include <stack>
@@ -17,7 +18,7 @@ class RenderInline;
 class RenderObject {
   public:
   DOM::Node *node;
-  RenderObject() {}
+  RenderObject(DOM::Node *node) : node(node) {}
   virtual void layout() {}
   virtual void paint() {}
   static RenderObject *createObject(DOM::Node *node, RenderStyle *style);
@@ -30,16 +31,19 @@ class RenderStyle {
 
 class RenderInline : public RenderObject {
   public:
-  RenderInline(){};
+  GtkWidget *container;
+  GtkWidget *widget;
+  RenderInline(DOM::Node *node) : RenderObject(node){};
   void layout();
   void paint();
 };
 
 class Renderer {
   public:
+  GtkWidget *window;
   DOM::Document *dom;
   CSS::CSSOM *cssom;
-  Renderer(DOM::Document *dom, CSS::CSSOM *cssom);
+  Renderer(GtkWidget *window, DOM::Document *dom, CSS::CSSOM *cssom);
   void render();
 };
 
