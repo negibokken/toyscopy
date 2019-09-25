@@ -89,7 +89,7 @@ void HTMLDocumentParser::parse()
       }
     }
     DOM::Text *text = new DOM::Text(txt);
-    std::cout << txt << std::endl;
+    std::cout << "overloaded" << *text << std::endl;
     if (!open_elements.empty()) {
       std::cout << open_elements[0]->nodeType << std::endl;
       open_elements[0]->appendChild(text);

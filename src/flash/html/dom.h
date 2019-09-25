@@ -78,5 +78,11 @@ class Text : public CharacterData {
   std::string wholeText() { return this->data; };
 };
 
+inline std::ostream &operator<<(std::ostream &os, Text &t)
+{
+  os << t.wholeText();
+  return os;
+};
+
 }  // namespace DOM
 #endif
