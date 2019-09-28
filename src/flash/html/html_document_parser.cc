@@ -42,6 +42,7 @@ void HTMLDocumentParser::parse()
         }
         tagName[it] = '\0';
         element->tagName = tagName;
+        this->itr++;
 
         // html tag
         if (type == Tag::Type::StartTag) {
@@ -73,21 +74,41 @@ void HTMLDocumentParser::parse()
   {
   }
 
+  std::cout << "after head" << std::endl;
+  {
+    std::cout << this->doc[this->itr] << std::endl;
+    this->consumeIgnoreToken();
+    // TODO: A comment token
+    // TODO: DOCTYPE ignore
+    DOM::Element element;
+    int it = 0;
+    char tagName[2048];
+    if (this->doc[this->itr] == '<') {
+      this->itr++;
+      while (('a' <= this->doc[this->itr] && this->doc[this->itr] <= 'z') ||
+             ('A' <= this->doc[this->itr] && this->doc[this->itr] <= 'Z')) {
+        tagName[it++] = this->doc[this->itr++];
+      }
+      tagName[it] = '\0';
+      element.tagName = tagName;
+      this->itr++;
+      std::cout << element << std::endl;
+    }
+  }
+
   std::cout << "text" << std::endl;
   // 12.2.6.4.8 text
   {
     char txt[1024];
-    while (this->doc[this->itr] != '\0' && this->doc[this->itr] != '<') {
+    int it = 0;
+    consumeIgnoreToken();
+    while (('a' <= this->doc[this->itr] && this->doc[this->itr] <= 'z') ||
+           ('A' <= this->doc[this->itr] && this->doc[this->itr] <= 'Z') ||
+           this->doc[this->itr] == ' ') {
+      txt[it++] = this->doc[this->itr++];
       consumeIgnoreToken();
-      this->itr++;
-      int it = 0;
-      while (('a' <= this->doc[this->itr] && this->doc[this->itr] <= 'z') ||
-             ('A' <= this->doc[this->itr] && this->doc[this->itr] <= 'Z') ||
-             this->doc[this->itr] == ' ') {
-        txt[it++] = this->doc[this->itr++];
-        consumeIgnoreToken();
-      }
     }
+    txt[it] = '\0';
     DOM::Text *text = new DOM::Text(txt);
     std::cout << "overloaded" << *text << std::endl;
     if (!open_elements.empty()) {

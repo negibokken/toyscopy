@@ -23,6 +23,7 @@ class HTMLDocumentParser {
   {
     this->doc = _doc;
     this->document = new DOM::Document();
+    this->frameset_ok = "ok";
   };
 
   int *head = NULL;
@@ -32,6 +33,7 @@ class HTMLDocumentParser {
   std::vector<DOM::Node *> open_elements;
 
   DOM::Document *document;
+  std::string frameset_ok;
 
   void parse();
   void consumeIgnoreToken();

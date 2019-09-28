@@ -21,7 +21,8 @@ static void activate(GtkApplication *app, gpointer user_data)
   gtk_window_set_resizable(GTK_WINDOW(window), true);
   gtk_window_set_gravity(GTK_WINDOW(window), GDK_GRAVITY_SOUTH_EAST);
 
-  HTMLDocumentParser *hdp = new HTMLDocumentParser("<html>Hello World</html>");
+  HTMLDocumentParser *hdp =
+      new HTMLDocumentParser("<html><body>Hello World</body></html>");
   hdp->parse();
 
   // TODO: make CSSOM
