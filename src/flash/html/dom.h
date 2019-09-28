@@ -49,6 +49,14 @@ class Element : public Node {
   std::string tagName;
 };
 
+inline std::ostream &operator<<(std::ostream &os, Element &e)
+{
+  os << "Element:" << std::endl;
+  os << "  tagName: " << e.tagName << std::endl;
+  os << "  elementType: " << e.nodeType << std::endl;
+  return os;
+};
+
 enum DocumentReadyState { loading, interactive, complete };
 class Document : public Node {
   public:

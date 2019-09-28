@@ -35,7 +35,8 @@ static void activate(GtkApplication *app, gpointer user_data)
   gtk_widget_show_all(window);
 
     // Call HTML Renderer
-  HTMLDocumentParser *hdp = new HTMLDocumentParser("<html>Hello World</html>");
+  HTMLDocumentParser *hdp =
+      new HTMLDocumentParser("<html><body>Hello World</body></html>");
   hdp->parse();
 
   // TODO: make CSSOM
