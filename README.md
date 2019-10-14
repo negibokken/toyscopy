@@ -7,7 +7,26 @@ A toy browser written in C++.
 
 ## development
 
-```
-brew install gtk+3.0
-```
+1. install gtk+3.0
+
+    ```sh
+    brew install gtk+3.0
+    ```
+2. execute cmake under src directory
+
+    ```sh
+    cd src
+    cmake .
+    ```
+3. make binary
+
+    ```sh
+    make
+    ```
+
+4. execute ToyScopy or test
+
+    ```sh
+    ./main
+    ```
 
