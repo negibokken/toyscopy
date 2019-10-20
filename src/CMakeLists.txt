@@ -47,7 +47,7 @@ ADD_DEFINITIONS(${GTK3_CFLAGS_OTHER})
 set (CMAKE_CXX_STANDARD 14)
 # Now simply link against gtest or gtest_main as needed. Eg
 # add_executable(main core/test.cc)
-add_library(flash flash/html/html_document_parser.cc flash/html/renderer.cc)
+add_library(flash flash/html/html_document_parser.cc flash/html/renderer.cc flash/html/tokenizer.cc)
 
 
 ## Main
@@ -57,7 +57,7 @@ TARGET_LINK_LIBRARIES(main flash)
 
 ## Test
 enable_testing()
-add_executable(MyTest test/test_main.cc test/flash/html/test_html_document_parser.cc test/flash/html/test_dom.cc)
+add_executable(MyTest test/test_main.cc test/flash/html/test_html_document_parser.cc test/flash/html/test_dom.cc test/flash/html/test_tokenizer.cc)
 target_link_libraries(MyTest flash)
 INCLUDE_DIRECTORIES(test/flash)
 target_link_libraries(MyTest gtest)
