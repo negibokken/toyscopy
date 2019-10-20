@@ -1,5 +1,5 @@
-#ifndef Layout_h
-#define Layout_h
+#ifndef Render_h
+#define Render_h
 
 #include "css.h"
 #include "dom.h"

@@ -2,12 +2,14 @@
 #define DOM_H
 
 #include <iostream>
+#include <queue>
 #include <string>
 #include <vector>
 
 namespace DOM {
 
 class Element;
+class Node;
 enum NodeType {
   ELEMENT_NODE = 1,
   ATTRIBUTE_NODE = 2,
@@ -70,6 +72,19 @@ class Document : public Node {
 
   DocumentReadyState readyState;
   Element documentElement;
+  void printAllNode()
+  {
+    std::queue<Node *> q;
+    q.push(this);
+    while (!q.empty()) {
+      Node *node = q.front();
+      q.pop();
+      std::cout << node << std::endl;
+      for (auto n : node->childNodes) {
+        std::cout << n << std::endl;
+      }
+    }
+  }
 };
 
 class CharacterData : public Node {

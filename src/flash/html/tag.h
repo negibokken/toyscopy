@@ -1,13 +1,12 @@
-#ifndef TAG
-#define TAG
+#ifndef Tag_h
+#define Tag_h
 
 #include <iostream>
 #include <string>
 #define MAX_NAME 256
 
-class Tag
-{
-public:
+class Tag {
+  public:
   // clang-format off
   enum Type { StartTag, EndTag };
   enum ElementType { html, none };
@@ -23,8 +22,7 @@ public:
 
   static ElementType str2ElementType(std::string str)
   {
-    if (str == "html")
-    {
+    if (str == "html") {
       return ElementType::html;
     }
     return ElementType::none;
@@ -33,12 +31,10 @@ public:
   void setTagName(std::string str)
   {
     this->tagName = str;
-    if (str == "html")
-    {
+    if (str == "html") {
       this->elementType = ElementType::html;
     }
-    else
-    {
+    else {
       this->elementType = ElementType::none;
     }
   }

@@ -76,11 +76,10 @@ void HTMLDocumentParser::parse()
 
   std::cout << "after head" << std::endl;
   {
-    std::cout << this->doc[this->itr] << std::endl;
     this->consumeIgnoreToken();
     // TODO: A comment token
     // TODO: DOCTYPE ignore
-    DOM::Element element;
+    DOM::Element *element = new DOM::Element();
     int it = 0;
     char tagName[2048];
     if (this->doc[this->itr] == '<') {
@@ -90,10 +89,16 @@ void HTMLDocumentParser::parse()
         tagName[it++] = this->doc[this->itr++];
       }
       tagName[it] = '\0';
-      element.tagName = tagName;
+      element->tagName = tagName;
       this->itr++;
-      std::cout << element << std::endl;
+      std::cout << *element << std::endl;
+
+      this->open_elements.push_back(element);
     }
+  }
+
+  std::cout << "in body" << std::endl;
+  {
   }
 
   std::cout << "text" << std::endl;
@@ -110,7 +115,7 @@ void HTMLDocumentParser::parse()
     }
     txt[it] = '\0';
     DOM::Text *text = new DOM::Text(txt);
-    std::cout << "overloaded" << *text << std::endl;
+    std::cout << *text << std::endl;
     if (!open_elements.empty()) {
       std::cout << open_elements[0]->nodeType << std::endl;
       open_elements[0]->appendChild(text);
@@ -126,6 +131,7 @@ void HTMLDocumentParser::parse()
     }
   }
   std::cout << "____" << std::endl;
+  this->document->printAllNode();
 }
 
 void HTMLDocumentParser::consumeIgnoreToken()
@@ -140,3 +146,5 @@ void HTMLDocumentParser::consumeIgnoreToken()
     this->itr++;
   }
 }
+
+void HTMLDocumentParser::consumeToken() {}
