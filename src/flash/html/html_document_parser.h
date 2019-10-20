@@ -1,5 +1,5 @@
-#ifndef HTML_DOCUMENT_PARSER
-#define HTML_DOCUMENT_PARSER
+#ifndef HTML_Document_Parser_h
+#define HTML_Document_Parser_h
 
 #include <stdio.h>
 #include <string>
@@ -37,5 +37,7 @@ class HTMLDocumentParser {
 
   void parse();
   void consumeIgnoreToken();
+  void consumeToken();
 };
+
 #endif

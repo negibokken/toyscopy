@@ -339,6 +339,33 @@ flash/html/renderer.cc.s:
 	$(MAKE) -f CMakeFiles/flash.dir/build.make CMakeFiles/flash.dir/flash/html/renderer.cc.s
 .PHONY : flash/html/renderer.cc.s
 
+flash/html/tokenizer.o: flash/html/tokenizer.cc.o
+
+.PHONY : flash/html/tokenizer.o
+
+# target to build an object file
+flash/html/tokenizer.cc.o:
+	$(MAKE) -f CMakeFiles/flash.dir/build.make CMakeFiles/flash.dir/flash/html/tokenizer.cc.o
+.PHONY : flash/html/tokenizer.cc.o
+
+flash/html/tokenizer.i: flash/html/tokenizer.cc.i
+
+.PHONY : flash/html/tokenizer.i
+
+# target to preprocess a source file
+flash/html/tokenizer.cc.i:
+	$(MAKE) -f CMakeFiles/flash.dir/build.make CMakeFiles/flash.dir/flash/html/tokenizer.cc.i
+.PHONY : flash/html/tokenizer.cc.i
+
+flash/html/tokenizer.s: flash/html/tokenizer.cc.s
+
+.PHONY : flash/html/tokenizer.s
+
+# target to generate assembly for a file
+flash/html/tokenizer.cc.s:
+	$(MAKE) -f CMakeFiles/flash.dir/build.make CMakeFiles/flash.dir/flash/html/tokenizer.cc.s
+.PHONY : flash/html/tokenizer.cc.s
+
 test/flash/html/test_dom.o: test/flash/html/test_dom.cc.o
 
 .PHONY : test/flash/html/test_dom.o
@@ -392,6 +419,33 @@ test/flash/html/test_html_document_parser.s: test/flash/html/test_html_document_
 test/flash/html/test_html_document_parser.cc.s:
 	$(MAKE) -f CMakeFiles/MyTest.dir/build.make CMakeFiles/MyTest.dir/test/flash/html/test_html_document_parser.cc.s
 .PHONY : test/flash/html/test_html_document_parser.cc.s
+
+test/flash/html/test_tokenizer.o: test/flash/html/test_tokenizer.cc.o
+
+.PHONY : test/flash/html/test_tokenizer.o
+
+# target to build an object file
+test/flash/html/test_tokenizer.cc.o:
+	$(MAKE) -f CMakeFiles/MyTest.dir/build.make CMakeFiles/MyTest.dir/test/flash/html/test_tokenizer.cc.o
+.PHONY : test/flash/html/test_tokenizer.cc.o
+
+test/flash/html/test_tokenizer.i: test/flash/html/test_tokenizer.cc.i
+
+.PHONY : test/flash/html/test_tokenizer.i
+
+# target to preprocess a source file
+test/flash/html/test_tokenizer.cc.i:
+	$(MAKE) -f CMakeFiles/MyTest.dir/build.make CMakeFiles/MyTest.dir/test/flash/html/test_tokenizer.cc.i
+.PHONY : test/flash/html/test_tokenizer.cc.i
+
+test/flash/html/test_tokenizer.s: test/flash/html/test_tokenizer.cc.s
+
+.PHONY : test/flash/html/test_tokenizer.s
+
+# target to generate assembly for a file
+test/flash/html/test_tokenizer.cc.s:
+	$(MAKE) -f CMakeFiles/MyTest.dir/build.make CMakeFiles/MyTest.dir/test/flash/html/test_tokenizer.cc.s
+.PHONY : test/flash/html/test_tokenizer.cc.s
 
 test/test_main.o: test/test_main.cc.o
 
@@ -449,12 +503,18 @@ help:
 	@echo "... flash/html/renderer.o"
 	@echo "... flash/html/renderer.i"
 	@echo "... flash/html/renderer.s"
+	@echo "... flash/html/tokenizer.o"
+	@echo "... flash/html/tokenizer.i"
+	@echo "... flash/html/tokenizer.s"
 	@echo "... test/flash/html/test_dom.o"
 	@echo "... test/flash/html/test_dom.i"
 	@echo "... test/flash/html/test_dom.s"
 	@echo "... test/flash/html/test_html_document_parser.o"
 	@echo "... test/flash/html/test_html_document_parser.i"
 	@echo "... test/flash/html/test_html_document_parser.s"
+	@echo "... test/flash/html/test_tokenizer.o"
+	@echo "... test/flash/html/test_tokenizer.i"
+	@echo "... test/flash/html/test_tokenizer.s"
 	@echo "... test/test_main.o"
 	@echo "... test/test_main.i"
 	@echo "... test/test_main.s"

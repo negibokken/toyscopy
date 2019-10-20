@@ -20,6 +20,7 @@ static void activate(GtkApplication *app, gpointer user_data)
   gtk_window_set_default_size(GTK_WINDOW(window), 480, 480);
   gtk_window_set_resizable(GTK_WINDOW(window), true);
   gtk_window_set_gravity(GTK_WINDOW(window), GDK_GRAVITY_SOUTH_EAST);
+  // gtk_window_set_position(GTK_WINDOW(window), GTK_WIN_POS_CENTER_ALWAYS);
 
   HTMLDocumentParser *hdp =
       new HTMLDocumentParser("<html><body>Hello World</body></html>");
