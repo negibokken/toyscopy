@@ -19,7 +19,6 @@ static void attachHeaderBar(GtkWidget *window){
 
 static void activate(GtkApplication *app, gpointer user_data)
 {
-
   GtkWidget *window;
   GtkWidget *button;
   GtkWidget *button_box;
@@ -30,7 +29,6 @@ static void activate(GtkApplication *app, gpointer user_data)
   gtk_window_set_resizable(GTK_WINDOW(window), true);
   gtk_window_set_gravity(GTK_WINDOW(window), GDK_GRAVITY_SOUTH_EAST);
   // gtk_window_set_position(GTK_WINDOW(window), GTK_WIN_POS_CENTER_ALWAYS);
-
   attachHeaderBar(window);
 
   gtk_widget_show_all(window);
