@@ -16,7 +16,7 @@ void Tokenizer::ignoreToken(char c) {
   }
 }
 
-bool isAlphabet(char cc) {
+bool isASCIIAlphabet(char cc) {
   return ('a' <= cc && cc <= 'z') || ('A' <= cc && cc <= 'Z');
 }
 
@@ -32,10 +32,12 @@ bool Tokenizer::nextToken()
         return true;
       }
       else if (cc == '\0') {
-        // TODO:
+        // FIXME: null is not EOF
+        return false;
       }
       else if (cc == EOF) {
         // TODO: emit an end-of-file token
+        return false;
       }
       else {
         // TODO:
@@ -49,7 +51,7 @@ bool Tokenizer::nextToken()
         setState(State::EndTagOpenState);
         return true;
       }
-      else if (isAlphabet(cc)) {
+      else if (isASCIIAlphabet(cc)) {
         setState(State::TagNameState);
         return true;
       }
@@ -61,24 +63,27 @@ bool Tokenizer::nextToken()
         setState(State::BeforeAttributeNameState);
         return true;
       }
-      if (cc == '/') {
-        return false;
+      else if (cc == '/') {
+        // TODO:
+        return true;
+      }
+      else if(cc == '>') {
+        setState(State::Data);
+        return true;
+      }
+
+      break;
+    }
+    case State::EndTagOpenState: {
+      if(isASCIIAlphabet(cc)) {
+        // TODO: create new end tag token
+        setState(State::TagNameState);
+        return true;
       }
       break;
     }
-    case State::BeforeAttributeNameState: {
-      // 0x0A: LF, 0xFF: FORM FEED, 0x20: SPACE
-      while(cc == '\t' || cc == 0x0A || cc == 0x0C || cc == 0x0A) {
-        ignoreToken(cc);
-        return true;
-      }
-      if (cc == '/') {
-        return false;
-      }
-    }
-    break;
     default: {
-
+      return false;
     }
   }
   return true;
