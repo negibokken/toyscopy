@@ -7,9 +7,11 @@ TEST(TokenizerTest, TokenizeSimple)
       new Tokenizer::Tokenizer("<html><body>hello</body></html>");
 
   char cc;
-  while (cc != '\0') {
-    t->nextToken();
+  // while ((cc = t->nextInputCharacter()) != '\0') {
+  //   std::cout  << cc << std::endl;
+  // }
+  while (t->nextToken() != '\0') {
   }
-  std::cout << t->state << std::endl;
+  // std::cout << t->state << std::endl;
 }
 
