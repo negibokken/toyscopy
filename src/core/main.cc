@@ -4,11 +4,6 @@
 #include <gtk/gtk.h>
 #include <stack>
 
-static void print_hello(GtkWidget *widget, gpointer data)
-{
-  g_print("Hello World\n");
-}
-
 static void activate(GtkApplication *app, gpointer user_data)
 {
   GtkWidget *window;
