@@ -1,13 +1,14 @@
+#include <gtk/gtk.h>
+
+#include <stack>
+
 #include "../flash/html/html_document_parser.h"
 #include "../flash/html/renderer.h"
 
-#include <gtk/gtk.h>
-#include <stack>
-
-static void attachHeaderBar(GtkWidget *window){
+static void attachHeaderBar(GtkWidget *window) {
   GtkWidget *header_bar;
   header_bar = gtk_header_bar_new();
-  gtk_header_bar_set_show_close_button (GTK_HEADER_BAR(header_bar), true);
+  gtk_header_bar_set_show_close_button(GTK_HEADER_BAR(header_bar), true);
 
   GtkWidget *search_bar;
   search_bar = gtk_entry_new();
@@ -17,8 +18,7 @@ static void attachHeaderBar(GtkWidget *window){
   gtk_widget_show_all(window);
 }
 
-static void activate(GtkApplication *app, gpointer user_data)
-{
+static void activate(GtkApplication *app, gpointer user_data) {
   GtkWidget *window;
   GtkWidget *button;
   GtkWidget *button_box;
@@ -33,7 +33,7 @@ static void activate(GtkApplication *app, gpointer user_data)
 
   gtk_widget_show_all(window);
 
-    // Call HTML Renderer
+  // Call HTML Renderer
   HTMLDocumentParser *hdp =
       new HTMLDocumentParser("<html><body>Hello World</body></html>");
   hdp->parse();
@@ -50,8 +50,7 @@ static void activate(GtkApplication *app, gpointer user_data)
   // gtk_widget_show_all(window);
 }
 
-int main(int argc, char **argv)
-{
+int main(int argc, char **argv) {
   GtkApplication *app;
   int status;
 

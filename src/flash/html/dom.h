@@ -25,7 +25,7 @@ enum NodeType {
   NOTATION_NODE = 12,
 };
 class Node {
-  public:
+ public:
   unsigned short nodeType;
   std::string nodeName;
 
@@ -37,8 +37,7 @@ class Node {
   Element *parentElement;
   std::vector<Node *> childNodes;
 
-  Node appendChild(Node *node)
-  {
+  Node appendChild(Node *node) {
     std::cout << "node type:" << node->nodeType << std::endl;
     this->childNodes.push_back(node);
     return *node;
@@ -46,13 +45,12 @@ class Node {
 };
 
 class Element : public Node {
-  public:
+ public:
   Element() : Node(NodeType::ELEMENT_NODE){};
   std::string tagName;
 };
 
-inline std::ostream &operator<<(std::ostream &os, Element &e)
-{
+inline std::ostream &operator<<(std::ostream &os, Element &e) {
   os << "Element:" << std::endl;
   os << "  tagName: " << e.tagName << std::endl;
   os << "  elementType: " << e.nodeType << std::endl;
@@ -61,7 +59,7 @@ inline std::ostream &operator<<(std::ostream &os, Element &e)
 
 enum DocumentReadyState { loading, interactive, complete };
 class Document : public Node {
-  public:
+ public:
   Document() : Node(NodeType::DOCUMENT_NODE){};
   std::string URL;
   std::string DocumentURI;
@@ -72,8 +70,7 @@ class Document : public Node {
 
   DocumentReadyState readyState;
   Element documentElement;
-  void printAllNode()
-  {
+  void printAllNode() {
     std::queue<Node *> q;
     q.push(this);
     while (!q.empty()) {
@@ -88,7 +85,7 @@ class Document : public Node {
 };
 
 class CharacterData : public Node {
-  public:
+ public:
   CharacterData() : Node(NodeType::TEXT_NODE){};
   std::string data;
   unsigned long length;
@@ -96,13 +93,12 @@ class CharacterData : public Node {
 };
 
 class Text : public CharacterData {
-  public:
+ public:
   Text(std::string txt) : CharacterData() { this->data = txt; };
   std::string wholeText() { return this->data; };
 };
 
-inline std::ostream &operator<<(std::ostream &os, Text &t)
-{
+inline std::ostream &operator<<(std::ostream &os, Text &t) {
   os << t.wholeText();
   return os;
 };

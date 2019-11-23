@@ -1,12 +1,12 @@
 #ifndef Render_h
 #define Render_h
 
+#include <iostream>
+#include <stack>
+
 #include "css.h"
 #include "dom.h"
 #include "gtk/gtk.h"
-
-#include <iostream>
-#include <stack>
 
 namespace Render {
 
@@ -16,7 +16,7 @@ class RenderStyle;
 class RenderInline;
 
 class RenderObject {
-  public:
+ public:
   DOM::Node *node;
   RenderObject(DOM::Node *node) : node(node) {}
   virtual void layout() {}
@@ -25,12 +25,12 @@ class RenderObject {
 };
 
 class RenderStyle {
-  public:
+ public:
   RenderStyle(){};
 };
 
 class RenderInline : public RenderObject {
-  public:
+ public:
   GtkWidget *container;
   GtkWidget *widget;
   RenderInline(DOM::Node *node) : RenderObject(node){};
@@ -39,7 +39,7 @@ class RenderInline : public RenderObject {
 };
 
 class Renderer {
-  public:
+ public:
   GtkWidget *window;
   DOM::Document *dom;
   CSS::CSSOM *cssom;
