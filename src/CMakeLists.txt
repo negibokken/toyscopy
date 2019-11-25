@@ -1,6 +1,7 @@
 # set(CMAKE_OSX_SYSROOT macosx10.14)
 # set(CMAKE_OSX_DEPLOYMENT_TARGET "10.5")
 
+set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 # Download and unpack googletest at configure time
 configure_file(CMakeLists.txt.in googletest-download/CMakeLists.txt)
 execute_process(COMMAND ${CMAKE_COMMAND} -G "${CMAKE_GENERATOR}" .
