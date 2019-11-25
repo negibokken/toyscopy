@@ -3,15 +3,13 @@
 namespace Tokenizer {
 
 Tokenizer::Tokenizer(std::string stream)
-    : index(0), stream(stream), state(State::Data)
-{
-}
+    : index(0), stream(stream), state(State::Data) {}
 
 char Tokenizer::nextInputCharacter() { return stream[index++]; }
 
 void Tokenizer::ignoreToken(char c) {
   char cc = c;
-  while(cc == '\t' || cc == 0x0A || cc == 0x0C || cc == 0x0A) {
+  while (cc == '\t' || cc == 0x0A || cc == 0x0C || cc == 0x0A) {
     cc = nextInputCharacter();
   }
 }
@@ -20,8 +18,7 @@ bool isASCIIAlphabet(char cc) {
   return ('a' <= cc && cc <= 'z') || ('A' <= cc && cc <= 'Z');
 }
 
-bool Tokenizer::nextToken()
-{
+bool Tokenizer::nextToken() {
   char cc = nextInputCharacter();
   printf("%d %c\n", state, cc);
   // std::cout << state << std::endl;
@@ -30,44 +27,36 @@ bool Tokenizer::nextToken()
       if (cc == '<') {
         setState(State::TagOpenState);
         return true;
-      }
-      else if (cc == '\0') {
+      } else if (cc == '\0') {
         // FIXME: null is not EOF
         return false;
-      }
-      else if (cc == EOF) {
+      } else if (cc == EOF) {
         // TODO: emit an end-of-file token
         return false;
-      }
-      else {
+      } else {
         // TODO:
       }
-    }
-    break;
+    } break;
     case State::TagOpenState: {
       // std::cout << "Tag:OpenState:hey" << std::endl;
       // printf("%c\n", cc);
-      if(cc == '/') {
+      if (cc == '/') {
         setState(State::EndTagOpenState);
         return true;
-      }
-      else if (isASCIIAlphabet(cc)) {
+      } else if (isASCIIAlphabet(cc)) {
         setState(State::TagNameState);
         return true;
       }
-    }
-    break;
+    } break;
     case State::TagNameState: {
       // 0x0A: LF, 0xFF: FORM FEED, 0x20: SPACE
-      if(cc == '\t' || cc == 0x0A || cc == 0x0C || cc == 0x0A) {
+      if (cc == '\t' || cc == 0x0A || cc == 0x0C || cc == 0x0A) {
         setState(State::BeforeAttributeNameState);
         return true;
-      }
-      else if (cc == '/') {
+      } else if (cc == '/') {
         // TODO:
         return true;
-      }
-      else if(cc == '>') {
+      } else if (cc == '>') {
         setState(State::Data);
         return true;
       }
@@ -75,7 +64,7 @@ bool Tokenizer::nextToken()
       break;
     }
     case State::EndTagOpenState: {
-      if(isASCIIAlphabet(cc)) {
+      if (isASCIIAlphabet(cc)) {
         // TODO: create new end tag token
         setState(State::TagNameState);
         return true;

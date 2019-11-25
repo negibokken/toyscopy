@@ -2,8 +2,7 @@
 
 namespace Render {
 
-RenderObject *RenderObject::createObject(DOM::Node *node, RenderStyle *style)
-{
+RenderObject *RenderObject::createObject(DOM::Node *node, RenderStyle *style) {
   CSS::Style s = CSS::Style::INLINE;
 
   RenderObject *o = NULL;
@@ -21,8 +20,7 @@ RenderObject *RenderObject::createObject(DOM::Node *node, RenderStyle *style)
   return o;
 };
 
-void RenderInline::layout()
-{
+void RenderInline::layout() {
   // std::string str;
   // if (this->node->nodeType == DOM::NodeType::TEXT_NODE) {
 
@@ -48,18 +46,14 @@ void RenderInline::layout()
   this->widget = label;
 }
 
-void RenderInline::paint()
-{
+void RenderInline::paint() {
   gtk_container_add(GTK_CONTAINER(this->container), this->widget);
 }
 
 Renderer::Renderer(GtkWidget *window, DOM::Document *dom, CSS::CSSOM *cssom)
-    : window(window), dom(dom), cssom(cssom)
-{
-}
+    : window(window), dom(dom), cssom(cssom) {}
 
-void Renderer::render()
-{
+void Renderer::render() {
   GtkWidget *container;
   container = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 0);
 
@@ -72,8 +66,7 @@ void Renderer::render()
       for (int i = node->childNodes.size() - 1; i >= 0; i--) {
         st.push(node->childNodes[i]);
       }
-    }
-    else {
+    } else {
       RenderObject *ro = RenderObject::createObject(node, NULL);
 
       std::cout << "nodeType" << node->nodeType << std::endl;
@@ -83,8 +76,7 @@ void Renderer::render()
       CSS::Style s;
       if (node->nodeType == DOM::NodeType::TEXT_NODE) {
         s = CSS::Style::INLINE;
-      }
-      else if (node->nodeType == DOM::NodeType::DOCUMENT_NODE) {
+      } else if (node->nodeType == DOM::NodeType::DOCUMENT_NODE) {
         s = CSS::Style::BLOCK;
       }
       switch (s) {

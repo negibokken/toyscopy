@@ -8,3 +8,5 @@ googletest-build
 *.cmake
 MyTest
 Testing
+compile_commands.json
+.clangd

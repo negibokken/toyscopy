@@ -4,8 +4,7 @@
 
 #include "dom.h"
 
-void HTMLDocumentParser::parse()
-{
+void HTMLDocumentParser::parse() {
   std::cout << "start parse" << std::endl;
   {
     // Initial State
@@ -58,8 +57,7 @@ void HTMLDocumentParser::parse()
               !strcmp(tagName, "html") || !strcmp(tagName, "br")) {
             // TODO: An end tag whose tag name is one of: "head", "body",
             // "html", "br" act as anything else
-          }
-          else {
+          } else {
             // Parse Error Ignore token
           }
         }
@@ -72,8 +70,7 @@ void HTMLDocumentParser::parse()
 
   std::cout << "before_head" << std::endl;
   // TODO: The before_head
-  {
-  }
+  {}
 
   std::cout << "after head" << std::endl;
   {
@@ -99,8 +96,7 @@ void HTMLDocumentParser::parse()
   }
 
   std::cout << "in body" << std::endl;
-  {
-  }
+  {}
 
   std::cout << "text" << std::endl;
   // 12.2.6.4.8 text
@@ -135,8 +131,7 @@ void HTMLDocumentParser::parse()
   this->document->printAllNode();
 }
 
-void HTMLDocumentParser::consumeIgnoreToken()
-{
+void HTMLDocumentParser::consumeIgnoreToken() {
   // U+0009 CHARACTER TABULATION, U+000A LINE FEED (LF), U+000C FORM FEED
   // (FF), U+000D CARRIAGE RETURN (CR), or U+0020 SPACE
   while (doc[this->itr] == '\t' || doc[this->itr] == '\n' ||

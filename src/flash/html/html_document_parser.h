@@ -2,13 +2,15 @@
 #define HTML_Document_Parser_h
 
 #include <stdio.h>
+
 #include <string>
 #include <vector>
+
 #include "dom.h"
 #include "tag.h"
 
 class HTMLDocumentParser {
-  public:
+ public:
   // described here:
   // https://html.spec.whatwg.org/multipage/parsing.html#parse-state
   // clang-format off
@@ -19,8 +21,7 @@ class HTMLDocumentParser {
     in_frameset, after_frameset, after_after_body, after_after_frameset
   };
   // clang-format on
-  HTMLDocumentParser(std::string _doc)
-  {
+  HTMLDocumentParser(std::string _doc) {
     this->doc = _doc;
     this->document = new DOM::Document();
     this->frameset_ok = "ok";
