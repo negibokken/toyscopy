@@ -20,15 +20,12 @@ static void attachHeaderBar(GtkWidget *window) {
 
 static void activate(GtkApplication *app, gpointer user_data) {
   GtkWidget *window;
-  GtkWidget *button;
-  GtkWidget *button_box;
 
   window = gtk_application_window_new(app);
   gtk_window_set_title(GTK_WINDOW(window), "toyscopy");
   gtk_window_set_default_size(GTK_WINDOW(window), 480, 480);
   gtk_window_set_resizable(GTK_WINDOW(window), true);
   gtk_window_set_gravity(GTK_WINDOW(window), GDK_GRAVITY_SOUTH_EAST);
-  // gtk_window_set_position(GTK_WINDOW(window), GTK_WIN_POS_CENTER_ALWAYS);
   attachHeaderBar(window);
 
   gtk_widget_show_all(window);
@@ -43,11 +40,6 @@ static void activate(GtkApplication *app, gpointer user_data) {
   // Renderer
   Render::Renderer *r = new Render::Renderer(window, hdp->document, NULL);
   r->render();
-
-  // button_box = gtk_button_box_new(GTK_ORIENTATION_HORIZONTAL);
-
-  // gtk_container_add(GTK_CONTAINER(window), button_box);
-  // gtk_widget_show_all(window);
 }
 
 int main(int argc, char **argv) {
