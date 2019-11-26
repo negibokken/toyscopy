@@ -12,7 +12,7 @@ static void attachHeaderBar(GtkWidget *window) {
 
   GtkWidget *search_bar;
   search_bar = gtk_entry_new();
-  gtk_header_bar_pack_end(GTK_HEADER_BAR(header_bar), search_bar);
+  gtk_header_bar_set_custom_title(GTK_HEADER_BAR(header_bar), search_bar);
   gtk_window_set_titlebar(GTK_WINDOW(window), header_bar);
 
   gtk_widget_show_all(window);
