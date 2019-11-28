@@ -12,6 +12,8 @@ static void attachHeaderBar(GtkWidget *window) {
 
   GtkWidget *search_bar;
   search_bar = gtk_entry_new();
+  gtk_entry_set_width_chars(GTK_ENTRY(search_bar), 50);
+  gtk_entry_set_placeholder_text(GTK_ENTRY(search_bar), "URL");
   gtk_header_bar_set_custom_title(GTK_HEADER_BAR(header_bar), search_bar);
   gtk_window_set_titlebar(GTK_WINDOW(window), header_bar);
 
@@ -27,8 +29,6 @@ static void activate(GtkApplication *app, gpointer user_data) {
   gtk_window_set_resizable(GTK_WINDOW(window), true);
   gtk_window_set_gravity(GTK_WINDOW(window), GDK_GRAVITY_SOUTH_EAST);
   attachHeaderBar(window);
-
-  gtk_widget_show_all(window);
 
   // Call HTML Renderer
   HTMLDocumentParser *hdp =
