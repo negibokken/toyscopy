@@ -5,130 +5,143 @@
 #include "dom.h"
 
 void HTMLDocumentParser::parse() {
-  std::cout << "start parse" << std::endl;
-  {
-    // Initial State
-    {
-      this->consumeIgnoreToken();
-      // TODO: comment token
-      // https://html.spec.whatwg.org/multipage/parsing.html#the-initial-insertion-mode
-      // A Comment Token
-
-      // TODO: A DOCTYPE token
-      this->insertion_mode = Mode::before_html;
-    }
-
-    std::cout << "before_html" << std::endl;
-    // before html
-    {
-      // TODO: A DOCTYPE token
-      // TODO: A Comment Token
-
-      // Ignore the token
-      this->consumeIgnoreToken();
-
-      // A start tag whose tag name is "html"
-      DOM::Element *element = new DOM::Element();
-      Tag::Type type = Tag::Type::StartTag;
-      int it = 0;
-      char tagName[MAX_NAME];
-      // pickup tag name
-      if (this->doc[this->itr] == '<') {
-        if (this->doc[this->itr + 1] == '/') {
-          type = Tag::Type::EndTag, this->itr++;
-        }
-        while (this->doc[++this->itr] != '>') {
-          tagName[it++] = this->doc[this->itr];
-        }
-        tagName[it] = '\0';
-        element->tagName = tagName;
-        this->itr++;
-
-        // html tag
-        if (type == Tag::Type::StartTag) {
-          this->open_elements.push_back(element);
-          this->document->appendChild(element);
-        }
-        // An end tag whose tag name is one of:
-        // "head", "body", "html", "br"
-        else if (type == Tag::Type::EndTag) {
-          // "head", "body", "html", "br"
-          if (!strcmp(tagName, "head") || !strcmp(tagName, "body") ||
-              !strcmp(tagName, "html") || !strcmp(tagName, "br")) {
-            // TODO: An end tag whose tag name is one of: "head", "body",
-            // "html", "br" act as anything else
-          } else {
-            // Parse Error Ignore token
-          }
-        }
-        // TODO:: Anything else
-        else {
-        }
+  while (tokenizer->nextToken()) {
+    // std::cout << tokenizer->token->tagName << std::endl;
+    if (tokenizer->isEmited()) {
+      if (tokenizer->token->type == Tag::Type::StartTag ||
+          tokenizer->token->type == Tag::Type::EndTag) {
+        std::cout << tokenizer->token->tagName << std::endl;
+      } else if (tokenizer->token->type == Tag::Type::Character) {
+        std::cout << tokenizer->token->value << std::endl;
       }
+      tokenizer->consumeToken();
     }
   }
+  // std::cout << "start parse" << std::endl;
+  // {
+  //   // Initial State
+  //   {
+  //     this->consumeIgnoreToken();
+  //     // TODO: comment token
+  //     //
+  //     https://html.spec.whatwg.org/multipage/parsing.html#the-initial-insertion-mode
+  //     // A Comment Token
 
-  std::cout << "before_head" << std::endl;
-  // TODO: The before_head
-  {}
+  //     // TODO: A DOCTYPE token
+  //     this->insertion_mode = Mode::before_html;
+  //   }
 
-  std::cout << "after head" << std::endl;
-  {
-    this->consumeIgnoreToken();
-    // TODO: A comment token
-    // TODO: DOCTYPE ignore
-    DOM::Element *element = new DOM::Element();
-    int it = 0;
-    char tagName[2048];
-    if (this->doc[this->itr] == '<') {
-      this->itr++;
-      while (('a' <= this->doc[this->itr] && this->doc[this->itr] <= 'z') ||
-             ('A' <= this->doc[this->itr] && this->doc[this->itr] <= 'Z')) {
-        tagName[it++] = this->doc[this->itr++];
-      }
-      tagName[it] = '\0';
-      element->tagName = tagName;
-      this->itr++;
-      std::cout << *element << std::endl;
+  //   std::cout << "before_html" << std::endl;
+  //   // before html
+  //   {
+  //     // TODO: A DOCTYPE token
+  //     // TODO: A Comment Token
 
-      this->open_elements.push_back(element);
-    }
-  }
+  //     // Ignore the token
+  //     this->consumeIgnoreToken();
 
-  std::cout << "in body" << std::endl;
-  {}
+  //     // A start tag whose tag name is "html"
+  //     DOM::Element *element = new DOM::Element();
+  //     Tag::Type type = Tag::Type::StartTag;
+  //     int it = 0;
+  //     char tagName[MAX_NAME];
+  //     // pickup tag name
+  //     if (this->doc[this->itr] == '<') {
+  //       if (this->doc[this->itr + 1] == '/') {
+  //         type = Tag::Type::EndTag, this->itr++;
+  //       }
+  //       while (this->doc[++this->itr] != '>') {
+  //         tagName[it++] = this->doc[this->itr];
+  //       }
+  //       tagName[it] = '\0';
+  //       element->tagName = tagName;
+  //       this->itr++;
 
-  std::cout << "text" << std::endl;
-  // 12.2.6.4.8 text
-  {
-    char txt[1024];
-    int it = 0;
-    consumeIgnoreToken();
-    while (('a' <= this->doc[this->itr] && this->doc[this->itr] <= 'z') ||
-           ('A' <= this->doc[this->itr] && this->doc[this->itr] <= 'Z') ||
-           this->doc[this->itr] == ' ') {
-      txt[it++] = this->doc[this->itr++];
-      consumeIgnoreToken();
-    }
-    txt[it] = '\0';
-    DOM::Text *text = new DOM::Text(txt);
-    std::cout << *text << std::endl;
-    if (!open_elements.empty()) {
-      std::cout << open_elements[0]->nodeType << std::endl;
-      open_elements[0]->appendChild(text);
-    }
-  }
+  //       // html tag
+  //       if (type == Tag::Type::StartTag) {
+  //         this->open_elements.push_back(element);
+  //         this->document->appendChild(element);
+  //       }
+  //       // An end tag whose tag name is one of:
+  //       // "head", "body", "html", "br"
+  //       else if (type == Tag::Type::EndTag) {
+  //         // "head", "body", "html", "br"
+  //         if (!strcmp(tagName, "head") || !strcmp(tagName, "body") ||
+  //             !strcmp(tagName, "html") || !strcmp(tagName, "br")) {
+  //           // TODO: An end tag whose tag name is one of: "head", "body",
+  //           // "html", "br" act as anything else
+  //         } else {
+  //           // Parse Error Ignore token
+  //         }
+  //       }
+  //       // TODO:: Anything else
+  //       else {
+  //       }
+  //     }
+  //   }
+  // }
 
-  // The end
-  std::cout << "end" << std::endl;
-  {
-    this->document->readyState = DOM::DocumentReadyState::interactive;
-    while (!this->open_elements.empty()) {
-      this->open_elements.pop_back();
-    }
-  }
-  std::cout << "____" << std::endl;
-  this->document->printAllNode();
+  // std::cout << "before_head" << std::endl;
+  // // TODO: The before_head
+  // {}
+
+  // std::cout << "after head" << std::endl;
+  // {
+  //   this->consumeIgnoreToken();
+  //   // TODO: A comment token
+  //   // TODO: DOCTYPE ignore
+  //   DOM::Element *element = new DOM::Element();
+  //   int it = 0;
+  //   char tagName[2048];
+  //   if (this->doc[this->itr] == '<') {
+  //     this->itr++;
+  //     while (('a' <= this->doc[this->itr] && this->doc[this->itr] <= 'z') ||
+  //            ('A' <= this->doc[this->itr] && this->doc[this->itr] <= 'Z')) {
+  //       tagName[it++] = this->doc[this->itr++];
+  //     }
+  //     tagName[it] = '\0';
+  //     element->tagName = tagName;
+  //     this->itr++;
+  //     std::cout << *element << std::endl;
+
+  //     this->open_elements.push_back(element);
+  //   }
+  // }
+
+  // std::cout << "in body" << std::endl;
+  // {}
+
+  // std::cout << "text" << std::endl;
+  // // 12.2.6.4.8 text
+  // {
+  //   char txt[1024];
+  //   int it = 0;
+  //   consumeIgnoreToken();
+  //   while (('a' <= this->doc[this->itr] && this->doc[this->itr] <= 'z') ||
+  //          ('A' <= this->doc[this->itr] && this->doc[this->itr] <= 'Z') ||
+  //          this->doc[this->itr] == ' ') {
+  //     txt[it++] = this->doc[this->itr++];
+  //     consumeIgnoreToken();
+  //   }
+  //   txt[it] = '\0';
+  //   DOM::Text *text = new DOM::Text(txt);
+  //   std::cout << *text << std::endl;
+  //   if (!open_elements.empty()) {
+  //     std::cout << open_elements[0]->nodeType << std::endl;
+  //     open_elements[0]->appendChild(text);
+  //   }
+  // }
+
+  // // The end
+  // std::cout << "end" << std::endl;
+  // {
+  //   this->document->readyState = DOM::DocumentReadyState::interactive;
+  //   while (!this->open_elements.empty()) {
+  //     this->open_elements.pop_back();
+  //   }
+  // }
+  // std::cout << "____" << std::endl;
+  // this->document->printAllNode();
 }
 
 void HTMLDocumentParser::consumeIgnoreToken() {

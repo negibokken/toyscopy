@@ -8,6 +8,7 @@
 
 #include "dom.h"
 #include "tag.h"
+#include "tokenizer.h"
 
 class HTMLDocumentParser {
  public:
@@ -25,6 +26,7 @@ class HTMLDocumentParser {
     this->doc = _doc;
     this->document = new DOM::Document();
     this->frameset_ok = "ok";
+    this->tokenizer = new Tokenizer::Tokenizer(this->doc);
   };
 
   int *head = NULL;
@@ -35,6 +37,7 @@ class HTMLDocumentParser {
 
   DOM::Document *document;
   std::string frameset_ok;
+  Tokenizer::Tokenizer *tokenizer;
 
   void parse();
   void consumeIgnoreToken();

@@ -8,13 +8,14 @@
 class Tag {
  public:
   // clang-format off
-  enum Type { StartTag, EndTag };
+  enum Type { StartTag, Character, EndTag };
   enum ElementType { html, none };
   // clang-format on
 
   std::string tagName;
   Type type;
   ElementType elementType;
+  std::string value;
 
   Tag(Type t = Type::StartTag) { type = t; }
 
@@ -35,6 +36,12 @@ class Tag {
       this->elementType = ElementType::none;
     }
   }
+
+  void appendTagName(char c) {
+    // std::cout << c << std::endl;
+    this->tagName += c;
+  }
+  void appendCharacter(char c) { value += c; }
 };
 
 #endif

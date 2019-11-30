@@ -20,8 +20,7 @@ bool isASCIIAlphabet(char cc) {
 
 bool Tokenizer::nextToken() {
   char cc = nextInputCharacter();
-  printf("%d %c\n", state, cc);
-  // std::cout << state << std::endl;
+  // printf("%d %c\n", state, cc);
   switch (state) {
     case State::Data: {
       if (cc == '<') {
@@ -35,16 +34,20 @@ bool Tokenizer::nextToken() {
         return false;
       } else {
         // TODO:
+        createNewToken(Tag::Character);
+        appendCharacter(cc);
+        emitToken();
+        return true;
       }
     } break;
     case State::TagOpenState: {
-      // std::cout << "Tag:OpenState:hey" << std::endl;
-      // printf("%c\n", cc);
       if (cc == '/') {
         setState(State::EndTagOpenState);
         return true;
       } else if (isASCIIAlphabet(cc)) {
+        createNewToken(Tag::Type::StartTag);
         setState(State::TagNameState);
+        appendTagName(cc);
         return true;
       }
     } break;
@@ -57,15 +60,19 @@ bool Tokenizer::nextToken() {
         // TODO:
         return true;
       } else if (cc == '>') {
+        emitToken();
         setState(State::Data);
         return true;
+      } else {
+        appendTagName(cc);
+        return true;
       }
-
       break;
     }
     case State::EndTagOpenState: {
       if (isASCIIAlphabet(cc)) {
-        // TODO: create new end tag token
+        createNewToken(Tag::Type::EndTag);
+        appendTagName(cc);
         setState(State::TagNameState);
         return true;
       }
@@ -79,7 +86,7 @@ bool Tokenizer::nextToken() {
 }
 
 void Tokenizer::setState(State state) {
-  printf("%d\n", state);
+  // printf("%d\n", state);
   this->state = state;
 }
 
