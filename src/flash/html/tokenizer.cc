@@ -21,7 +21,6 @@ bool isASCIIAlphabet(char cc) {
 bool Tokenizer::nextToken() {
   char cc = nextInputCharacter();
   printf("%d %c\n", state, cc);
-  // std::cout << state << std::endl;
   switch (state) {
     case State::Data: {
       if (cc == '<') {
@@ -38,8 +37,6 @@ bool Tokenizer::nextToken() {
       }
     } break;
     case State::TagOpenState: {
-      // std::cout << "Tag:OpenState:hey" << std::endl;
-      // printf("%c\n", cc);
       if (cc == '/') {
         setState(State::EndTagOpenState);
         return true;
