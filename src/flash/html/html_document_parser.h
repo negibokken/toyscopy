@@ -50,6 +50,7 @@ class HTMLDocumentParser {
   void appendToCurrentNode(DOM::Node *n);
   bool isToken(Tag::Type type, Tag::ElementType eleType);
   bool isToken(Tag::Type type);
+  bool isToken(Tag::ElementType type);
   void appendCharacterToken(std::string data);
   void stopParsing();
   DOM::Node *findTextNode();

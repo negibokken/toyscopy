@@ -32,7 +32,8 @@ static void activate(GtkApplication *app, gpointer user_data) {
 
   // Call HTML Renderer
   HTMLDocumentParser *hdp = new HTMLDocumentParser(
-      "<html><head></head><body>Hello World</body></html>");
+      "<html><head></head><body><p>Hello "
+      "World</p></body></html>");
   hdp->parse();
 
   // node name node type
@@ -60,12 +61,30 @@ static void activate(GtkApplication *app, gpointer user_data) {
     while (!q.empty()) {
       cur = q.front();
       q.pop();
-      std::cout << cur->childNodes.size() << std::endl;
+      switch (cur->nodeType) {
+        case DOM::ELEMENT_NODE: {
+          DOM::Element *element = static_cast<DOM::Element *>(cur);
+          std::cout << "tag: " << element->tagName << std::endl;
+        }
+        case DOM::TEXT_NODE: {
+          DOM::Text *textnode = static_cast<DOM::Text *>(cur);
+          std::cout << "text: " << textnode->wholeText() << std::endl;
+          break;
+        }
+        case DOM::DOCUMENT_NODE: {
+          std::cout << "Document" << std::endl;
+          break;
+        }
+        default:
+          break;
+      }
+      std::cout << "child size: " << cur->childNodes.size() << std::endl;
       for (auto child : cur->childNodes) {
-        std::cout << child->nodeName << "," << nodetype[child->nodeType - 1]
-                  << std::endl;
+        // std::cout << child->nodeName << "," << nodetype[child->nodeType - 1]
+        //           << std::endl;
         q.push(child);
       }
+      std::cout << std::endl;
     }
   }
   std::cout << "=== analyzed ===" << std::endl;
@@ -81,7 +100,7 @@ int main(int argc, char **argv) {
   GtkApplication *app;
   int status;
 
-  app = gtk_application_new("org.gtk.example", G_APPLICATION_FLAGS_NONE);
+  app = gtk_application_new("io.bokken", G_APPLICATION_FLAGS_NONE);
   g_signal_connect(app, "activate", G_CALLBACK(activate), NULL);
   status = g_application_run(G_APPLICATION(app), argc, argv);
   g_object_unref(app);
