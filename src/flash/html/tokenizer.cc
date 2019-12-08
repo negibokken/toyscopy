@@ -61,7 +61,6 @@ bool Tokenizer::nextToken() {
         // TODO:
         return true;
       } else if (cc == '>') {
-        std::cout << "tagname state" << std::endl;
         emitToken();
         setState(State::Data);
         return true;

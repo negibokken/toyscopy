@@ -29,7 +29,8 @@ class Tokenizer {
   void ignoreToken(char c);
   void setState(State state);
   void emitToken() {
-    std::cout << "emit" << std::endl;
+    std::cout << "----" << std::endl;
+    std::cout << "emit: " << token->tagName << std::endl;
     token->setTagType();
     emitted = true;
   }
@@ -43,7 +44,8 @@ class Tokenizer {
   void clearBuffer() { temporarybuffer.clear(); }
   bool isEmitted() { return emitted; }
   void consumeToken() {
-    std::cout << "consume" << std::endl;
+    std::cout << "----" << std::endl;
+    std::cout << "consume: " << token->tagName << std::endl;
     emitted = false;
     token = NULL;
   }

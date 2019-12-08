@@ -24,6 +24,7 @@ enum NodeType {
   DOCUMENT_FRAGMENT_NODE = 11,
   NOTATION_NODE = 12,
 };
+
 class Node {
  public:
   unsigned short nodeType;
