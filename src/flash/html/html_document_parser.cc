@@ -5,155 +5,153 @@
 #include "dom.h"
 
 void HTMLDocumentParser::parse() {
-  while (tokenizer->nextToken()) {
-    // std::cout << tokenizer->token->tagName << std::endl;
-    if (tokenizer->isEmited()) {
-      if (tokenizer->token->type == Tag::Type::StartTag ||
-          tokenizer->token->type == Tag::Type::EndTag) {
-        std::cout << tokenizer->token->tagName << std::endl;
-      } else if (tokenizer->token->type == Tag::Type::Character) {
-        std::cout << tokenizer->token->value << std::endl;
+  while (tokenizer->canTakeNextToken()) {
+    if (!tokenizer->isEmitted()) {
+      continue;
+    }
+
+    if (tokenizer->token->type == Tag::Type::StartTag ||
+        tokenizer->token->type == Tag::Type::EndTag) {
+      std::cout << "tagname: " << tokenizer->token->tagName << std::endl;
+    } else if (tokenizer->token->type == Tag::Type::Character) {
+      std::cout << "char: " << tokenizer->token->value << std::endl;
+    }
+
+    // Build DOM Tree
+    switch (this->insertion_mode) {
+      case Mode::initial: {
+        setInsertionMode(Mode::before_html);
+        break;
       }
-      tokenizer->consumeToken();
+      case Mode::before_html: {
+        if (isToken(Tag::Type::StartTag, Tag::ElementType::html)) {
+          std::cout << "1" << std::endl;
+          DOM::Node* n = this->document->createElement("html");
+          document->appendChild(n);
+          pushOpenElement(n);
+
+          setInsertionMode(Mode::before_head);
+          tokenizer->consumeToken();
+          break;
+        }
+      }
+      case Mode::before_head: {
+        std::cout << "2" << std::endl;
+        if (isToken(Tag::Type::StartTag, Tag::ElementType::head)) {
+          std::cout << "**************" << std::endl;
+          DOM::Node* n = this->document->createElement("head");
+          head_pointer = n;
+          setInsertionMode(Mode::in_head);
+          tokenizer->consumeToken();
+        }
+        break;
+      }
+      case Mode::in_head: {
+        std::cout << "3" << std::endl;
+        if (isToken(Tag::Type::EndTag, Tag::ElementType::head)) {
+          setInsertionMode(Mode::after_head);
+          tokenizer->consumeToken();
+        }
+        break;
+      }
+      case Mode::after_head: {
+        std::cout << "4" << std::endl;
+        if (isToken(Tag::Type::StartTag, Tag::ElementType::body)) {
+          DOM::Node* n = document->createElement("body");
+          appendToCurrentNode(n);
+          pushOpenElement(n);
+
+          setFramesetOkFlag("not ok");
+
+          setInsertionMode(Mode::in_body);
+          tokenizer->consumeToken();
+        }
+        break;
+      }
+      case Mode::in_body: {
+        std::cout << "5" << std::endl;
+        if (isToken(Tag::Type::Character)) {
+          appendCharacterToken(tokenizer->token->value);
+          tokenizer->consumeToken();
+        } else if (isToken(Tag::Type::EndTag, Tag::ElementType::body)) {
+          setInsertionMode(Mode::after_body);
+          tokenizer->consumeToken();
+        }
+        break;
+      }
+      case Mode::after_body: {
+        std::cout << "6" << std::endl;
+        if (isToken(Tag::Type::EndTag, Tag::ElementType::html)) {
+          setInsertionMode(Mode::after_after_body);
+          tokenizer->consumeToken();
+        }
+        break;
+      }
+      case Mode::after_after_body: {
+        std::cout << "7" << std::endl;
+        this->stopParsing();
+        return;
+      }
+      default: {
+        tokenizer->consumeToken();
+        break;
+      }
     }
   }
-  // std::cout << "start parse" << std::endl;
-  // {
-  //   // Initial State
-  //   {
-  //     this->consumeIgnoreToken();
-  //     // TODO: comment token
-  //     //
-  //     https://html.spec.whatwg.org/multipage/parsing.html#the-initial-insertion-mode
-  //     // A Comment Token
-
-  //     // TODO: A DOCTYPE token
-  //     this->insertion_mode = Mode::before_html;
-  //   }
-
-  //   std::cout << "before_html" << std::endl;
-  //   // before html
-  //   {
-  //     // TODO: A DOCTYPE token
-  //     // TODO: A Comment Token
-
-  //     // Ignore the token
-  //     this->consumeIgnoreToken();
-
-  //     // A start tag whose tag name is "html"
-  //     DOM::Element *element = new DOM::Element();
-  //     Tag::Type type = Tag::Type::StartTag;
-  //     int it = 0;
-  //     char tagName[MAX_NAME];
-  //     // pickup tag name
-  //     if (this->doc[this->itr] == '<') {
-  //       if (this->doc[this->itr + 1] == '/') {
-  //         type = Tag::Type::EndTag, this->itr++;
-  //       }
-  //       while (this->doc[++this->itr] != '>') {
-  //         tagName[it++] = this->doc[this->itr];
-  //       }
-  //       tagName[it] = '\0';
-  //       element->tagName = tagName;
-  //       this->itr++;
-
-  //       // html tag
-  //       if (type == Tag::Type::StartTag) {
-  //         this->open_elements.push_back(element);
-  //         this->document->appendChild(element);
-  //       }
-  //       // An end tag whose tag name is one of:
-  //       // "head", "body", "html", "br"
-  //       else if (type == Tag::Type::EndTag) {
-  //         // "head", "body", "html", "br"
-  //         if (!strcmp(tagName, "head") || !strcmp(tagName, "body") ||
-  //             !strcmp(tagName, "html") || !strcmp(tagName, "br")) {
-  //           // TODO: An end tag whose tag name is one of: "head", "body",
-  //           // "html", "br" act as anything else
-  //         } else {
-  //           // Parse Error Ignore token
-  //         }
-  //       }
-  //       // TODO:: Anything else
-  //       else {
-  //       }
-  //     }
-  //   }
-  // }
-
-  // std::cout << "before_head" << std::endl;
-  // // TODO: The before_head
-  // {}
-
-  // std::cout << "after head" << std::endl;
-  // {
-  //   this->consumeIgnoreToken();
-  //   // TODO: A comment token
-  //   // TODO: DOCTYPE ignore
-  //   DOM::Element *element = new DOM::Element();
-  //   int it = 0;
-  //   char tagName[2048];
-  //   if (this->doc[this->itr] == '<') {
-  //     this->itr++;
-  //     while (('a' <= this->doc[this->itr] && this->doc[this->itr] <= 'z') ||
-  //            ('A' <= this->doc[this->itr] && this->doc[this->itr] <= 'Z')) {
-  //       tagName[it++] = this->doc[this->itr++];
-  //     }
-  //     tagName[it] = '\0';
-  //     element->tagName = tagName;
-  //     this->itr++;
-  //     std::cout << *element << std::endl;
-
-  //     this->open_elements.push_back(element);
-  //   }
-  // }
-
-  // std::cout << "in body" << std::endl;
-  // {}
-
-  // std::cout << "text" << std::endl;
-  // // 12.2.6.4.8 text
-  // {
-  //   char txt[1024];
-  //   int it = 0;
-  //   consumeIgnoreToken();
-  //   while (('a' <= this->doc[this->itr] && this->doc[this->itr] <= 'z') ||
-  //          ('A' <= this->doc[this->itr] && this->doc[this->itr] <= 'Z') ||
-  //          this->doc[this->itr] == ' ') {
-  //     txt[it++] = this->doc[this->itr++];
-  //     consumeIgnoreToken();
-  //   }
-  //   txt[it] = '\0';
-  //   DOM::Text *text = new DOM::Text(txt);
-  //   std::cout << *text << std::endl;
-  //   if (!open_elements.empty()) {
-  //     std::cout << open_elements[0]->nodeType << std::endl;
-  //     open_elements[0]->appendChild(text);
-  //   }
-  // }
-
-  // // The end
-  // std::cout << "end" << std::endl;
-  // {
-  //   this->document->readyState = DOM::DocumentReadyState::interactive;
-  //   while (!this->open_elements.empty()) {
-  //     this->open_elements.pop_back();
-  //   }
-  // }
-  // std::cout << "____" << std::endl;
-  // this->document->printAllNode();
 }
 
-void HTMLDocumentParser::consumeIgnoreToken() {
-  // U+0009 CHARACTER TABULATION, U+000A LINE FEED (LF), U+000C FORM FEED
-  // (FF), U+000D CARRIAGE RETURN (CR), or U+0020 SPACE
-  while (doc[this->itr] == '\t' || doc[this->itr] == '\n' ||
-         doc[this->itr] == '\f' || doc[this->itr] == '\r' ||
-         // doc[this->itr] == ' ') {
-         doc[this->itr] == '\f') {
-    if (doc[this->itr] == '\0') break;
-    this->itr++;
+void HTMLDocumentParser::setInsertionMode(Mode mode) { insertion_mode = mode; }
+
+void HTMLDocumentParser::pushOpenElement(DOM::Node* n) {
+  open_elements.push_back(n);
+}
+
+void HTMLDocumentParser::popOpenElement() { this->open_elements.pop_back(); }
+
+void HTMLDocumentParser::setFramesetOkFlag(std::string str) {
+  frameset_ok = str;
+}
+
+void HTMLDocumentParser::appendToCurrentNode(DOM::Node* n) {
+  open_elements[0]->appendChild(n);
+}
+
+bool HTMLDocumentParser::isToken(Tag::Type type, Tag::ElementType eleType) {
+  std::cout << "isToken: " << tokenizer->token->type << ":" << type << ", "
+            << tokenizer->token->elementType << ":";
+  std::cout << (tokenizer->token->type == type &&
+                tokenizer->token->elementType == eleType)
+            << std::endl;
+
+  return tokenizer->token->type == type &&
+         tokenizer->token->elementType == eleType;
+}
+
+bool HTMLDocumentParser::isToken(Tag::Type type) {
+  return tokenizer->token->type == type;
+}
+
+DOM::Node* HTMLDocumentParser::findTextNode() {
+  for (int i = open_elements.size() - 1; i >= 0; i--) {
+    if (open_elements[i]->nodeType == DOM::NodeType::TEXT_NODE) {
+      return open_elements[i];
+    }
   }
+  return NULL;
 }
 
-void HTMLDocumentParser::consumeToken() {}
+void HTMLDocumentParser::appendCharacterToken(std::string data) {
+  std::cout << "==== append character token ======" << std::endl;
+  DOM::Node* node = findTextNode();
+  if (node == NULL) {
+    std::cout << "create text node" << std::endl;
+    node = document->createText("");
+    open_elements[0]->appendChild(node);
+    pushOpenElement(node);
+  }
+  DOM::Text* textNode = (static_cast<DOM::Text*>(node));
+  textNode->appendData(data);
+  std::cout << "text: " << textNode->data << std::endl;
+}
+
+void HTMLDocumentParser::stopParsing() {}
