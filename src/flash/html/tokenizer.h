@@ -10,7 +10,7 @@ namespace Tokenizer {
 
 class Tokenizer {
  private:
-  bool emited;
+  bool emitted;
 
  public:
   enum State {
@@ -28,7 +28,11 @@ class Tokenizer {
   bool nextToken();
   void ignoreToken(char c);
   void setState(State state);
-  void emitToken() { emited = true; }
+  void emitToken() {
+    std::cout << "emit" << std::endl;
+    token->setTagType();
+    emitted = true;
+  }
 
   Tag *token;
   std::string temporarybuffer;
@@ -37,8 +41,16 @@ class Tokenizer {
   void appendCharacter(char c) { token->appendCharacter(c); }
   void appendBuffer(char c) { temporarybuffer += c; }
   void clearBuffer() { temporarybuffer.clear(); }
-  bool isEmited() { return emited; }
-  void consumeToken() { emited = false; }
+  bool isEmitted() { return emitted; }
+  void consumeToken() {
+    std::cout << "consume" << std::endl;
+    emitted = false;
+    token = NULL;
+  }
+  bool canTakeNextToken() {
+    bool hasNextToken = nextToken();
+    return hasNextToken;
+  };
 };
 
 }  // namespace Tokenizer

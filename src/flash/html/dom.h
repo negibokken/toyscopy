@@ -46,7 +46,10 @@ class Node {
 
 class Element : public Node {
  public:
-  Element() : Node(NodeType::ELEMENT_NODE){};
+  Element(std::string tagName) : Node(NodeType::ELEMENT_NODE) {
+    setTagName(tagName);
+  };
+  void setTagName(std::string str) { tagName = str; }
   std::string tagName;
 };
 
@@ -54,6 +57,25 @@ inline std::ostream &operator<<(std::ostream &os, Element &e) {
   os << "Element:" << std::endl;
   os << "  tagName: " << e.tagName << std::endl;
   os << "  elementType: " << e.nodeType << std::endl;
+  return os;
+};
+
+class CharacterData : public Node {
+ public:
+  std::string data;
+  CharacterData() : Node(NodeType::TEXT_NODE) { data = ""; };
+  unsigned long length;
+  void appendData(std::string data) { this->data.append(data); }
+};
+
+class Text : public CharacterData {
+ public:
+  Text(std::string txt) : CharacterData() { this->data = txt; };
+  std::string wholeText() { return this->data; };
+};
+
+inline std::ostream &operator<<(std::ostream &os, Text &t) {
+  os << t.wholeText();
   return os;
 };
 
@@ -69,7 +91,9 @@ class Document : public Node {
   std::string contentType;
 
   DocumentReadyState readyState;
-  Element documentElement;
+  // Element documentElement;
+  Element *createElement(std::string name) { return new Element(name); };
+  Text *createText(std::string data) { return new Text(data); };
   void printAllNode() {
     std::queue<Node *> q;
     q.push(this);
@@ -82,25 +106,6 @@ class Document : public Node {
       }
     }
   }
-};
-
-class CharacterData : public Node {
- public:
-  CharacterData() : Node(NodeType::TEXT_NODE){};
-  std::string data;
-  unsigned long length;
-  void appendData(std::string data) { this->data.append(data); }
-};
-
-class Text : public CharacterData {
- public:
-  Text(std::string txt) : CharacterData() { this->data = txt; };
-  std::string wholeText() { return this->data; };
-};
-
-inline std::ostream &operator<<(std::ostream &os, Text &t) {
-  os << t.wholeText();
-  return os;
 };
 
 }  // namespace DOM

@@ -31,9 +31,44 @@ static void activate(GtkApplication *app, gpointer user_data) {
   attachHeaderBar(window);
 
   // Call HTML Renderer
-  HTMLDocumentParser *hdp =
-      new HTMLDocumentParser("<html><body>Hello World</body></html>");
+  HTMLDocumentParser *hdp = new HTMLDocumentParser(
+      "<html><head></head><body>Hello World</body></html>");
   hdp->parse();
+
+  // node name node type
+  std::string nodetype[] = {
+      "ELEMENT_NODE",
+      "ATTRIBUTE_NODE",
+      "TEXT_NODE",
+      "CDATA_SECTION_NODE",
+      "ENTITY_REFERENCE_NODE",
+      "ENTITY_NODE",
+      "PROCESSING_INSTRUCTION_NODE",
+      "COMMENT_NODE",
+      "DOCUMENT_NODE",
+      "DOCUMENT_TYPE_NODE",
+      "DOCUMENT_FRAGMENT_NODE",
+      "NOTATION_NODE",
+  };
+
+  std::cout << "=== parsed ===" << std::endl;
+  // traverse
+  {
+    DOM::Node *cur;
+    std::queue<DOM::Node *> q;
+    q.push(hdp->document);
+    while (!q.empty()) {
+      cur = q.front();
+      q.pop();
+      std::cout << cur->childNodes.size() << std::endl;
+      for (auto child : cur->childNodes) {
+        std::cout << child->nodeName << "," << nodetype[child->nodeType - 1]
+                  << std::endl;
+        q.push(child);
+      }
+    }
+  }
+  std::cout << "=== analyzed ===" << std::endl;
 
   // TODO: make CSSOM
 

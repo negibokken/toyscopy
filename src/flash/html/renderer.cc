@@ -12,9 +12,7 @@ RenderObject *RenderObject::createObject(DOM::Node *node, RenderStyle *style) {
       o = reinterpret_cast<RenderObject *>(r);
       break;
     }
-    default: {
-      break;
-    }
+    default: { break; }
   }
 
   return o;
@@ -24,10 +22,10 @@ void RenderInline::layout() {
   // std::string str;
   // if (this->node->nodeType == DOM::NodeType::TEXT_NODE) {
 
-  std::cout << "kokoni" << std::endl;
-  std::cout << this->node->nodeType << std::endl;
-  std::cout << reinterpret_cast<DOM::Text *>(this->node)->data << std::endl;
-  std::cout << "kokoni" << std::endl;
+  // std::cout << "kokoni" << std::endl;
+  // std::cout << this->node->nodeType << std::endl;
+  // std::cout << reinterpret_cast<DOM::Text *>(this->node)->data << std::endl;
+  // std::cout << "kokoni" << std::endl;
   // const gchar *str = reinterpret_cast<DOM::Text *>(this->node)->data.c_str();
   int itr = 0;
   std::string dom_str = reinterpret_cast<DOM::Text *>(this->node)->data;
@@ -37,9 +35,11 @@ void RenderInline::layout() {
     data[itr] = dom_str[itr];
     itr++;
   }
+  data[itr] = '\0';
   const gchar *str = data;
-  // }
+
   std::cout << str << std::endl;
+
   GtkWidget *label;
   label = gtk_label_new(str);
   gtk_label_set_selectable(GTK_LABEL(label), TRUE);
@@ -54,6 +54,7 @@ Renderer::Renderer(GtkWidget *window, DOM::Document *dom, CSS::CSSOM *cssom)
     : window(window), dom(dom), cssom(cssom) {}
 
 void Renderer::render() {
+  std::cout << "process-render" << std::endl;
   GtkWidget *container;
   container = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 0);
 
@@ -69,16 +70,21 @@ void Renderer::render() {
     } else {
       RenderObject *ro = RenderObject::createObject(node, NULL);
 
-      std::cout << "nodeType" << node->nodeType << std::endl;
-      std::cout << "textnode" << reinterpret_cast<DOM::Text *>(node)->data
+      std::cout << "=======" << std::endl;
+      std::cout << "nodeType: " << node->nodeType << std::endl;
+      std::cout << "textnode: " << reinterpret_cast<DOM::Text *>(node)->data
                 << std::endl;
 
+      // Process CSS Style
       CSS::Style s;
       if (node->nodeType == DOM::NodeType::TEXT_NODE) {
         s = CSS::Style::INLINE;
       } else if (node->nodeType == DOM::NodeType::DOCUMENT_NODE) {
         s = CSS::Style::BLOCK;
+      } else {
+        s = CSS::Style::BLOCK;
       }
+
       switch (s) {
         case CSS::Style::BLOCK: {
           break;
@@ -91,9 +97,7 @@ void Renderer::render() {
           ele->paint();
           break;
         }
-        default: {
-          break;
-        }
+        default: { break; }
       }
     }
 

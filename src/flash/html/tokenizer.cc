@@ -45,6 +45,7 @@ bool Tokenizer::nextToken() {
         setState(State::EndTagOpenState);
         return true;
       } else if (isASCIIAlphabet(cc)) {
+        // printf("else\n");
         createNewToken(Tag::Type::StartTag);
         setState(State::TagNameState);
         appendTagName(cc);
@@ -60,6 +61,7 @@ bool Tokenizer::nextToken() {
         // TODO:
         return true;
       } else if (cc == '>') {
+        std::cout << "tagname state" << std::endl;
         emitToken();
         setState(State::Data);
         return true;
@@ -78,15 +80,13 @@ bool Tokenizer::nextToken() {
       }
       break;
     }
-    default: {
-      return false;
-    }
+    default: { return true; }
   }
   return true;
 }
 
 void Tokenizer::setState(State state) {
-  // printf("%d\n", state);
+  // printf("state: %d\n", state);
   this->state = state;
 }
 

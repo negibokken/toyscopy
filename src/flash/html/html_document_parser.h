@@ -7,7 +7,6 @@
 #include <vector>
 
 #include "dom.h"
-#include "tag.h"
 #include "tokenizer.h"
 
 class HTMLDocumentParser {
@@ -27,6 +26,7 @@ class HTMLDocumentParser {
     this->document = new DOM::Document();
     this->frameset_ok = "ok";
     this->tokenizer = new Tokenizer::Tokenizer(this->doc);
+    this->insertion_mode = Mode::initial;
   };
 
   int *head = NULL;
@@ -38,10 +38,21 @@ class HTMLDocumentParser {
   DOM::Document *document;
   std::string frameset_ok;
   Tokenizer::Tokenizer *tokenizer;
+  DOM::Node *head_pointer;
 
   void parse();
   void consumeIgnoreToken();
   void consumeToken();
+  void setInsertionMode(Mode mode);
+  void pushOpenElement(DOM::Node *n);
+  void popOpenElement();
+  void setFramesetOkFlag(std::string str);
+  void appendToCurrentNode(DOM::Node *n);
+  bool isToken(Tag::Type type, Tag::ElementType eleType);
+  bool isToken(Tag::Type type);
+  void appendCharacterToken(std::string data);
+  void stopParsing();
+  DOM::Node *findTextNode();
 };
 
 #endif
