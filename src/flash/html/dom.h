@@ -51,6 +51,7 @@ class Element : public Node {
     setTagName(tagName);
   };
   void setTagName(std::string str) { tagName = str; }
+  std::string getTagName() const { return tagName; }
   std::string tagName;
 };
 
