@@ -69,14 +69,14 @@ void HTMLDocumentParser::parse() {
       }
       case Mode::in_body: {
         std::cout << "5" << std::endl;
-        if (isToken(Tag::Type::StartTag, Tag::ElementType::p)) {
-          tokenizer->token->print();
-          DOM::Node* n = document->createElement("p");
+        if (isToken(Tag::Type::Character)) {
+          appendCharacterToken(tokenizer->token->value);
+          tokenizer->consumeToken();
+        } else if (isToken(Tag::Type::StartTag)) {
+          DOM::Node* n =
+              document->createElement(tokenizer->token->getTagName());
           appendToCurrentNode(n);
           pushOpenElement(n);
-          tokenizer->consumeToken();
-        } else if (isToken(Tag::Type::Character)) {
-          appendCharacterToken(tokenizer->token->value);
           tokenizer->consumeToken();
         } else if (isToken(Tag::Type::EndTag, Tag::ElementType::body)) {
           setInsertionMode(Mode::after_body);

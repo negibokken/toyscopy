@@ -19,14 +19,6 @@ RenderObject *RenderObject::createObject(DOM::Node *node, RenderStyle *style) {
 };
 
 void RenderInline::layout() {
-  // std::string str;
-  // if (this->node->nodeType == DOM::NodeType::TEXT_NODE) {
-
-  // std::cout << "kokoni" << std::endl;
-  // std::cout << this->node->nodeType << std::endl;
-  // std::cout << reinterpret_cast<DOM::Text *>(this->node)->data << std::endl;
-  // std::cout << "kokoni" << std::endl;
-  // const gchar *str = reinterpret_cast<DOM::Text *>(this->node)->data.c_str();
   int itr = 0;
   std::string dom_str = reinterpret_cast<DOM::Text *>(this->node)->data;
   const int MAX_CHAR = 4096;

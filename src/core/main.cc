@@ -32,8 +32,8 @@ static void activate(GtkApplication *app, gpointer user_data) {
 
   // Call HTML Renderer
   HTMLDocumentParser *hdp = new HTMLDocumentParser(
-      "<html><head></head><body><p>Hello "
-      "World</p></body></html>");
+      "<html><head></head><body><div><p>Hello "
+      "World</p></div></body></html>");
   hdp->parse();
 
   // node name node type
@@ -80,8 +80,6 @@ static void activate(GtkApplication *app, gpointer user_data) {
       }
       std::cout << "child size: " << cur->childNodes.size() << std::endl;
       for (auto child : cur->childNodes) {
-        // std::cout << child->nodeName << "," << nodetype[child->nodeType - 1]
-        //           << std::endl;
         q.push(child);
       }
       std::cout << std::endl;
