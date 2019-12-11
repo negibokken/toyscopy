@@ -9,7 +9,7 @@ class Tag {
  public:
   // clang-format off
   enum Type { StartTag, Character, EndTag };
-  enum ElementType { html, head, body, p, none };
+  enum ElementType { html, head, body, div, p, none };
   // clang-format on
 
   std::string tagName;
@@ -37,10 +37,13 @@ class Tag {
       elementType = ElementType::body;
     } else if (tagName == "p") {
       elementType = ElementType::p;
+    } else if (tagName == "div") {
+      elementType = ElementType::div;
     } else {
       this->elementType = ElementType::none;
     }
   }
+  std::string getTagName() { return tagName; }
   ElementType getTagType() { return elementType; }
 
   void appendTagName(char c) { tagName += c; }
