@@ -2,12 +2,14 @@
 #define DOM_H
 
 #include <iostream>
+#include <queue>
 #include <string>
 #include <vector>
 
 namespace DOM {
 
 class Element;
+class Node;
 enum NodeType {
   ELEMENT_NODE = 1,
   ATTRIBUTE_NODE = 2,
@@ -22,8 +24,9 @@ enum NodeType {
   DOCUMENT_FRAGMENT_NODE = 11,
   NOTATION_NODE = 12,
 };
+
 class Node {
-  public:
+ public:
   unsigned short nodeType;
   std::string nodeName;
 
@@ -35,8 +38,7 @@ class Node {
   Element *parentElement;
   std::vector<Node *> childNodes;
 
-  Node appendChild(Node *node)
-  {
+  Node appendChild(Node *node) {
     std::cout << "node type:" << node->nodeType << std::endl;
     this->childNodes.push_back(node);
     return *node;
@@ -44,14 +46,44 @@ class Node {
 };
 
 class Element : public Node {
-  public:
-  Element() : Node(NodeType::ELEMENT_NODE){};
+ public:
+  Element(std::string tagName) : Node(NodeType::ELEMENT_NODE) {
+    setTagName(tagName);
+  };
+  void setTagName(std::string str) { tagName = str; }
+  std::string getTagName() const { return tagName; }
   std::string tagName;
+};
+
+inline std::ostream &operator<<(std::ostream &os, Element &e) {
+  os << "Element:" << std::endl;
+  os << "  tagName: " << e.tagName << std::endl;
+  os << "  elementType: " << e.nodeType << std::endl;
+  return os;
+};
+
+class CharacterData : public Node {
+ public:
+  std::string data;
+  CharacterData() : Node(NodeType::TEXT_NODE) { data = ""; };
+  unsigned long length;
+  void appendData(std::string data) { this->data.append(data); }
+};
+
+class Text : public CharacterData {
+ public:
+  Text(std::string txt) : CharacterData() { this->data = txt; };
+  std::string wholeText() { return this->data; };
+};
+
+inline std::ostream &operator<<(std::ostream &os, Text &t) {
+  os << t.wholeText();
+  return os;
 };
 
 enum DocumentReadyState { loading, interactive, complete };
 class Document : public Node {
-  public:
+ public:
   Document() : Node(NodeType::DOCUMENT_NODE){};
   std::string URL;
   std::string DocumentURI;
@@ -61,21 +93,21 @@ class Document : public Node {
   std::string contentType;
 
   DocumentReadyState readyState;
-  Element documentElement;
-};
-
-class CharacterData : public Node {
-  public:
-  CharacterData() : Node(NodeType::TEXT_NODE){};
-  std::string data;
-  unsigned long length;
-  void appendData(std::string data) { this->data.append(data); }
-};
-
-class Text : public CharacterData {
-  public:
-  Text(std::string txt) : CharacterData() { this->data = txt; };
-  std::string wholeText() { return this->data; };
+  // Element documentElement;
+  Element *createElement(std::string name) { return new Element(name); };
+  Text *createText(std::string data) { return new Text(data); };
+  void printAllNode() {
+    std::queue<Node *> q;
+    q.push(this);
+    while (!q.empty()) {
+      Node *node = q.front();
+      q.pop();
+      std::cout << node << std::endl;
+      for (auto n : node->childNodes) {
+        std::cout << n << std::endl;
+      }
+    }
+  }
 };
 
 }  // namespace DOM

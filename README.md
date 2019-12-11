@@ -10,7 +10,7 @@ A toy browser written in C++.
 1. install gtk+3.0
 
     ```sh
-    brew install gtk+3.0
+    brew install gtk+3.0 adwaita-icon-theme
     ```
 2. execute cmake under src directory
 

@@ -1,6 +1,7 @@
 main
 CMakeCache.txt
 CMakeFiles
+Makefile
 google-test-build
 googletest-download
 googletest-src
@@ -8,3 +9,5 @@ googletest-build
 *.cmake
 MyTest
 Testing
+compile_commands.json
+.clangd

@@ -1,14 +1,16 @@
-#ifndef HTML_DOCUMENT_PARSER
-#define HTML_DOCUMENT_PARSER
+#ifndef HTML_Document_Parser_h
+#define HTML_Document_Parser_h
 
 #include <stdio.h>
+
 #include <string>
 #include <vector>
+
 #include "dom.h"
-#include "tag.h"
+#include "tokenizer.h"
 
 class HTMLDocumentParser {
-  public:
+ public:
   // described here:
   // https://html.spec.whatwg.org/multipage/parsing.html#parse-state
   // clang-format off
@@ -19,10 +21,12 @@ class HTMLDocumentParser {
     in_frameset, after_frameset, after_after_body, after_after_frameset
   };
   // clang-format on
-  HTMLDocumentParser(std::string _doc)
-  {
+  HTMLDocumentParser(std::string _doc) {
     this->doc = _doc;
     this->document = new DOM::Document();
+    this->frameset_ok = "ok";
+    this->tokenizer = new Tokenizer::Tokenizer(this->doc);
+    this->insertion_mode = Mode::initial;
   };
 
   int *head = NULL;
@@ -32,8 +36,25 @@ class HTMLDocumentParser {
   std::vector<DOM::Node *> open_elements;
 
   DOM::Document *document;
+  std::string frameset_ok;
+  Tokenizer::Tokenizer *tokenizer;
+  DOM::Node *head_pointer;
 
   void parse();
   void consumeIgnoreToken();
+  void consumeToken();
+  void setInsertionMode(Mode mode);
+  void pushOpenElement(DOM::Node *n);
+  void popOpenElement();
+  void popOpenElementIf(std::string eleType);
+  void setFramesetOkFlag(std::string str);
+  void appendToCurrentNode(DOM::Node *n);
+  bool isToken(Tag::Type type, Tag::ElementType eleType);
+  bool isToken(Tag::Type type);
+  bool isToken(Tag::ElementType type);
+  void appendCharacterToken(std::string data);
+  void stopParsing();
+  DOM::Node *findTextNode();
 };
+
 #endif
