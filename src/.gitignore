@@ -1,6 +1,7 @@
 main
 CMakeCache.txt
 CMakeFiles
+Makefile
 google-test-build
 googletest-download
 googletest-src
