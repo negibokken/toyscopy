@@ -81,6 +81,9 @@ void HTMLDocumentParser::parse() {
         } else if (isToken(Tag::Type::EndTag, Tag::ElementType::body)) {
           setInsertionMode(Mode::after_body);
           tokenizer->consumeToken();
+        } else if (isToken(Tag::Type::EndTag)) {
+          popOpenElementIf(tokenizer->token->getTagName());
+          tokenizer->consumeToken();
         }
         break;
       }
@@ -127,15 +130,24 @@ void HTMLDocumentParser::pushOpenElement(DOM::Node* n) {
 }
 
 void HTMLDocumentParser::popOpenElement() { this->open_elements.pop_back(); }
+void HTMLDocumentParser::popOpenElementIf(std::string tagName) {
+  if (open_elements.size() == 0) return;
+  if (static_cast<DOM::Element*>(open_elements.back())->getTagName() != tagName)
+    return;
+  open_elements.pop_back();
+}
 
 void HTMLDocumentParser::setFramesetOkFlag(std::string str) {
   frameset_ok = str;
 }
 
 void HTMLDocumentParser::appendToCurrentNode(DOM::Node* n) {
-  const int last = open_elements.size() - 1;
-  std::cout << "open last: " << open_elements[last]->nodeType << std::endl;
-  open_elements[last]->appendChild(n);
+  if (open_elements.size() > 0 &&
+      open_elements.back()->nodeType == DOM::NodeType::TEXT_NODE) {
+    popOpenElement();
+  }
+  std::cout << "open last: " << open_elements.back()->nodeType << std::endl;
+  open_elements.back()->appendChild(n);
 }
 
 bool HTMLDocumentParser::isToken(Tag::Type type, Tag::ElementType eleType) {
