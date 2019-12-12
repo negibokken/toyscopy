@@ -32,7 +32,8 @@ static void activate(GtkApplication *app, gpointer user_data) {
 
   // Call HTML Renderer
   HTMLDocumentParser *hdp = new HTMLDocumentParser(
-      "<html><head></head><body><div><h1>Hello Title</h1><p>Hello "
+      "<!DOCTYPE html><html><head></head><body><div><h1>Hello "
+      "Title</h1><p>Hello "
       "World</p></div></body></html>");
   hdp->parse();
 
