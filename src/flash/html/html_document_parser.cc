@@ -20,7 +20,16 @@ void HTMLDocumentParser::parse() {
     // Build DOM Tree
     switch (this->insertion_mode) {
       case Mode::initial: {
-        setInsertionMode(Mode::before_html);
+        if (isToken(Tag::Type::DOCTYPE)) {
+          DOM::Node* doctype =
+              this->document->implementation->createDocumentType(
+                  tokenizer->token->getTagName(), "", "");
+          document->appendChild(doctype);
+          setInsertionMode(Mode::before_html);
+          tokenizer->consumeToken();
+        } else {
+          setInsertionMode(Mode::before_html);
+        }
         break;
       }
       case Mode::before_html: {

@@ -10,6 +10,7 @@ namespace DOM {
 
 class Element;
 class Node;
+class DOMImplementation;
 enum NodeType {
   ELEMENT_NODE = 1,
   ATTRIBUTE_NODE = 2,
@@ -43,6 +44,18 @@ class Node {
     this->childNodes.push_back(node);
     return *node;
   }
+};
+
+class DocumentType : public Node {
+ public:
+  std::string name;
+  std::string publicId;
+  std::string systemId;
+  DocumentType(std::string name, std::string publicId, std::string systemId)
+      : name(name),
+        publicId(publicId),
+        systemId(systemId),
+        Node(NodeType::DOCUMENT_TYPE_NODE){};
 };
 
 class Element : public Node {
@@ -81,9 +94,18 @@ inline std::ostream &operator<<(std::ostream &os, Text &t) {
   return os;
 };
 
+class DOMImplementation {
+ public:
+  DocumentType *createDocumentType(std::string qualifiedName,
+                                   std::string publicId, std::string systemId) {
+    return new DocumentType(qualifiedName, publicId, systemId);
+  }
+};
+
 enum DocumentReadyState { loading, interactive, complete };
 class Document : public Node {
  public:
+  DOMImplementation *implementation;
   Document() : Node(NodeType::DOCUMENT_NODE){};
   std::string URL;
   std::string DocumentURI;

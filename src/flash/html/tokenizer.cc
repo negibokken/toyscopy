@@ -14,8 +14,13 @@ void Tokenizer::ignoreToken(char c) {
   }
 }
 
-bool isASCIIAlphabet(char cc) {
+inline bool isASCIIAlphabet(char cc) {
   return ('a' <= cc && cc <= 'z') || ('A' <= cc && cc <= 'Z');
+}
+
+inline bool isASCIIUpper(char cc) { return ('A' <= cc && cc <= 'Z'); }
+inline bool asciiUpper2lower(char cc) {
+  return ('A' <= cc && cc <= 'Z') ? cc + 32 : cc;
 }
 
 bool Tokenizer::nextToken() {
@@ -44,8 +49,10 @@ bool Tokenizer::nextToken() {
       if (cc == '/') {
         setState(State::EndTagOpenState);
         return true;
+      } else if (cc == '!') {
+        setState(State::MarkdownDeclarationOpenState);
+        return true;
       } else if (isASCIIAlphabet(cc)) {
-        // printf("else\n");
         createNewToken(Tag::Type::StartTag);
         setState(State::TagNameState);
         appendTagName(cc);
@@ -78,6 +85,59 @@ bool Tokenizer::nextToken() {
         return true;
       }
       break;
+    }
+    case State::MarkdownDeclarationOpenState: {
+      const std::string DOCTYPE = "DOCTYPE";
+      if (cc == DOCTYPE[0]) {
+        int idx = 1;
+        while (idx < DOCTYPE.length()) {
+          cc = nextInputCharacter();
+          if (DOCTYPE[idx++] != cc) break;
+        }
+        if (idx == DOCTYPE.length()) {
+          setState(State::DoctypeState);
+          return true;
+        }
+        return false;
+      }
+      break;
+    }
+    case State::DoctypeState: {
+      if (cc == '\t' || cc == 0x0A || cc == 0x0C || cc == 0x0A || cc == ' ') {
+        setState(State::BeforeDoctypeNameState);
+        return true;
+      }
+      break;
+    }
+    case State::BeforeDoctypeNameState: {
+      if (cc == '\t' || cc == 0x0A || cc == 0x0C || cc == 0x0A || cc == ' ') {
+        ignoreToken(cc);
+        return true;
+      } else if (isASCIIUpper(cc)) {
+        createNewToken(Tag::Type::DOCTYPE);
+        appendTagName(asciiUpper2lower(cc));
+        setState(State::DoctypeNameState);
+        return true;
+      } else if (isASCIIAlphabet(cc)) {
+        createNewToken(Tag::Type::DOCTYPE);
+        appendTagName(cc);
+        setState(State::DoctypeNameState);
+        return true;
+      }
+      break;
+    }
+    case State::DoctypeNameState: {
+      if (cc == '>') {
+        setState(State::Data);
+        emitToken();
+        return true;
+      } else if (isASCIIUpper(cc)) {
+        appendTagName(asciiUpper2lower(cc));
+        return true;
+      } else if (isASCIIAlphabet(cc)) {
+        appendTagName(cc);
+        return true;
+      }
     }
     default: { return true; }
   }

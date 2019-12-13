@@ -18,7 +18,11 @@ class Tokenizer {
     TagOpenState,
     EndTagOpenState,
     TagNameState,
-    BeforeAttributeNameState
+    BeforeAttributeNameState,
+    MarkdownDeclarationOpenState,
+    DoctypeState,
+    BeforeDoctypeNameState,
+    DoctypeNameState
   };
   State state;
   std::string stream;
