@@ -8,7 +8,7 @@
 class Tag {
  public:
   // clang-format off
-  enum Type { StartTag, Character, EndTag };
+  enum Type {DOCTYPE, StartTag, EndTag, Comment, Character, };
   enum ElementType { html, head, body, div, h1, p, none };
   // clang-format on
 
