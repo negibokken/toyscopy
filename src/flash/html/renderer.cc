@@ -32,23 +32,25 @@ void RenderInline::layout() {
 
   std::cout << str << std::endl;
 
-  GtkWidget *label;
-  label = gtk_label_new(str);
-  gtk_label_set_selectable(GTK_LABEL(label), TRUE);
-  this->widget = label;
+  Gtk::Label *label = new Gtk::Label();
+  label->set_text(str);
+  label->set_selectable(true);
+  label->set_xalign(0.0);
+  widget = label;
 }
 
-void RenderInline::paint() {
-  gtk_container_add(GTK_CONTAINER(this->container), this->widget);
-}
+void RenderInline::paint() { container->add(*widget); }
 
-Renderer::Renderer(GtkWidget *window, DOM::Document *dom, CSS::CSSOM *cssom)
+Renderer::Renderer(Gtk::ScrolledWindow *window, DOM::Document *dom,
+                   CSS::CSSOM *cssom)
     : window(window), dom(dom), cssom(cssom) {}
 
 void Renderer::render() {
   std::cout << "process-render" << std::endl;
-  GtkWidget *container;
-  container = gtk_box_new(GTK_ORIENTATION_HORIZONTAL, 0);
+  Gtk::Container *container =
+      (new Gtk::Box(Gtk::Orientation::ORIENTATION_VERTICAL, 0));
+  std::cout << "----" << std::endl;
+  // container = gtk_box_new(GTK_ORIENTATION_VERTICAL, 0);
 
   std::stack<DOM::Node *> st;
   st.push(dom);
@@ -59,43 +61,42 @@ void Renderer::render() {
       for (int i = node->childNodes.size() - 1; i >= 0; i--) {
         st.push(node->childNodes[i]);
       }
-    } else {
-      RenderObject *ro = RenderObject::createObject(node, NULL);
-
-      std::cout << "=======" << std::endl;
-      std::cout << "nodeType: " << node->nodeType << std::endl;
-      std::cout << "textnode: " << reinterpret_cast<DOM::Text *>(node)->data
-                << std::endl;
-
-      // Process CSS Style
-      CSS::Style s;
-      if (node->nodeType == DOM::NodeType::TEXT_NODE) {
-        s = CSS::Style::INLINE;
-      } else if (node->nodeType == DOM::NodeType::DOCUMENT_NODE) {
-        s = CSS::Style::BLOCK;
-      } else {
-        s = CSS::Style::BLOCK;
-      }
-
-      switch (s) {
-        case CSS::Style::BLOCK: {
-          break;
-        }
-        case CSS::Style::INLINE: {
-          std::cout << node->nodeType << std::endl;
-          RenderInline *ele = reinterpret_cast<RenderInline *>(ro);
-          ele->container = container;
-          ele->layout();
-          ele->paint();
-          break;
-        }
-        default: { break; }
-      }
     }
 
-    gtk_container_add(GTK_CONTAINER(this->window), container);
-    gtk_widget_show_all(this->window);
+    RenderObject *ro = RenderObject::createObject(node, NULL);
+
+    std::cout << "=======" << std::endl;
+    std::cout << "nodeType: " << node->nodeType << std::endl;
+    std::cout << "textnode: " << reinterpret_cast<DOM::Text *>(node)->data
+              << std::endl;
+
+    // Process CSS Style
+    CSS::Style s;
+    if (node->nodeType == DOM::NodeType::TEXT_NODE) {
+      s = CSS::Style::INLINE;
+    } else if (node->nodeType == DOM::NodeType::DOCUMENT_NODE) {
+      s = CSS::Style::BLOCK;
+    } else {
+      s = CSS::Style::BLOCK;
+    }
+
+    switch (s) {
+      case CSS::Style::BLOCK: {
+        break;
+      }
+      case CSS::Style::INLINE: {
+        std::cout << node->nodeType << std::endl;
+        RenderInline *ele = reinterpret_cast<RenderInline *>(ro);
+        ele->container = container;
+        ele->layout();
+        ele->paint();
+        break;
+      }
+      default: { break; }
+    }
   }
+  this->window->add(*container);
+  this->window->show_all();
 }
 
 }  // namespace Render
