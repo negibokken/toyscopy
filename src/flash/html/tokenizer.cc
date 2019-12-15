@@ -25,7 +25,6 @@ inline bool asciiUpper2lower(char cc) {
 
 bool Tokenizer::nextToken() {
   char cc = nextInputCharacter();
-  // printf("%d %c\n", state, cc);
   switch (state) {
     case State::Data: {
       if (cc == '<') {

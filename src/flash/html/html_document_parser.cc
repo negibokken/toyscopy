@@ -56,9 +56,33 @@ void HTMLDocumentParser::parse() {
       }
       case Mode::in_head: {
         std::cout << "3" << std::endl;
-        if (isToken(Tag::Type::EndTag, Tag::ElementType::head)) {
+        if (isToken(Tag::Type::StartTag, Tag::ElementType::title)) {
+          DOM::Node* n = this->document->createElement("title");
+          pushOpenElement(n);
+          head_pointer->appendChild(n);
+          setOriginalInsertionMode(Mode::in_head);
+          setInsertionMode(Mode::text);
+          tokenizer->consumeToken();
+        } else if (isToken(Tag::Type::EndTag, Tag::ElementType::title)) {
+          popOpenElementIf("title");
+          tokenizer->consumeToken();
+        } else if (isToken(Tag::Type::EndTag, Tag::ElementType::head)) {
           setInsertionMode(Mode::after_head);
           tokenizer->consumeToken();
+        }
+        break;
+      }
+      case Mode::text: {
+        if (isToken(Tag::Type::Character)) {
+          appendCharacterToken(tokenizer->token->value);
+          tokenizer->consumeToken();
+        } else if (isToken(Tag::Type::EndTag, Tag::ElementType::script)) {
+        } else if (isToken(Tag::Type::EndTag, Tag::ElementType::title)) {
+          DOM::Node* n = findTextNode();
+          DOM::Text* textNode = (static_cast<DOM::Text*>(n));
+          setDocumentTitle(textNode->wholeText());
+          setInsertionMode(original_insertion_mode);
+          popOpenElement();
         }
         break;
       }
@@ -200,6 +224,10 @@ void HTMLDocumentParser::appendCharacterToken(std::string data) {
   DOM::Text* textNode = (static_cast<DOM::Text*>(node));
   textNode->appendData(data);
   std::cout << "text: " << textNode->data << std::endl;
+}
+
+void HTMLDocumentParser::setOriginalInsertionMode(Mode mode) {
+  original_insertion_mode = mode;
 }
 
 void HTMLDocumentParser::stopParsing() {}
