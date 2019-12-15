@@ -19,7 +19,10 @@ class ToyScopyApp : public Gtk::Window {
   void on_enter();
   Gtk::HeaderBar m_header_bar;
 
+  Gtk::Label m_title;
   Gtk::ScrolledWindow *m_scrolled_window;
+
+  void set_title(std::string title);
 
   void load();
 };

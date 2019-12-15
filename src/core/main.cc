@@ -9,8 +9,4 @@ int main(int argc, char **argv) {
   ToyScopyApp tsapp;
 
   return app->run(tsapp);
-
-  // ToyScopyApp *app = new ToyScopyApp();
-  // app->run();
-  // return 0;
 }

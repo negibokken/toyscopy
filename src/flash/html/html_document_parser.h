@@ -33,6 +33,7 @@ class HTMLDocumentParser {
   int itr = 0;
   std::string doc;
   Mode insertion_mode;
+  Mode original_insertion_mode;
   std::vector<DOM::Node *> open_elements;
 
   DOM::Document *document;
@@ -40,10 +41,13 @@ class HTMLDocumentParser {
   Tokenizer::Tokenizer *tokenizer;
   DOM::Node *head_pointer;
 
+  std::string document_title;
+
   void parse();
   void consumeIgnoreToken();
   void consumeToken();
   void setInsertionMode(Mode mode);
+  void setOriginalInsertionMode(Mode mode);
   void pushOpenElement(DOM::Node *n);
   void popOpenElement();
   void popOpenElementIf(std::string eleType);
@@ -55,6 +59,8 @@ class HTMLDocumentParser {
   void appendCharacterToken(std::string data);
   void stopParsing();
   DOM::Node *findTextNode();
+  inline void setDocumentTitle(const std::string title) { document_title = title; };
+  inline std::string getDocumentTitle() const { return document_title; };
 };
 
 #endif

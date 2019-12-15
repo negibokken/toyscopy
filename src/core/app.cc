@@ -12,28 +12,37 @@ ToyScopyApp::ToyScopyApp() {
   m_entry.signal_activate().connect(
       sigc::mem_fun(*this, &ToyScopyApp::on_enter));
 
+  // Initialize title bar
+  m_title.set_text("toyscopy");
+
   m_header_bar.set_custom_title(m_entry);
+  m_header_bar.add(m_title);
   m_header_bar.set_show_close_button(true);
   m_header_bar.show_all();
 
+  // Scroll Window
   m_scrolled_window = new Gtk::ScrolledWindow();
-  // scroll window
   add(*m_scrolled_window);
   this->load();
-  // m_scrolled_window->show_all();
 }
 
 ToyScopyApp::~ToyScopyApp() {}
 
 void ToyScopyApp::on_enter() { std::cout << m_entry.get_text() << std::endl; }
 
+void ToyScopyApp::set_title(std::string title) { m_title.set_text(title); }
+
 void ToyScopyApp::load() {
   // Call HTML Renderer
   HTMLDocumentParser *hdp = new HTMLDocumentParser(
-      "<!DOCTYPE html><html><head></head><body><div><h1>Hello "
-      "Title</h1><p>Hello "
+      "<!DOCTYPE html><html><head><title>Sample "
+      "Page</title></head><body><div><h1>Hello "
+      "heading</h1><p>Hello "
       "World</p></div></body></html>");
   hdp->parse();
+
+  set_title(hdp->getDocumentTitle());
+
 
   // node name node type
   std::string nodetype[] = {
