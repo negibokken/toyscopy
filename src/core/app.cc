@@ -36,13 +36,13 @@ void ToyScopyApp::load() {
   // Call HTML Renderer
   HTMLDocumentParser *hdp = new HTMLDocumentParser(
       "<!DOCTYPE html><html><head><title>Sample "
-      "Page</title></head><body><div><h1>Hello "
-      "heading</h1><p>Hello "
-      "World</p></div></body></html>");
+      "Page</title></head><body><div><h1>Sample "
+      "Heading</h1><p>Hello "
+      "World</p><p><a href=\"https://example.com\">More "
+      "information...</a></p></div></body></html>");
   hdp->parse();
 
   set_title(hdp->getDocumentTitle());
-
 
   // node name node type
   std::string nodetype[] = {
