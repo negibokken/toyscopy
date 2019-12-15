@@ -2,22 +2,25 @@
 #define APP_h
 
 #include <gtk/gtk.h>
+#include <gtkmm.h>
 
 #include <iostream>
 #include "../flash/html/html_document_parser.h"
 #include "../flash/html/renderer.h"
 
-class ToyScopyApp {
+class ToyScopyApp : public Gtk::Window {
  public:
-  int run();
+  ToyScopyApp();
+  ~ToyScopyApp();
 
  private:
   std::string url;
-  GtkApplication* app;
-  GtkWidget* window;
+  Gtk::Entry m_entry;
+  void on_enter();
+  Gtk::HeaderBar m_header_bar;
 
-  void activate(GtkApplication* app, gpointer user_data);
-  void attachHeaderBar();
+  Gtk::ScrolledWindow *m_scrolled_window;
+
   void load();
 };
 

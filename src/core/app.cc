@@ -1,31 +1,31 @@
 #include "app.h"
 
-gint callback_enter_key_event(GtkWidget *widget, GdkEventKey *event) {
-  const char *url = gtk_entry_get_text(GTK_ENTRY(widget));
-  std::cout << url << std::endl;
+ToyScopyApp::ToyScopyApp() {
+  this->set_title("toyscopy");
+  this->set_titlebar(m_header_bar);
+  this->set_default_size(500, 500);
+  this->property_gravity().set_value(Gdk::Gravity::GRAVITY_NORTH_EAST);
+
+  // Entry
+  m_entry.set_width_chars(50);
+  m_entry.set_placeholder_text("URL");
+  m_entry.signal_activate().connect(
+      sigc::mem_fun(*this, &ToyScopyApp::on_enter));
+
+  m_header_bar.set_custom_title(m_entry);
+  m_header_bar.set_show_close_button(true);
+  m_header_bar.show_all();
+
+  m_scrolled_window = new Gtk::ScrolledWindow();
+  // scroll window
+  add(*m_scrolled_window);
+  this->load();
+  // m_scrolled_window->show_all();
 }
 
-void ToyScopyApp::attachHeaderBar() {
-  GtkWidget *header_bar;
-  header_bar = gtk_header_bar_new();
-  gtk_header_bar_set_show_close_button(GTK_HEADER_BAR(header_bar), true);
+ToyScopyApp::~ToyScopyApp() {}
 
-  GtkWidget *search_bar;
-  search_bar = gtk_entry_new();
-  gtk_entry_set_width_chars(GTK_ENTRY(search_bar), 50);
-  gtk_entry_set_placeholder_text(GTK_ENTRY(search_bar), "URL");
-
-  g_signal_connect(G_OBJECT(search_bar), "activate",
-                   G_CALLBACK(+[](GtkWidget *widget, GdkEventKey *event) {
-                     std::cout << "hello" << std::endl;
-                   }),
-                   NULL);
-
-  gtk_header_bar_set_custom_title(GTK_HEADER_BAR(header_bar), search_bar);
-  gtk_window_set_titlebar(GTK_WINDOW(window), header_bar);
-
-  gtk_widget_show_all(window);
-}
+void ToyScopyApp::on_enter() { std::cout << m_entry.get_text() << std::endl; }
 
 void ToyScopyApp::load() {
   // Call HTML Renderer
@@ -88,29 +88,7 @@ void ToyScopyApp::load() {
   // TODO: make CSSOM
 
   // Renderer
-  Render::Renderer *r = new Render::Renderer(window, hdp->document, NULL);
+  Render::Renderer *r =
+      new Render::Renderer(m_scrolled_window, hdp->document, NULL);
   r->render();
-}
-
-static void activate(GtkApplication *app, gpointer user_data) {
-  GtkWidget *window;
-  window = gtk_application_window_new(app);
-  gtk_window_set_title(GTK_WINDOW(window), "toyscopy");
-  gtk_window_set_default_size(GTK_WINDOW(window), 480, 480);
-  gtk_window_set_resizable(GTK_WINDOW(window), true);
-  gtk_window_set_gravity(GTK_WINDOW(window), GDK_GRAVITY_SOUTH_EAST);
-
-  attachHeaderBar();
-  load();
-}
-
-int ToyScopyApp::run() {
-  app = gtk_application_new("io.bokken", G_APPLICATION_FLAGS_NONE);
-  g_signal_connect(app, "activate", G_CALLBACK(activate), NULL);
-  int argc;
-  char **argv;
-  int status = g_application_run(G_APPLICATION(app), argc, argv);
-  g_object_unref(app);
-
-  return status;
 }

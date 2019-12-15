@@ -45,6 +45,13 @@ INCLUDE_DIRECTORIES(${GTK3_INCLUDE_DIRS})
 LINK_DIRECTORIES(${GTK3_LIBRARY_DIRS})
 ADD_DEFINITIONS(${GTK3_CFLAGS_OTHER})
 
+# gtkmm
+FIND_PACKAGE(PkgConfig REQUIRED)
+PKG_CHECK_MODULES(GTKMM REQUIRED gtkmm-3.0)
+INCLUDE_DIRECTORIES(${GTKMM_INCLUDE_DIRS})
+LINK_DIRECTORIES(${GTKMM_LIBRARY_DIRS})
+ADD_DEFINITIONS(${GTKMM_CFLAGS_OTHER})
+
 set (CMAKE_CXX_STANDARD 14)
 # Now simply link against gtest or gtest_main as needed. Eg
 # add_executable(main core/test.cc)
@@ -52,8 +59,9 @@ add_library(flash flash/html/html_document_parser.cc flash/html/renderer.cc flas
 
 
 ## Main
-add_executable(main core/main.cc)
+add_executable(main core/main.cc core/app.cc)
 TARGET_LINK_LIBRARIES(main ${GTK3_LIBRARIES})
+TARGET_LINK_LIBRARIES(main ${GTKMM_LIBRARIES})
 TARGET_LINK_LIBRARIES(main flash)
 
 ## Test

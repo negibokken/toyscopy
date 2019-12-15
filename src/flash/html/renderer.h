@@ -7,6 +7,7 @@
 #include "css.h"
 #include "dom.h"
 #include "gtk/gtk.h"
+#include "gtkmm.h"
 
 namespace Render {
 
@@ -31,8 +32,8 @@ class RenderStyle {
 
 class RenderInline : public RenderObject {
  public:
-  GtkWidget *container;
-  GtkWidget *widget;
+  Gtk::Container *container;
+  Gtk::Widget *widget;
   RenderInline(DOM::Node *node) : RenderObject(node){};
   void layout();
   void paint();
@@ -40,10 +41,10 @@ class RenderInline : public RenderObject {
 
 class Renderer {
  public:
-  GtkWidget *window;
+  Gtk::ScrolledWindow *window;
   DOM::Document *dom;
   CSS::CSSOM *cssom;
-  Renderer(GtkWidget *window, DOM::Document *dom, CSS::CSSOM *cssom);
+  Renderer(Gtk::ScrolledWindow *window, DOM::Document *dom, CSS::CSSOM *cssom);
   void render();
 };
 
