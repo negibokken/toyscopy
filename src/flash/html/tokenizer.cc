@@ -157,11 +157,21 @@ bool Tokenizer::nextToken() {
       }
       break;
     }
+    case State::AttributeValueSingleQuotedState: {
+      std::cout << "AttributeValueSingleQUotedState is not implemented"
+                << std::endl;
+      break;
+    }
+    case State::AttributeValueUnQuotedState: {
+      std::cout << "AttributeValueUnQUotedState is not implemented"
+                << std::endl;
+      break;
+    }
     case State::AfterAttributeValueQuotedState: {
       if (cc == '\t' || cc == 0x0A || cc == 0x0C || cc == ' ') {
         setState(State::BeforeAttributeNameState);
         return true;
-      } else if(cc == '>'){
+      } else if (cc == '>') {
         setState(State::Data);
         emitToken();
         return true;
