@@ -108,6 +108,7 @@ void HTMLDocumentParser::parse() {
         } else if (isToken(Tag::Type::StartTag)) {
           DOM::Node* n =
               document->createElement(tokenizer->token->getTagName());
+          appendAttributesToCurrentNode(n);
           appendToCurrentNode(n);
           pushOpenElement(n);
           tokenizer->consumeToken();
@@ -228,6 +229,14 @@ void HTMLDocumentParser::appendCharacterToken(std::string data) {
 
 void HTMLDocumentParser::setOriginalInsertionMode(Mode mode) {
   original_insertion_mode = mode;
+}
+
+void HTMLDocumentParser::appendAttributesToCurrentNode(DOM::Node *n) {
+  DOM::Element* ele = static_cast<DOM::Element*>(n);
+  for (auto a : tokenizer->token->getAttributes()) {
+    std::cout << "attr: "<<  a->getName() << ":" << a->getValue() << std::endl;
+    ele->setAttribute(a->getName(), a->getValue());
+  }
 }
 
 void HTMLDocumentParser::stopParsing() {}

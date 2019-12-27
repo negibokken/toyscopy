@@ -19,10 +19,19 @@ class Tokenizer {
     EndTagOpenState,
     TagNameState,
     BeforeAttributeNameState,
+    AttributeNameState,
+    AttributeValueState,
+    AttributeValueUnQuotedState,
+    AttributeValueSingleQuotedState,
+    AttributeValueDoubleQuotedState,
+    AfterAttributeNameState,
+    AfterAttributeValueQuotedState,
+    BeforeAttributeValueState,
     MarkdownDeclarationOpenState,
     DoctypeState,
     BeforeDoctypeNameState,
-    DoctypeNameState
+    DoctypeNameState,
+    SelfClosingStartTagState
   };
   State state;
   std::string stream;
@@ -43,6 +52,9 @@ class Tokenizer {
   std::string temporarybuffer;
   void createNewToken(Tag::Type type) { token = new Tag(type); }
   void appendTagName(char c) { token->appendTagName(c); }
+  void createAttribute() { token->createAttribute(); }
+  void appendAttributeName(char c) { token->appendAttributeName(c); }
+  void appendAttributeValue(char c) { token->appendAttributeValue(c); }
   void appendCharacter(char c) { token->appendCharacter(c); }
   void appendBuffer(char c) { temporarybuffer += c; }
   void clearBuffer() { temporarybuffer.clear(); }

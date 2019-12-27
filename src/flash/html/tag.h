@@ -2,20 +2,52 @@
 #define Tag_h
 
 #include <iostream>
+#include <vector>
 #include <string>
 #define MAX_NAME 256
 
 class Tag {
+ private:
+  class Attribute {
+   public:
+    Attribute() : name(""), value(""){};
+    inline std::string getName() { return name; };
+    inline void setName(std::string _name) { name = _name; };
+    inline void appendName(char c) { name += c; };
+    inline std::string getValue() { return value; };
+    inline void setValue(std::string _value) { value = _value; };
+    inline void appendValue(char c) { value += c; };
+
+   private:
+    std::string name;
+    std::string value;
+  };
+  std::vector<Attribute*> attributes;
+
  public:
   // clang-format off
   enum Type {DOCTYPE, StartTag, EndTag, Comment, Character, };
-  enum ElementType { html, head, script, body, title, div, h1, p, none };
+  enum ElementType { html, head, script, body, title, div, h1, p, a, none };
   // clang-format on
 
   std::string tagName;
   Type type;
   ElementType elementType;
   std::string value;
+
+  void createAttribute() { attributes.push_back(new Attribute()); };
+  Attribute* currentAttribute() { return attributes.back(); };
+  void appendAttributeName(char c) {
+    Attribute* a = currentAttribute();
+    a->appendName(c);
+  };
+  void appendAttributeValue(char c) {
+    Attribute* a = currentAttribute();
+    a->appendValue(c);
+  };
+  std::vector<Attribute*> getAttributes() {
+    return attributes;
+  }
 
   Tag(Type t = Type::StartTag) { type = t; }
 
@@ -43,6 +75,8 @@ class Tag {
       elementType = ElementType::h1;
     } else if (tagName == "title") {
       elementType = ElementType::title;
+    } else if (tagName == "a") {
+      elementType = ElementType::a;
     } else {
       this->elementType = ElementType::none;
     }
