@@ -14,7 +14,7 @@ class Tokenizer {
 
  public:
   enum State {
-    Data,
+    DataState,
     TagOpenState,
     EndTagOpenState,
     TagNameState,
@@ -33,10 +33,12 @@ class Tokenizer {
     DoctypeNameState,
     SelfClosingStartTagState
   };
+
   State state;
   std::string stream;
   long long int index;
   Tokenizer(std::string stream);
+  char isNext(char c);
   char nextInputCharacter();
   bool nextToken();
   void ignoreToken(char c);
@@ -59,6 +61,7 @@ class Tokenizer {
   void appendBuffer(char c) { temporarybuffer += c; }
   void clearBuffer() { temporarybuffer.clear(); }
   bool isEmitted() { return emitted; }
+  void reconsumeToken() { index--; };
   void consumeToken() {
     std::cout << "----" << std::endl;
     std::cout << "consume: " << token->tagName << std::endl;

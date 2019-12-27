@@ -2,8 +2,8 @@
 #define Tag_h
 
 #include <iostream>
-#include <vector>
 #include <string>
+#include <vector>
 #define MAX_NAME 256
 
 class Tag {
@@ -27,7 +27,7 @@ class Tag {
  public:
   // clang-format off
   enum Type {DOCTYPE, StartTag, EndTag, Comment, Character, };
-  enum ElementType { html, head, script, body, title, div, h1, p, a, none };
+  enum ElementType { html, head, meta, script, body, title, div, h1, p, a, none };
   // clang-format on
 
   std::string tagName;
@@ -42,12 +42,11 @@ class Tag {
     a->appendName(c);
   };
   void appendAttributeValue(char c) {
+    // std::cout << c << std::endl;
     Attribute* a = currentAttribute();
     a->appendValue(c);
   };
-  std::vector<Attribute*> getAttributes() {
-    return attributes;
-  }
+  std::vector<Attribute*> getAttributes() { return attributes; }
 
   Tag(Type t = Type::StartTag) { type = t; }
 
@@ -77,6 +76,8 @@ class Tag {
       elementType = ElementType::title;
     } else if (tagName == "a") {
       elementType = ElementType::a;
+    } else if (tagName == "meta") {
+      elementType = ElementType::meta;
     } else {
       this->elementType = ElementType::none;
     }

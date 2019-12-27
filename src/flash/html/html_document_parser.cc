@@ -56,12 +56,19 @@ void HTMLDocumentParser::parse() {
       }
       case Mode::in_head: {
         std::cout << "3" << std::endl;
+        std::cout << "============" << std::endl;
         if (isToken(Tag::Type::StartTag, Tag::ElementType::title)) {
           DOM::Node* n = this->document->createElement("title");
           pushOpenElement(n);
           head_pointer->appendChild(n);
           setOriginalInsertionMode(Mode::in_head);
           setInsertionMode(Mode::text);
+          tokenizer->consumeToken();
+        } else if (isToken(Tag::Type::StartTag, Tag::ElementType::meta)) {
+          std::cout << "============" << std::endl;
+          std::cout << "start tag meta tag" << std::endl;
+          DOM::Node* n = this->document->createElement("meta");
+          head_pointer->appendChild(n);
           tokenizer->consumeToken();
         } else if (isToken(Tag::Type::EndTag, Tag::ElementType::title)) {
           popOpenElementIf("title");
@@ -185,11 +192,11 @@ void HTMLDocumentParser::appendToCurrentNode(DOM::Node* n) {
 }
 
 bool HTMLDocumentParser::isToken(Tag::Type type, Tag::ElementType eleType) {
-  std::cout << "isToken: " << tokenizer->token->type << ":" << type << ", "
-            << tokenizer->token->elementType << ":";
-  std::cout << (tokenizer->token->type == type &&
-                tokenizer->token->elementType == eleType)
-            << std::endl;
+  // std::cout << "isToken: " << tokenizer->token->type << ":" << type << ", "
+  //           << tokenizer->token->elementType << ":";
+  // std::cout << (tokenizer->token->type == type &&
+  //               tokenizer->token->elementType == eleType)
+  //           << std::endl;
 
   return tokenizer->token->type == type &&
          tokenizer->token->elementType == eleType;
@@ -231,10 +238,10 @@ void HTMLDocumentParser::setOriginalInsertionMode(Mode mode) {
   original_insertion_mode = mode;
 }
 
-void HTMLDocumentParser::appendAttributesToCurrentNode(DOM::Node *n) {
+void HTMLDocumentParser::appendAttributesToCurrentNode(DOM::Node* n) {
   DOM::Element* ele = static_cast<DOM::Element*>(n);
   for (auto a : tokenizer->token->getAttributes()) {
-    std::cout << "attr: "<<  a->getName() << ":" << a->getValue() << std::endl;
+    std::cout << "attr: " << a->getName() << ":" << a->getValue() << std::endl;
     ele->setAttribute(a->getName(), a->getValue());
   }
 }
