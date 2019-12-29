@@ -43,7 +43,7 @@ bool Tokenizer::nextToken() {
         return false;
       } else {
         // TODO:
-        createNewToken(Token::Character);
+        createNewToken(Tag::Token::Character);
         appendCharacter(cc);
         emitToken();
         return true;
@@ -57,7 +57,7 @@ bool Tokenizer::nextToken() {
         setState(State::MarkdownDeclarationOpenState);
         return true;
       } else if (isASCIIAlphabet(cc)) {
-        createNewToken(Token::Type::StartTag);
+        createNewToken(Tag::Token::Type::StartTag);
         setState(State::TagNameState);
         appendTagName(cc);
         return true;
@@ -202,7 +202,7 @@ bool Tokenizer::nextToken() {
     }
     case State::EndTagOpenState: {
       if (isASCIIAlphabet(cc)) {
-        createNewToken(Token::Type::EndTag);
+        createNewToken(Tag::Token::Type::EndTag);
         appendTagName(cc);
         setState(State::TagNameState);
         return true;
@@ -237,12 +237,12 @@ bool Tokenizer::nextToken() {
         ignoreToken(cc);
         return true;
       } else if (isASCIIUpper(cc)) {
-        createNewToken(Token::Type::DOCTYPE);
+        createNewToken(Tag::Token::Type::DOCTYPE);
         appendTagName(asciiUpper2lower(cc));
         setState(State::DoctypeNameState);
         return true;
       } else if (isASCIIAlphabet(cc)) {
-        createNewToken(Token::Type::DOCTYPE);
+        createNewToken(Tag::Token::Type::DOCTYPE);
         appendTagName(cc);
         setState(State::DoctypeNameState);
         return true;

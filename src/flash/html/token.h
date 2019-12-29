@@ -6,6 +6,8 @@
 #include <vector>
 #define MAX_NAME 256
 
+namespace Tag {
+
 class Attribute {
  public:
   Attribute() : name(""), value(""){};
@@ -89,4 +91,5 @@ class Token {
   void appendTagName(char c) { tagName += c; }
   void appendCharacter(char c) { value += c; }
 };
+}  // namespace Tag
 #endif

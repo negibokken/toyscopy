@@ -50,9 +50,9 @@ class Tokenizer {
     emitted = true;
   }
 
-  Token *token;
+  Tag::Token *token;
   std::string temporarybuffer;
-  void createNewToken(Token::Type type) { token = new Token(type); }
+  void createNewToken(Tag::Token::Type type) { token = new Tag::Token(type); }
   void appendTagName(char c) { token->appendTagName(c); }
   void createAttribute() { token->createAttribute(); }
   void appendAttributeName(char c) { token->appendAttributeName(c); }
