@@ -4,7 +4,7 @@
 #include <iostream>
 #include <string>
 
-#include "./token.h"
+#include "token.h"
 
 namespace Tokenizer {
 

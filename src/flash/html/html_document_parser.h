@@ -2,7 +2,6 @@
 #define HTML_Document_Parser_h
 
 #include <stdio.h>
-
 #include <string>
 #include <vector>
 
@@ -34,6 +33,9 @@ class HTMLDocumentParser {
   int itr = 0;
   std::string doc;
   std::string charset;
+  std::string *characterSet = &charset;
+  std::string *inputEncoding = &charset;
+  std::string contentType;
   Mode insertion_mode;
   Mode original_insertion_mode;
   std::vector<DOM::Node *> open_elements;

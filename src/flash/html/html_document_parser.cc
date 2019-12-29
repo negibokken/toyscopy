@@ -1,9 +1,5 @@
 #include "html_document_parser.h"
 
-#include <iostream>
-
-#include "dom.h"
-
 void HTMLDocumentParser::parse() {
   while (tokenizer->canTakeNextToken()) {
     if (!tokenizer->isEmitted()) {
@@ -72,12 +68,33 @@ void HTMLDocumentParser::parse() {
           std::cout << "============" << std::endl;
           std::cout << "start tag meta tag" << std::endl;
           DOM::Node* n = this->document->createElement("meta");
-          head_pointer->appendChild(n);
-          if (tokenizer->token->hasAttribute("charset")) {
-            std::string chset = tokenizer->token->getAttribute("charset");
+
+          Tag::Token* token = tokenizer->token;
+          DOM::Element* ele = static_cast<DOM::Element*>(n);
+          // Configure attributes
+          for (auto attr : token->getAttributes()) {
+            ele->setAttribute(attr->getName(), attr->getValue());
+          }
+
+          head_pointer->appendChild(ele);
+
+          // charset settings
+          if (token->hasAttribute("charset")) {
+            std::string chset = token->getAttributeValue("charset");
             document->charset = chset;
             this->charset = chset;
           }
+
+          // content-type
+          if (token->hasAttribute("http-equiv") &&
+              (ToyScopyUtil::toASCIIlower(
+                   token->getAttributeValue("http-equiv")) == "content-type") &&
+              token->hasAttribute("content")) {
+            std::string ct = token->getAttributeValue("content");
+            document->contentType = ct;
+            this->contentType = ct;
+          }
+
           tokenizer->consumeToken();
         } else if (isToken(Tag::Token::Type::EndTag,
                            Tag::Token::ElementType::title)) {

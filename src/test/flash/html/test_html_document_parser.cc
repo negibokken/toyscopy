@@ -1,6 +1,4 @@
-#include "../../../flash/html/dom.h"
 #include "../../../flash/html/html_document_parser.h"
-#include "../../../flash/html/token.h"
 #include "gtest/gtest.h"
 
 #include <queue>

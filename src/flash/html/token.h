@@ -4,7 +4,8 @@
 #include <iostream>
 #include <string>
 #include <vector>
-#define MAX_NAME 256
+
+#include "util.h"
 
 namespace Tag {
 
@@ -51,16 +52,18 @@ class Token {
   };
   bool hasAttribute(std::string attr) {
     for (auto a : attributes) {
-      if (a->getName() == attr) {
+      if (ToyScopyUtil::toASCIIlower(a->getName()) ==
+          ToyScopyUtil::toASCIIlower(attr)) {
         return true;
       }
     }
     return false;
   }
-  std::string getAttribute(std::string attr) {
+  std::string getAttributeValue(std::string attr) {
     std::string value;
     for (auto a : attributes) {
-      if (a->getName() == attr) {
+      if (ToyScopyUtil::toASCIIlower(a->getName()) ==
+          ToyScopyUtil::toASCIIlower(attr)) {
         return a->getValue();
       }
     }
