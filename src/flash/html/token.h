@@ -6,22 +6,23 @@
 #include <vector>
 #define MAX_NAME 256
 
-class Tag {
- private:
-  class Attribute {
-   public:
-    Attribute() : name(""), value(""){};
-    inline std::string getName() { return name; };
-    inline void setName(std::string _name) { name = _name; };
-    inline void appendName(char c) { name += c; };
-    inline std::string getValue() { return value; };
-    inline void setValue(std::string _value) { value = _value; };
-    inline void appendValue(char c) { value += c; };
+class Attribute {
+ public:
+  Attribute() : name(""), value(""){};
+  inline std::string getName() { return name; };
+  inline void setName(std::string _name) { name = _name; };
+  inline void appendName(char c) { name += c; };
+  inline std::string getValue() { return value; };
+  inline void setValue(std::string _value) { value = _value; };
+  inline void appendValue(char c) { value += c; };
 
-   private:
-    std::string name;
-    std::string value;
-  };
+ private:
+  std::string name;
+  std::string value;
+};
+
+class Token {
+ private:
   std::vector<Attribute*> attributes;
 
  public:
@@ -48,7 +49,7 @@ class Tag {
   };
   std::vector<Attribute*> getAttributes() { return attributes; }
 
-  Tag(Type t = Type::StartTag) { type = t; }
+  Token(Type t = Type::StartTag) { type = t; }
 
   void print() { std::cout << type << ":" << tagName << std::endl; }
 
@@ -88,5 +89,4 @@ class Tag {
   void appendTagName(char c) { tagName += c; }
   void appendCharacter(char c) { value += c; }
 };
-
 #endif

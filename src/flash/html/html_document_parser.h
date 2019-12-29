@@ -7,6 +7,7 @@
 #include <vector>
 
 #include "dom.h"
+#include "token.h"
 #include "tokenizer.h"
 
 class HTMLDocumentParser {
@@ -53,14 +54,16 @@ class HTMLDocumentParser {
   void popOpenElementIf(std::string eleType);
   void setFramesetOkFlag(std::string str);
   void appendToCurrentNode(DOM::Node *n);
-  void appendAttributesToCurrentNode(DOM:: Node *n);
-  bool isToken(Tag::Type type, Tag::ElementType eleType);
-  bool isToken(Tag::Type type);
-  bool isToken(Tag::ElementType type);
+  void appendAttributesToCurrentNode(DOM::Node *n);
+  bool isToken(Token::Type type, Token::ElementType eleType);
+  bool isToken(Token::Type type);
+  bool isToken(Token::ElementType type);
   void appendCharacterToken(std::string data);
   void stopParsing();
   DOM::Node *findTextNode();
-  inline void setDocumentTitle(const std::string title) { document_title = title; };
+  inline void setDocumentTitle(const std::string title) {
+    document_title = title;
+  };
   inline std::string getDocumentTitle() const { return document_title; };
 };
 

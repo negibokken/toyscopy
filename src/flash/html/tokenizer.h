@@ -4,7 +4,7 @@
 #include <iostream>
 #include <string>
 
-#include "./tag.h"
+#include "./token.h"
 
 namespace Tokenizer {
 
@@ -50,9 +50,9 @@ class Tokenizer {
     emitted = true;
   }
 
-  Tag *token;
+  Token *token;
   std::string temporarybuffer;
-  void createNewToken(Tag::Type type) { token = new Tag(type); }
+  void createNewToken(Token::Type type) { token = new Token(type); }
   void appendTagName(char c) { token->appendTagName(c); }
   void createAttribute() { token->createAttribute(); }
   void appendAttributeName(char c) { token->appendAttributeName(c); }
