@@ -2,32 +2,36 @@
 #define Tag_h
 
 #include <iostream>
-#include <vector>
 #include <string>
-#define MAX_NAME 256
+#include <vector>
 
-class Tag {
+#include "util.h"
+
+namespace Tag {
+
+class Attribute {
+ public:
+  Attribute() : name(""), value(""){};
+  inline std::string getName() { return name; };
+  inline void setName(std::string _name) { name = _name; };
+  inline void appendName(char c) { name += c; };
+  inline std::string getValue() { return value; };
+  inline void setValue(std::string _value) { value = _value; };
+  inline void appendValue(char c) { value += c; };
+
  private:
-  class Attribute {
-   public:
-    Attribute() : name(""), value(""){};
-    inline std::string getName() { return name; };
-    inline void setName(std::string _name) { name = _name; };
-    inline void appendName(char c) { name += c; };
-    inline std::string getValue() { return value; };
-    inline void setValue(std::string _value) { value = _value; };
-    inline void appendValue(char c) { value += c; };
+  std::string name;
+  std::string value;
+};
 
-   private:
-    std::string name;
-    std::string value;
-  };
+class Token {
+ private:
   std::vector<Attribute*> attributes;
 
  public:
   // clang-format off
   enum Type {DOCTYPE, StartTag, EndTag, Comment, Character, };
-  enum ElementType { html, head, script, body, title, div, h1, p, a, none };
+  enum ElementType { html, head, meta, script, body, title, div, h1, p, a, none };
   // clang-format on
 
   std::string tagName;
@@ -42,14 +46,32 @@ class Tag {
     a->appendName(c);
   };
   void appendAttributeValue(char c) {
+    // std::cout << c << std::endl;
     Attribute* a = currentAttribute();
     a->appendValue(c);
   };
-  std::vector<Attribute*> getAttributes() {
-    return attributes;
+  bool hasAttribute(std::string attr) {
+    for (auto a : attributes) {
+      if (ToyScopyUtil::toASCIIlower(a->getName()) ==
+          ToyScopyUtil::toASCIIlower(attr)) {
+        return true;
+      }
+    }
+    return false;
   }
+  std::string getAttributeValue(std::string attr) {
+    std::string value;
+    for (auto a : attributes) {
+      if (ToyScopyUtil::toASCIIlower(a->getName()) ==
+          ToyScopyUtil::toASCIIlower(attr)) {
+        return a->getValue();
+      }
+    }
+    return "";
+  }
+  std::vector<Attribute*> getAttributes() { return attributes; }
 
-  Tag(Type t = Type::StartTag) { type = t; }
+  Token(Type t = Type::StartTag) { type = t; }
 
   void print() { std::cout << type << ":" << tagName << std::endl; }
 
@@ -77,6 +99,8 @@ class Tag {
       elementType = ElementType::title;
     } else if (tagName == "a") {
       elementType = ElementType::a;
+    } else if (tagName == "meta") {
+      elementType = ElementType::meta;
     } else {
       this->elementType = ElementType::none;
     }
@@ -87,5 +111,5 @@ class Tag {
   void appendTagName(char c) { tagName += c; }
   void appendCharacter(char c) { value += c; }
 };
-
+}  // namespace Tag
 #endif

@@ -2,10 +2,10 @@
 #define DOM_H
 
 #include <iostream>
+#include <map>
 #include <queue>
 #include <string>
 #include <vector>
-#include <map>
 
 namespace DOM {
 
@@ -67,11 +67,12 @@ class Element : public Node {
   void setTagName(std::string str) { tagName = str; }
   std::string getTagName() const { return tagName; }
   std::string tagName;
-  inline std::string getAttribute(std::string attrName) { return attributes[attrName];}
+  inline std::string getAttribute(std::string attrName) {
+    return attributes[attrName];
+  }
   inline void setAttribute(std::string attrName, std::string attrValue) {
     attributes[attrName] = attrValue;
   }
-  private:
   std::map<std::string, std::string> attributes;
 };
 

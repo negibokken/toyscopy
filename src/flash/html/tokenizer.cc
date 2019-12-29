@@ -3,7 +3,7 @@
 namespace Tokenizer {
 
 Tokenizer::Tokenizer(std::string stream)
-    : index(0), stream(stream), state(State::Data) {}
+    : index(0), stream(stream), state(State::DataState) {}
 
 char Tokenizer::nextInputCharacter() { return stream[index++]; }
 
@@ -31,7 +31,7 @@ inline bool asciiUpper2lower(char cc) {
 bool Tokenizer::nextToken() {
   char cc = nextInputCharacter();
   switch (state) {
-    case State::Data: {
+    case State::DataState: {
       if (cc == '<') {
         setState(State::TagOpenState);
         return true;
@@ -43,7 +43,7 @@ bool Tokenizer::nextToken() {
         return false;
       } else {
         // TODO:
-        createNewToken(Tag::Character);
+        createNewToken(Tag::Token::Character);
         appendCharacter(cc);
         emitToken();
         return true;
@@ -57,7 +57,7 @@ bool Tokenizer::nextToken() {
         setState(State::MarkdownDeclarationOpenState);
         return true;
       } else if (isASCIIAlphabet(cc)) {
-        createNewToken(Tag::Type::StartTag);
+        createNewToken(Tag::Token::Type::StartTag);
         setState(State::TagNameState);
         appendTagName(cc);
         return true;
@@ -69,11 +69,11 @@ bool Tokenizer::nextToken() {
         setState(State::BeforeAttributeNameState);
         return true;
       } else if (cc == '/') {
-        // TODO:
+        setState(State::SelfClosingStartTagState);
         return true;
       } else if (cc == '>') {
         emitToken();
-        setState(State::Data);
+        setState(State::DataState);
         return true;
       } else {
         appendTagName(cc);
@@ -87,6 +87,7 @@ bool Tokenizer::nextToken() {
         return true;
       } else if (cc == '/' || cc == '>' || cc == EOF) {
         setState(State::AfterAttributeNameState);
+        reconsumeToken();
         return true;
       } else {
         createAttribute();
@@ -101,6 +102,9 @@ bool Tokenizer::nextToken() {
           cc == '>' || cc == EOF) {
         setState(State::AfterAttributeNameState);
         return true;
+      } else if (cc == '/') {
+        setState(State::SelfClosingStartTagState);
+        return true;
       } else if (cc == '=') {
         setState(State::BeforeAttributeValueState);
         return true;
@@ -114,6 +118,7 @@ bool Tokenizer::nextToken() {
       break;
     }
     case State::AfterAttributeNameState: {
+      std::cout << "AfterAttributeNameState" << cc << std::endl;
       if (isKindOfSpace(cc)) {
         ignoreToken(cc);
         return true;
@@ -122,6 +127,9 @@ bool Tokenizer::nextToken() {
         return true;
       } else if (cc == '=') {
         setState(State::BeforeAttributeValueState);
+        return true;
+      } else if (cc == '>') {
+        setState(State::DataState);
         return true;
       } else {
         createAttribute();
@@ -132,6 +140,7 @@ bool Tokenizer::nextToken() {
       break;
     }
     case State::BeforeAttributeValueState: {
+      std::cout << "BeforeAttributeValueState" << cc << std::endl;
       if (cc == '\t' || cc == 0x0A || cc == 0x0C || cc == ' ') {
         ignoreToken(cc);
         return true;
@@ -148,6 +157,7 @@ bool Tokenizer::nextToken() {
       break;
     }
     case State::AttributeValueDoubleQuotedState: {
+      std::cout << "AttributeValueDoubleQuotedState" << cc << std::endl;
       if (cc == '"') {
         setState(State::AfterAttributeValueQuotedState);
         return true;
@@ -157,12 +167,34 @@ bool Tokenizer::nextToken() {
       }
       break;
     }
+    case State::AttributeValueSingleQuotedState: {
+      std::cout << "AttributeValueSingleQUotedState is not implemented"
+                << std::endl;
+      break;
+    }
+    case State::AttributeValueUnQuotedState: {
+      std::cout << "AttributeValueUnQUotedState is not implemented"
+                << std::endl;
+      break;
+    }
     case State::AfterAttributeValueQuotedState: {
+      std::cout << "AfterAttributeValueQUotedState" << std::endl;
       if (cc == '\t' || cc == 0x0A || cc == 0x0C || cc == ' ') {
         setState(State::BeforeAttributeNameState);
         return true;
-      } else if(cc == '>'){
-        setState(State::Data);
+      } else if (cc == '/') {
+        setState(State::SelfClosingStartTagState);
+        return true;
+      } else if (cc == '>') {
+        setState(State::DataState);
+        emitToken();
+        return true;
+      }
+      break;
+    }
+    case State::SelfClosingStartTagState: {
+      if (cc == '>') {
+        setState(State::DataState);
         emitToken();
         return true;
       }
@@ -170,7 +202,7 @@ bool Tokenizer::nextToken() {
     }
     case State::EndTagOpenState: {
       if (isASCIIAlphabet(cc)) {
-        createNewToken(Tag::Type::EndTag);
+        createNewToken(Tag::Token::Type::EndTag);
         appendTagName(cc);
         setState(State::TagNameState);
         return true;
@@ -205,12 +237,12 @@ bool Tokenizer::nextToken() {
         ignoreToken(cc);
         return true;
       } else if (isASCIIUpper(cc)) {
-        createNewToken(Tag::Type::DOCTYPE);
+        createNewToken(Tag::Token::Type::DOCTYPE);
         appendTagName(asciiUpper2lower(cc));
         setState(State::DoctypeNameState);
         return true;
       } else if (isASCIIAlphabet(cc)) {
-        createNewToken(Tag::Type::DOCTYPE);
+        createNewToken(Tag::Token::Type::DOCTYPE);
         appendTagName(cc);
         setState(State::DoctypeNameState);
         return true;
@@ -219,7 +251,7 @@ bool Tokenizer::nextToken() {
     }
     case State::DoctypeNameState: {
       if (cc == '>') {
-        setState(State::Data);
+        setState(State::DataState);
         emitToken();
         return true;
       } else if (isASCIIUpper(cc)) {

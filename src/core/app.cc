@@ -35,7 +35,14 @@ void ToyScopyApp::set_title(std::string title) { m_title.set_text(title); }
 void ToyScopyApp::load() {
   // Call HTML Renderer
   HTMLDocumentParser *hdp = new HTMLDocumentParser(
-      "<!DOCTYPE html><html><head><title>Sample "
+      "<!DOCTYPE html><html><head>"
+      "<meta charset=\"utf-8\" />"
+      "<meta http-equiv=\"Content-type\" content=\"text/html; charset=utf-8\""
+      "/>"
+      "<meta name=\"viewport\" content=\"width=device-width,"
+      "initial-scale=1\" "
+      "/>"
+      "<title>Sample "
       "Page</title></head><body><div><h1>Sample "
       "Heading</h1><p>Hello "
       "World</p><p><a href=\"https://example.com\">More "
@@ -61,6 +68,16 @@ void ToyScopyApp::load() {
   };
 
   std::cout << "=== parsed ===" << std::endl;
+  std::cout << "=== header ===" << std::endl;
+  for (auto n : hdp->head_pointer->childNodes) {
+    DOM::Element *ele = static_cast<DOM::Element *>(n);
+    std::cout << ele->tagName << std::endl;
+    std::cout << ele->attributes.size() << std::endl;
+    for (auto attr : ele->attributes) {
+      std::cout << attr.first << "=" << attr.second << std::endl;
+    }
+  }
+  std::cout << "=== body ===" << std::endl;
   // traverse
   {
     DOM::Node *cur;

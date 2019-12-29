@@ -2,11 +2,11 @@
 #define HTML_Document_Parser_h
 
 #include <stdio.h>
-
 #include <string>
 #include <vector>
 
 #include "dom.h"
+#include "token.h"
 #include "tokenizer.h"
 
 class HTMLDocumentParser {
@@ -32,6 +32,10 @@ class HTMLDocumentParser {
   int *head = NULL;
   int itr = 0;
   std::string doc;
+  std::string charset;
+  std::string *characterSet = &charset;
+  std::string *inputEncoding = &charset;
+  std::string contentType;
   Mode insertion_mode;
   Mode original_insertion_mode;
   std::vector<DOM::Node *> open_elements;
@@ -53,14 +57,16 @@ class HTMLDocumentParser {
   void popOpenElementIf(std::string eleType);
   void setFramesetOkFlag(std::string str);
   void appendToCurrentNode(DOM::Node *n);
-  void appendAttributesToCurrentNode(DOM:: Node *n);
-  bool isToken(Tag::Type type, Tag::ElementType eleType);
-  bool isToken(Tag::Type type);
-  bool isToken(Tag::ElementType type);
+  void appendAttributesToCurrentNode(DOM::Node *n);
+  bool isToken(Tag::Token::Type type, Tag::Token::ElementType eleType);
+  bool isToken(Tag::Token::Type type);
+  bool isToken(Tag::Token::ElementType type);
   void appendCharacterToken(std::string data);
   void stopParsing();
   DOM::Node *findTextNode();
-  inline void setDocumentTitle(const std::string title) { document_title = title; };
+  inline void setDocumentTitle(const std::string title) {
+    document_title = title;
+  };
   inline std::string getDocumentTitle() const { return document_title; };
 };
 

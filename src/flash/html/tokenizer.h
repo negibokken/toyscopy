@@ -4,7 +4,7 @@
 #include <iostream>
 #include <string>
 
-#include "./tag.h"
+#include "token.h"
 
 namespace Tokenizer {
 
@@ -14,7 +14,7 @@ class Tokenizer {
 
  public:
   enum State {
-    Data,
+    DataState,
     TagOpenState,
     EndTagOpenState,
     TagNameState,
@@ -33,10 +33,12 @@ class Tokenizer {
     DoctypeNameState,
     SelfClosingStartTagState
   };
+
   State state;
   std::string stream;
   long long int index;
   Tokenizer(std::string stream);
+  char isNext(char c);
   char nextInputCharacter();
   bool nextToken();
   void ignoreToken(char c);
@@ -48,9 +50,9 @@ class Tokenizer {
     emitted = true;
   }
 
-  Tag *token;
+  Tag::Token *token;
   std::string temporarybuffer;
-  void createNewToken(Tag::Type type) { token = new Tag(type); }
+  void createNewToken(Tag::Token::Type type) { token = new Tag::Token(type); }
   void appendTagName(char c) { token->appendTagName(c); }
   void createAttribute() { token->createAttribute(); }
   void appendAttributeName(char c) { token->appendAttributeName(c); }
@@ -59,6 +61,7 @@ class Tokenizer {
   void appendBuffer(char c) { temporarybuffer += c; }
   void clearBuffer() { temporarybuffer.clear(); }
   bool isEmitted() { return emitted; }
+  void reconsumeToken() { index--; };
   void consumeToken() {
     std::cout << "----" << std::endl;
     std::cout << "consume: " << token->tagName << std::endl;
