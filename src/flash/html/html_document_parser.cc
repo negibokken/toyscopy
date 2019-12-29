@@ -1,30 +1,36 @@
 #include "html_document_parser.h"
 
-#include <iostream>
-
-#include "dom.h"
-
 void HTMLDocumentParser::parse() {
   while (tokenizer->canTakeNextToken()) {
     if (!tokenizer->isEmitted()) {
       continue;
     }
 
-    if (tokenizer->token->type == Tag::Type::StartTag ||
-        tokenizer->token->type == Tag::Type::EndTag) {
+    if (tokenizer->token->type == Tag::Token::Type::StartTag ||
+        tokenizer->token->type == Tag::Token::Type::EndTag) {
       std::cout << "tagname: " << tokenizer->token->tagName << std::endl;
-    } else if (tokenizer->token->type == Tag::Type::Character) {
+    } else if (tokenizer->token->type == Tag::Token::Type::Character) {
       std::cout << "char: " << tokenizer->token->value << std::endl;
     }
 
     // Build DOM Tree
     switch (this->insertion_mode) {
       case Mode::initial: {
-        setInsertionMode(Mode::before_html);
+        if (isToken(Tag::Token::Type::DOCTYPE)) {
+          DOM::Node* doctype =
+              this->document->implementation->createDocumentType(
+                  tokenizer->token->getTagName(), "", "");
+          document->appendChild(doctype);
+          setInsertionMode(Mode::before_html);
+          tokenizer->consumeToken();
+        } else {
+          setInsertionMode(Mode::before_html);
+        }
         break;
       }
       case Mode::before_html: {
-        if (isToken(Tag::Type::StartTag, Tag::ElementType::html)) {
+        if (isToken(Tag::Token::Type::StartTag,
+                    Tag::Token::ElementType::html)) {
           std::cout << "1" << std::endl;
           DOM::Node* n = this->document->createElement("html");
           document->appendChild(n);
@@ -37,7 +43,8 @@ void HTMLDocumentParser::parse() {
       }
       case Mode::before_head: {
         std::cout << "2" << std::endl;
-        if (isToken(Tag::Type::StartTag, Tag::ElementType::head)) {
+        if (isToken(Tag::Token::Type::StartTag,
+                    Tag::Token::ElementType::head)) {
           DOM::Node* n = this->document->createElement("head");
           head_pointer = n;
           setInsertionMode(Mode::in_head);
@@ -47,15 +54,79 @@ void HTMLDocumentParser::parse() {
       }
       case Mode::in_head: {
         std::cout << "3" << std::endl;
-        if (isToken(Tag::Type::EndTag, Tag::ElementType::head)) {
+        std::cout << "============" << std::endl;
+        if (isToken(Tag::Token::Type::StartTag,
+                    Tag::Token::ElementType::title)) {
+          DOM::Node* n = this->document->createElement("title");
+          pushOpenElement(n);
+          head_pointer->appendChild(n);
+          setOriginalInsertionMode(Mode::in_head);
+          setInsertionMode(Mode::text);
+          tokenizer->consumeToken();
+        } else if (isToken(Tag::Token::Type::StartTag,
+                           Tag::Token::ElementType::meta)) {
+          std::cout << "============" << std::endl;
+          std::cout << "start tag meta tag" << std::endl;
+          DOM::Node* n = this->document->createElement("meta");
+
+          Tag::Token* token = tokenizer->token;
+          DOM::Element* ele = static_cast<DOM::Element*>(n);
+          // Configure attributes
+          for (auto attr : token->getAttributes()) {
+            ele->setAttribute(attr->getName(), attr->getValue());
+          }
+
+          head_pointer->appendChild(ele);
+
+          // charset settings
+          if (token->hasAttribute("charset")) {
+            std::string chset = token->getAttributeValue("charset");
+            document->charset = chset;
+            this->charset = chset;
+          }
+
+          // content-type
+          if (token->hasAttribute("http-equiv") &&
+              (ToyScopyUtil::toASCIIlower(
+                   token->getAttributeValue("http-equiv")) == "content-type") &&
+              token->hasAttribute("content")) {
+            std::string ct = token->getAttributeValue("content");
+            document->contentType = ct;
+            this->contentType = ct;
+          }
+
+          tokenizer->consumeToken();
+        } else if (isToken(Tag::Token::Type::EndTag,
+                           Tag::Token::ElementType::title)) {
+          popOpenElementIf("title");
+          tokenizer->consumeToken();
+        } else if (isToken(Tag::Token::Type::EndTag,
+                           Tag::Token::ElementType::head)) {
           setInsertionMode(Mode::after_head);
           tokenizer->consumeToken();
         }
         break;
       }
+      case Mode::text: {
+        if (isToken(Tag::Token::Type::Character)) {
+          appendCharacterToken(tokenizer->token->value);
+          tokenizer->consumeToken();
+        } else if (isToken(Tag::Token::Type::EndTag,
+                           Tag::Token::ElementType::script)) {
+        } else if (isToken(Tag::Token::Type::EndTag,
+                           Tag::Token::ElementType::title)) {
+          DOM::Node* n = findTextNode();
+          DOM::Text* textNode = (static_cast<DOM::Text*>(n));
+          setDocumentTitle(textNode->wholeText());
+          setInsertionMode(original_insertion_mode);
+          popOpenElement();
+        }
+        break;
+      }
       case Mode::after_head: {
         std::cout << "4" << std::endl;
-        if (isToken(Tag::Type::StartTag, Tag::ElementType::body)) {
+        if (isToken(Tag::Token::Type::StartTag,
+                    Tag::Token::ElementType::body)) {
           DOM::Node* n = document->createElement("body");
           appendToCurrentNode(n);
           pushOpenElement(n);
@@ -69,19 +140,21 @@ void HTMLDocumentParser::parse() {
       }
       case Mode::in_body: {
         std::cout << "5" << std::endl;
-        if (isToken(Tag::Type::Character)) {
+        if (isToken(Tag::Token::Type::Character)) {
           appendCharacterToken(tokenizer->token->value);
           tokenizer->consumeToken();
-        } else if (isToken(Tag::Type::StartTag)) {
+        } else if (isToken(Tag::Token::Type::StartTag)) {
           DOM::Node* n =
               document->createElement(tokenizer->token->getTagName());
+          appendAttributesToCurrentNode(n);
           appendToCurrentNode(n);
           pushOpenElement(n);
           tokenizer->consumeToken();
-        } else if (isToken(Tag::Type::EndTag, Tag::ElementType::body)) {
+        } else if (isToken(Tag::Token::Type::EndTag,
+                           Tag::Token::ElementType::body)) {
           setInsertionMode(Mode::after_body);
           tokenizer->consumeToken();
-        } else if (isToken(Tag::Type::EndTag)) {
+        } else if (isToken(Tag::Token::Type::EndTag)) {
           popOpenElementIf(tokenizer->token->getTagName());
           tokenizer->consumeToken();
         }
@@ -89,7 +162,7 @@ void HTMLDocumentParser::parse() {
       }
       case Mode::after_body: {
         std::cout << "6" << std::endl;
-        if (isToken(Tag::Type::EndTag, Tag::ElementType::html)) {
+        if (isToken(Tag::Token::Type::EndTag, Tag::Token::ElementType::html)) {
           setInsertionMode(Mode::after_after_body);
           tokenizer->consumeToken();
         }
@@ -150,22 +223,23 @@ void HTMLDocumentParser::appendToCurrentNode(DOM::Node* n) {
   open_elements.back()->appendChild(n);
 }
 
-bool HTMLDocumentParser::isToken(Tag::Type type, Tag::ElementType eleType) {
-  std::cout << "isToken: " << tokenizer->token->type << ":" << type << ", "
-            << tokenizer->token->elementType << ":";
-  std::cout << (tokenizer->token->type == type &&
-                tokenizer->token->elementType == eleType)
-            << std::endl;
+bool HTMLDocumentParser::isToken(Tag::Token::Type type,
+                                 Tag::Token::ElementType eleType) {
+  // std::cout << "isToken: " << tokenizer->token->type << ":" << type << ", "
+  //           << tokenizer->token->elementType << ":";
+  // std::cout << (tokenizer->token->type == type &&
+  //               tokenizer->token->elementType == eleType)
+  //           << std::endl;
 
   return tokenizer->token->type == type &&
          tokenizer->token->elementType == eleType;
 }
 
-bool HTMLDocumentParser::isToken(Tag::ElementType type) {
+bool HTMLDocumentParser::isToken(Tag::Token::ElementType type) {
   return tokenizer->token->elementType == type;
 }
 
-bool HTMLDocumentParser::isToken(Tag::Type type) {
+bool HTMLDocumentParser::isToken(Tag::Token::Type type) {
   return tokenizer->token->type == type;
 }
 
@@ -191,6 +265,18 @@ void HTMLDocumentParser::appendCharacterToken(std::string data) {
   DOM::Text* textNode = (static_cast<DOM::Text*>(node));
   textNode->appendData(data);
   std::cout << "text: " << textNode->data << std::endl;
+}
+
+void HTMLDocumentParser::setOriginalInsertionMode(Mode mode) {
+  original_insertion_mode = mode;
+}
+
+void HTMLDocumentParser::appendAttributesToCurrentNode(DOM::Node* n) {
+  DOM::Element* ele = static_cast<DOM::Element*>(n);
+  for (auto a : tokenizer->token->getAttributes()) {
+    std::cout << "attr: " << a->getName() << ":" << a->getValue() << std::endl;
+    ele->setAttribute(a->getName(), a->getValue());
+  }
 }
 
 void HTMLDocumentParser::stopParsing() {}

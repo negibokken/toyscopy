@@ -2,6 +2,7 @@
 #define DOM_H
 
 #include <iostream>
+#include <map>
 #include <queue>
 #include <string>
 #include <vector>
@@ -10,6 +11,7 @@ namespace DOM {
 
 class Element;
 class Node;
+class DOMImplementation;
 enum NodeType {
   ELEMENT_NODE = 1,
   ATTRIBUTE_NODE = 2,
@@ -45,6 +47,18 @@ class Node {
   }
 };
 
+class DocumentType : public Node {
+ public:
+  std::string name;
+  std::string publicId;
+  std::string systemId;
+  DocumentType(std::string name, std::string publicId, std::string systemId)
+      : name(name),
+        publicId(publicId),
+        systemId(systemId),
+        Node(NodeType::DOCUMENT_TYPE_NODE){};
+};
+
 class Element : public Node {
  public:
   Element(std::string tagName) : Node(NodeType::ELEMENT_NODE) {
@@ -53,6 +67,13 @@ class Element : public Node {
   void setTagName(std::string str) { tagName = str; }
   std::string getTagName() const { return tagName; }
   std::string tagName;
+  inline std::string getAttribute(std::string attrName) {
+    return attributes[attrName];
+  }
+  inline void setAttribute(std::string attrName, std::string attrValue) {
+    attributes[attrName] = attrValue;
+  }
+  std::map<std::string, std::string> attributes;
 };
 
 inline std::ostream &operator<<(std::ostream &os, Element &e) {
@@ -81,9 +102,18 @@ inline std::ostream &operator<<(std::ostream &os, Text &t) {
   return os;
 };
 
+class DOMImplementation {
+ public:
+  DocumentType *createDocumentType(std::string qualifiedName,
+                                   std::string publicId, std::string systemId) {
+    return new DocumentType(qualifiedName, publicId, systemId);
+  }
+};
+
 enum DocumentReadyState { loading, interactive, complete };
 class Document : public Node {
  public:
+  DOMImplementation *implementation;
   Document() : Node(NodeType::DOCUMENT_NODE){};
   std::string URL;
   std::string DocumentURI;
