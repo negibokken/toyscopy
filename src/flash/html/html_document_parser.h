@@ -33,6 +33,7 @@ class HTMLDocumentParser {
   int *head = NULL;
   int itr = 0;
   std::string doc;
+  std::string charset;
   Mode insertion_mode;
   Mode original_insertion_mode;
   std::vector<DOM::Node *> open_elements;

@@ -73,6 +73,11 @@ void HTMLDocumentParser::parse() {
           std::cout << "start tag meta tag" << std::endl;
           DOM::Node* n = this->document->createElement("meta");
           head_pointer->appendChild(n);
+          if (tokenizer->token->hasAttribute("charset")) {
+            std::string chset = tokenizer->token->getAttribute("charset");
+            document->charset = chset;
+            this->charset = chset;
+          }
           tokenizer->consumeToken();
         } else if (isToken(Tag::Token::Type::EndTag,
                            Tag::Token::ElementType::title)) {

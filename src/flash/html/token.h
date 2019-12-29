@@ -49,6 +49,23 @@ class Token {
     Attribute* a = currentAttribute();
     a->appendValue(c);
   };
+  bool hasAttribute(std::string attr) {
+    for (auto a : attributes) {
+      if (a->getName() == attr) {
+        return true;
+      }
+    }
+    return false;
+  }
+  std::string getAttribute(std::string attr) {
+    std::string value;
+    for (auto a : attributes) {
+      if (a->getName() == attr) {
+        return a->getValue();
+      }
+    }
+    return "";
+  }
   std::vector<Attribute*> getAttributes() { return attributes; }
 
   Token(Type t = Type::StartTag) { type = t; }
