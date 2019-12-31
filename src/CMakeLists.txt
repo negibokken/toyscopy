@@ -52,16 +52,25 @@ INCLUDE_DIRECTORIES(${GTKMM_INCLUDE_DIRS})
 LINK_DIRECTORIES(${GTKMM_LIBRARY_DIRS})
 ADD_DEFINITIONS(${GTKMM_CFLAGS_OTHER})
 
+# libcurl
+find_package(CURL REQUIRED)
+# add_executable (curl-demo convert.cpp)
+INCLUDE_DIRECTORIES(${CURL_INCLUDE_DIR})
+LINK_DIRECTORIES(${CURL_LIBRARY_DIR})
+ADD_DEFINITIONS(${CURL_CFLAGS_OTHER})
+# target_link_libraries(curl-demo ${CURL_LIBRARIES})
+
 set (CMAKE_CXX_STANDARD 14)
 # Now simply link against gtest or gtest_main as needed. Eg
 # add_executable(main core/test.cc)
-add_library(flash flash/html/html_document_parser.cc flash/html/renderer.cc flash/html/tokenizer.cc)
+add_library(flash flash/html/html_document_parser.cc flash/html/renderer.cc flash/html/tokenizer.cc utils/simple_http_client.cc)
 
 
 ## Main
 add_executable(main core/main.cc core/app.cc)
 TARGET_LINK_LIBRARIES(main ${GTK3_LIBRARIES})
 TARGET_LINK_LIBRARIES(main ${GTKMM_LIBRARIES})
+TARGET_LINK_LIBRARIES(main ${CURL_LIBRARIES})
 TARGET_LINK_LIBRARIES(main flash)
 
 ## Test

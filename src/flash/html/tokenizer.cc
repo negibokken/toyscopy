@@ -14,22 +14,9 @@ void Tokenizer::ignoreToken(char c) {
   }
 }
 
-inline bool isKindOfSpace(char cc) {
-  // Tab, LF, LL, Space
-  return (cc == '\t' || cc == 0x0A || cc == 0x0C || cc == ' ');
-}
-
-inline bool isASCIIAlphabet(char cc) {
-  return ('a' <= cc && cc <= 'z') || ('A' <= cc && cc <= 'Z');
-}
-
-inline bool isASCIIUpper(char cc) { return ('A' <= cc && cc <= 'Z'); }
-inline bool asciiUpper2lower(char cc) {
-  return ('A' <= cc && cc <= 'Z') ? cc + 32 : cc;
-}
-
-bool Tokenizer::nextToken() {
+bool Tokenizer::pumpToken() {
   char cc = nextInputCharacter();
+  std::cout << ">" << cc << "<" << std::endl;
   switch (state) {
     case State::DataState: {
       if (cc == '<') {
@@ -56,7 +43,7 @@ bool Tokenizer::nextToken() {
       } else if (cc == '!') {
         setState(State::MarkdownDeclarationOpenState);
         return true;
-      } else if (isASCIIAlphabet(cc)) {
+      } else if (ToyScopyUtil::isASCIIAlphabet(cc)) {
         createNewToken(Tag::Token::Type::StartTag);
         setState(State::TagNameState);
         appendTagName(cc);
@@ -108,8 +95,8 @@ bool Tokenizer::nextToken() {
       } else if (cc == '=') {
         setState(State::BeforeAttributeValueState);
         return true;
-      } else if (isASCIIUpper(cc)) {
-        appendAttributeName(asciiUpper2lower(cc));
+      } else if (ToyScopyUtil::isASCIIUpper(cc)) {
+        appendAttributeName(ToyScopyUtil::asciiUpper2lower(cc));
         return true;
       } else {
         appendAttributeName(cc);
@@ -119,7 +106,7 @@ bool Tokenizer::nextToken() {
     }
     case State::AfterAttributeNameState: {
       std::cout << "AfterAttributeNameState" << cc << std::endl;
-      if (isKindOfSpace(cc)) {
+      if (ToyScopyUtil::isKindOfSpace(cc)) {
         ignoreToken(cc);
         return true;
       } else if (cc == '/') {
@@ -201,7 +188,7 @@ bool Tokenizer::nextToken() {
       break;
     }
     case State::EndTagOpenState: {
-      if (isASCIIAlphabet(cc)) {
+      if (ToyScopyUtil::isASCIIAlphabet(cc)) {
         createNewToken(Tag::Token::Type::EndTag);
         appendTagName(cc);
         setState(State::TagNameState);
@@ -211,11 +198,14 @@ bool Tokenizer::nextToken() {
     }
     case State::MarkdownDeclarationOpenState: {
       const std::string DOCTYPE = "DOCTYPE";
-      if (cc == DOCTYPE[0]) {
+      if (ToyScopyUtil::asciiUpper2lower(cc) ==
+          ToyScopyUtil::asciiUpper2lower(DOCTYPE[0])) {
         int idx = 1;
         while (idx < DOCTYPE.length()) {
           cc = nextInputCharacter();
-          if (DOCTYPE[idx++] != cc) break;
+          if (ToyScopyUtil::asciiUpper2lower(DOCTYPE[idx++]) !=
+              ToyScopyUtil::asciiUpper2lower(cc))
+            break;
         }
         if (idx == DOCTYPE.length()) {
           setState(State::DoctypeState);
@@ -236,12 +226,12 @@ bool Tokenizer::nextToken() {
       if (cc == '\t' || cc == 0x0A || cc == 0x0C || cc == 0x0A || cc == ' ') {
         ignoreToken(cc);
         return true;
-      } else if (isASCIIUpper(cc)) {
+      } else if (ToyScopyUtil::isASCIIUpper(cc)) {
         createNewToken(Tag::Token::Type::DOCTYPE);
-        appendTagName(asciiUpper2lower(cc));
+        appendTagName(ToyScopyUtil::asciiUpper2lower(cc));
         setState(State::DoctypeNameState);
         return true;
-      } else if (isASCIIAlphabet(cc)) {
+      } else if (ToyScopyUtil::isASCIIAlphabet(cc)) {
         createNewToken(Tag::Token::Type::DOCTYPE);
         appendTagName(cc);
         setState(State::DoctypeNameState);
@@ -254,17 +244,91 @@ bool Tokenizer::nextToken() {
         setState(State::DataState);
         emitToken();
         return true;
-      } else if (isASCIIUpper(cc)) {
-        appendTagName(asciiUpper2lower(cc));
+      } else if (ToyScopyUtil::isASCIIUpper(cc)) {
+        appendTagName(ToyScopyUtil::asciiUpper2lower(cc));
         return true;
-      } else if (isASCIIAlphabet(cc)) {
+      } else if (ToyScopyUtil::isASCIIAlphabet(cc)) {
         appendTagName(cc);
         return true;
       }
+      break;
+    }
+    case State::RAWTEXTState: {
+      if (cc == '<') {
+        setState(State::RAWTEXTLessThanSignState);
+        return true;
+      } else if (cc == '\0') {
+        // FIXME: Error
+        return true;
+      } else if (cc == EOF) {
+        // FIXME: Emit EOF
+        return false;
+      } else {
+        emitToken(cc);
+        return true;
+      }
+      break;
+    }
+    case State::RAWTEXTLessThanSignState: {
+      if (cc == '/') {
+        clearBuffer();
+        setState(State::RAWTEXTEndTagOpenState);
+        return true;
+      } else {
+        emitToken('<');
+        setState(State::RAWTEXTState);
+        reconsumeToken();
+        return true;
+      }
+      break;
+    }
+    case State::RAWTEXTEndTagOpenState: {
+      if (ToyScopyUtil::isASCIIAlphabet(cc)) {
+        createNewToken(Tag::Token::EndTag);
+        setState(State::RAWTEXTEndTagNameState);
+        reconsumeToken();
+        return true;
+      } else {
+        emitToken('<');
+        emitToken('/');
+        setState(State::RAWTEXTState);
+        return true;
+      }
+      break;
+    }
+    case State::RAWTEXTEndTagNameState: {
+      if (ToyScopyUtil::isKindOfSpace(cc)) {
+        // TODO
+      } else if (cc == '/') {
+        // TODO
+      } else if (cc == '>') {
+        if (isAppropriateEndTag()) {
+          setState(State::DataState);
+          emitToken();
+          return true;
+        }
+        // Anything Else
+      } else if (ToyScopyUtil::isASCIIUpper(cc)) {
+        ToyScopyUtil::asciiUpper2lower(cc);
+        appendTagName(cc);
+        appendBuffer(cc);
+        return true;
+      } else if (ToyScopyUtil::isASCIILower(cc)) {
+        appendTagName(cc);
+        appendBuffer(cc);
+        return true;
+      } else {
+        // TODO
+      }
+      break;
     }
     default: { return true; }
   }
   return true;
+}
+
+bool Tokenizer::isAppropriateEndTag() {
+  return lastStartToken->tagName == token->tagName;
 }
 
 void Tokenizer::setState(State state) {
