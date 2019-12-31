@@ -1,6 +1,8 @@
 #include "app.h"
 
 ToyScopyApp::ToyScopyApp() {
+  httpclient = new ToyScopyUtil::SimpleHttpClient();
+
   this->set_title("toyscopy");
   this->set_titlebar(m_header_bar);
   this->set_default_size(500, 500);
@@ -19,7 +21,6 @@ ToyScopyApp::ToyScopyApp() {
   m_header_bar.add(m_title);
   m_header_bar.set_show_close_button(true);
   m_header_bar.show_all();
-
   // Scroll Window
   m_scrolled_window = new Gtk::ScrolledWindow();
   add(*m_scrolled_window);
@@ -28,25 +29,35 @@ ToyScopyApp::ToyScopyApp() {
 
 ToyScopyApp::~ToyScopyApp() {}
 
-void ToyScopyApp::on_enter() { std::cout << m_entry.get_text() << std::endl; }
+void ToyScopyApp::on_enter() {
+  this->remove();
+  m_scrolled_window = new Gtk::ScrolledWindow();
+  add(*m_scrolled_window);
+  std::cout << "url: " << m_entry.get_text() << std::endl;
+  const std::string urlString = m_entry.get_text();
+  set_url(urlString);
+  src = httpclient->fetch(urlString);
+  src.erase(std::remove(src.begin(), src.end(), '\n'), src.end());
+  std::string s;
+  for (auto i = src.begin(); i != src.end(); i++) {
+    s += *i;
+    int cnt = 0;
+    while (*(i + cnt) == ' ' && *(i + cnt + 1) == ' ') {
+      cnt++;
+    }
+    i += cnt;
+  }
+  src = s;
+  load();
+}
 
 void ToyScopyApp::set_title(std::string title) { m_title.set_text(title); }
+void ToyScopyApp::set_url(std::string _url) { url = _url; }
 
 void ToyScopyApp::load() {
   // Call HTML Renderer
-  HTMLDocumentParser *hdp = new HTMLDocumentParser(
-      "<!DOCTYPE html><html><head>"
-      "<meta charset=\"utf-8\" />"
-      "<meta http-equiv=\"Content-type\" content=\"text/html; charset=utf-8\""
-      "/>"
-      "<meta name=\"viewport\" content=\"width=device-width,"
-      "initial-scale=1\" "
-      "/>"
-      "<title>Sample "
-      "Page</title></head><body><div><h1>Sample "
-      "Heading</h1><p>Hello "
-      "World</p><p><a href=\"https://example.com\">More "
-      "information...</a></p></div></body></html>");
+  if (src.empty()) src = defaultSrc;
+  HTMLDocumentParser *hdp = new HTMLDocumentParser(src);
   hdp->parse();
 
   set_title(hdp->getDocumentTitle());
@@ -72,19 +83,24 @@ void ToyScopyApp::load() {
   for (auto n : hdp->head_pointer->childNodes) {
     DOM::Element *ele = static_cast<DOM::Element *>(n);
     std::cout << ele->tagName << std::endl;
-    std::cout << ele->attributes.size() << std::endl;
+    std::cout << "attr: " << ele->attributes.size() << std::endl;
     for (auto attr : ele->attributes) {
       std::cout << attr.first << "=" << attr.second << std::endl;
+    }
+    std::cout << "child:" << ele->childNodes.size() << std::endl;
+    for (auto child : ele->childNodes) {
+      DOM::Text *t = static_cast<DOM::Text *>(child);
+      std::cout << "child_content: " << t->data << std::endl;
     }
   }
   std::cout << "=== body ===" << std::endl;
   // traverse
   {
     DOM::Node *cur;
-    std::queue<DOM::Node *> q;
+    std::stack<DOM::Node *> q;
     q.push(hdp->document);
     while (!q.empty()) {
-      cur = q.front();
+      cur = q.top();
       q.pop();
       switch (cur->nodeType) {
         case DOM::ELEMENT_NODE: {
@@ -104,9 +120,11 @@ void ToyScopyApp::load() {
           break;
       }
       std::cout << "child size: " << cur->childNodes.size() << std::endl;
-      for (auto child : cur->childNodes) {
-        q.push(child);
+      std::vector<DOM::Node *> children = cur->childNodes;
+      for (auto i = children.rbegin(); i != children.rend(); i++) {
+        q.push(*i);
       }
+      std::cout << "---" << std::endl;
       std::cout << std::endl;
     }
   }
@@ -117,4 +135,6 @@ void ToyScopyApp::load() {
   Render::Renderer *r =
       new Render::Renderer(m_scrolled_window, hdp->document, NULL);
   r->render();
+  std::cout << "=== finish rendering ===" << std::endl;
+  m_scrolled_window->show_all();
 }
