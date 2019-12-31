@@ -24,11 +24,12 @@ inline bool isASCIIAlphabet(char cc) {
 }
 
 inline bool isASCIIUpper(char cc) { return ('A' <= cc && cc <= 'Z'); }
+inline bool isASCIILower(char cc) { return ('a' <= cc && cc <= 'z'); }
 inline bool asciiUpper2lower(char cc) {
   return ('A' <= cc && cc <= 'Z') ? cc + 32 : cc;
 }
 
-bool Tokenizer::nextToken() {
+bool Tokenizer::pumpToken() {
   char cc = nextInputCharacter();
   switch (state) {
     case State::DataState: {
@@ -261,10 +262,84 @@ bool Tokenizer::nextToken() {
         appendTagName(cc);
         return true;
       }
+      break;
+    }
+    case State::RAWTEXTState: {
+      if (cc == '<') {
+        setState(State::RAWTEXTLessThanSignState);
+        return true;
+      } else if (cc == '\0') {
+        // FIXME: Error
+        return true;
+      } else if (cc == EOF) {
+        // FIXME: Emit EOF
+        return false;
+      } else {
+        emitToken(cc);
+        return true;
+      }
+      break;
+    }
+    case State::RAWTEXTLessThanSignState: {
+      if (cc == '/') {
+        clearBuffer();
+        setState(State::RAWTEXTEndTagOpenState);
+        return true;
+      } else {
+        emitToken('<');
+        setState(State::RAWTEXTState);
+        reconsumeToken();
+        return true;
+      }
+      break;
+    }
+    case State::RAWTEXTEndTagOpenState: {
+      if (isASCIIAlphabet(cc)) {
+        createNewToken(Tag::Token::EndTag);
+        setState(State::RAWTEXTEndTagNameState);
+        reconsumeToken();
+        return true;
+      } else {
+        emitToken('<');
+        emitToken('/');
+        setState(State::RAWTEXTState);
+        return true;
+      }
+      break;
+    }
+    case State::RAWTEXTEndTagNameState: {
+      if (isKindOfSpace(cc)) {
+        // TODO
+      } else if (cc == '/') {
+        // TODO
+      } else if (cc == '>') {
+        if (isAppropriateEndTag()) {
+          setState(State::DataState);
+          emitToken();
+          return true;
+        }
+        // Anything Else
+      } else if (isASCIIUpper(cc)) {
+        asciiUpper2lower(cc);
+        appendTagName(cc);
+        appendBuffer(cc);
+        return true;
+      } else if (isASCIILower(cc)) {
+        appendTagName(cc);
+        appendBuffer(cc);
+        return true;
+      } else {
+        // TODO
+      }
+      break;
     }
     default: { return true; }
   }
   return true;
+}
+
+bool Tokenizer::isAppropriateEndTag() {
+  return lastStartToken->tagName == token->tagName;
 }
 
 void Tokenizer::setState(State state) {

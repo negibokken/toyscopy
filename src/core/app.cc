@@ -43,7 +43,38 @@ void ToyScopyApp::load() {
       "initial-scale=1\" "
       "/>"
       "<title>Sample "
-      "Page</title></head><body><div><h1>Sample "
+      "Page</title>"
+      "<style type=\"text/css\">"
+      "    body {"
+      "        background-color: #f0f0f2;"
+      "        margin: 0;"
+      "        padding: 0;"
+      "        font-family: -apple-system, system-ui, BlinkMacSystemFont, "
+      "\"Segoe UI\", \"Open Sans\", \"Helvetica Neue\", Helvetica, Arial, "
+      "sans-serif;"
+      "        "
+      "    }"
+      "    div {"
+      "        width: 600px;"
+      "        margin: 5em auto;"
+      "        padding: 2em;"
+      "        background-color: #fdfdff;"
+      "        border-radius: 0.5em;"
+      "        box-shadow: 2px 3px 7px 2px rgba(0,0,0,0.02);"
+      "    }"
+      "    a:link, a:visited {"
+      "        color: #38488f;"
+      "        text-decoration: none;"
+      "    }"
+      "    @media (max-width: 700px) {"
+      "        div {"
+      "            margin: 0 auto;"
+      "            width: auto;"
+      "        }"
+      "    }"
+
+      "</style>"
+      "</head><body><div><h1>Sample "
       "Heading</h1><p>Hello "
       "World</p><p><a href=\"https://example.com\">More "
       "information...</a></p></div></body></html>");
@@ -72,19 +103,24 @@ void ToyScopyApp::load() {
   for (auto n : hdp->head_pointer->childNodes) {
     DOM::Element *ele = static_cast<DOM::Element *>(n);
     std::cout << ele->tagName << std::endl;
-    std::cout << ele->attributes.size() << std::endl;
+    std::cout << "attr: " << ele->attributes.size() << std::endl;
     for (auto attr : ele->attributes) {
       std::cout << attr.first << "=" << attr.second << std::endl;
+    }
+    std::cout << "child:" << ele->childNodes.size() << std::endl;
+    for (auto child : ele->childNodes) {
+      DOM::Text *t = static_cast<DOM::Text *>(child);
+      std::cout << "child_content: " << t->data << std::endl;
     }
   }
   std::cout << "=== body ===" << std::endl;
   // traverse
   {
     DOM::Node *cur;
-    std::queue<DOM::Node *> q;
+    std::stack<DOM::Node *> q;
     q.push(hdp->document);
     while (!q.empty()) {
-      cur = q.front();
+      cur = q.top();
       q.pop();
       switch (cur->nodeType) {
         case DOM::ELEMENT_NODE: {
@@ -104,9 +140,14 @@ void ToyScopyApp::load() {
           break;
       }
       std::cout << "child size: " << cur->childNodes.size() << std::endl;
-      for (auto child : cur->childNodes) {
-        q.push(child);
+      std::vector<DOM::Node *> children = cur->childNodes;
+      for (auto i = children.rbegin(); i != children.rend(); i++) {
+        q.push(*i);
       }
+      // for (auto child : cur->childNodes) {
+      //   q.push(child);
+      // }
+      std::cout << "---" << std::endl;
       std::cout << std::endl;
     }
   }

@@ -6,7 +6,6 @@ TEST(TokenizerTest, TokenizeSimple) {
       new Tokenizer::Tokenizer("<html><body>hello</body></html>");
 
   char cc;
-  while (t->nextToken()) {
+  while (t->pumpToken()) {
   }
 }
-

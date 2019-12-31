@@ -55,6 +55,7 @@ class HTMLDocumentParser {
   void pushOpenElement(DOM::Node *n);
   void popOpenElement();
   void popOpenElementIf(std::string eleType);
+  void popOpenElementIf(DOM::NodeType type);
   void setFramesetOkFlag(std::string str);
   void appendToCurrentNode(DOM::Node *n);
   void appendAttributesToCurrentNode(DOM::Node *n);

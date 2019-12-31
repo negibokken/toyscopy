@@ -30,9 +30,14 @@ class Token {
 
  public:
   // clang-format off
-  enum Type {DOCTYPE, StartTag, EndTag, Comment, Character, };
-  enum ElementType { html, head, meta, script, body, title, div, h1, p, a, none };
+  enum Type { DOCTYPE, StartTag, EndTag, Comment, Character, };
+  enum ElementType { html, head, meta, style, script, body, title, div, h1, p, a, none };
   // clang-format on
+  static std::string TagTypeName(Type type) {
+    const std::string names[] = {"DOCTYPE", "StartTag", "EndTag", "Comment",
+                                 "Character"};
+    return names[type];
+  }
 
   std::string tagName;
   Type type;
@@ -101,12 +106,15 @@ class Token {
       elementType = ElementType::a;
     } else if (tagName == "meta") {
       elementType = ElementType::meta;
+    } else if (tagName == "style") {
+      elementType = ElementType::style;
     } else {
       this->elementType = ElementType::none;
     }
   }
   std::string getTagName() { return tagName; }
-  ElementType getTagType() { return elementType; }
+  Type getTagType() { return type; }
+  ElementType getTagElementType() { return elementType; }
 
   void appendTagName(char c) { tagName += c; }
   void appendCharacter(char c) { value += c; }
