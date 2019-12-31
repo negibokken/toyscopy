@@ -8,6 +8,7 @@
 #include "dom.h"
 #include "token.h"
 #include "tokenizer.h"
+#include "util.h"
 
 class HTMLDocumentParser {
  public:
@@ -22,6 +23,8 @@ class HTMLDocumentParser {
   };
   // clang-format on
   HTMLDocumentParser(std::string _doc) {
+    std::cout << "loaded document" << std::endl;
+    std::cout << _doc << std::endl;
     this->doc = _doc;
     this->document = new DOM::Document();
     this->frameset_ok = "ok";

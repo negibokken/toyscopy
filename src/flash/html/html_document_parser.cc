@@ -55,8 +55,11 @@ void HTMLDocumentParser::parse() {
       case Mode::in_head: {
         std::cout << "3" << std::endl;
         std::cout << "============" << std::endl;
-        if (isToken(Tag::Token::Type::StartTag,
-                    Tag::Token::ElementType::title)) {
+        if (isToken(Tag::Token::Character)) {
+          // FIXME:
+          tokenizer->consumeToken();
+        } else if (isToken(Tag::Token::Type::StartTag,
+                           Tag::Token::ElementType::title)) {
           DOM::Node* n = this->document->createElement("title");
           pushOpenElement(n);
           head_pointer->appendChild(n);

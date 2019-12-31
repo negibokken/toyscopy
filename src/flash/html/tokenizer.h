@@ -6,6 +6,7 @@
 #include <string>
 
 #include "token.h"
+#include "util.h"
 
 namespace Tokenizer {
 
@@ -75,7 +76,10 @@ class Tokenizer {
 
   std::string temporarybuffer;
   void createNewToken(Tag::Token::Type type) { token = new Tag::Token(type); }
-  void appendTagName(char c) { token->appendTagName(c); }
+  void appendTagName(char c) {
+    c = ToyScopyUtil::asciiUpper2lower(c);
+    token->appendTagName(c);
+  }
   void createAttribute() { token->createAttribute(); }
   void appendAttributeName(char c) { token->appendAttributeName(c); }
   void appendAttributeValue(char c) { token->appendAttributeValue(c); }
