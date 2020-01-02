@@ -12,9 +12,6 @@
 namespace Tokenizer {
 
 class Tokenizer {
- private:
-  bool emitted;
-
  public:
   enum State {
     DataState,
@@ -42,12 +39,7 @@ class Tokenizer {
     RCDATAState
   };
 
-  State state;
-  std::string stream;
-  long long int index;
   Tokenizer(std::string stream);
-  char isNext(char c);
-  char nextInputCharacter();
   bool pumpToken();
   Tag::Token *nextToken() {
     if (!canTakeNextToken()) {
@@ -56,8 +48,46 @@ class Tokenizer {
     Tag::Token *tok = tokenQueue.front();
     return tok;
   };
-  void ignoreToken(char c);
   void setState(State state);
+
+  bool canTakeNextToken() {
+    bool hasNextToken = !tokenQueue.empty();
+    return hasNextToken;
+  };
+  void consumeToken() {
+    ToyScopyUtil::logUtil("--- consume ---");
+    ToyScopyUtil::logUtil(
+        "type: %c", Tag::Token::TagTypeName(nextToken()->getTagType()).c_str());
+    tokenQueue.pop();
+    token = NULL;
+  }
+
+ private:
+  State state;
+  bool emitted;
+  std::string stream;
+  long long int index;
+  Tag::Token *token;
+  std::queue<Tag::Token *> tokenQueue;
+  Tag::Token *lastStartToken;
+
+  char isNext(char c);
+  char nextInputCharacter();
+  bool isAppropriateEndTag();
+  void ignoreToken(char c);
+  std::string temporarybuffer;
+  void createNewToken(Tag::Token::Type type) { token = new Tag::Token(type); }
+  void appendTagName(char c) {
+    c = ToyScopyUtil::asciiUpper2lower(c);
+    token->appendTagName(c);
+  }
+  void createAttribute() { token->createAttribute(); }
+  void appendAttributeName(char c) { token->appendAttributeName(c); }
+  void appendAttributeValue(char c) { token->appendAttributeValue(c); }
+  void appendCharacter(char c) { token->appendCharacter(c); }
+  void appendBuffer(char c) { temporarybuffer += c; }
+  void clearBuffer() { temporarybuffer.clear(); }
+  void reconsumeToken() { index--; };
 
   void emitToken() {
     ToyScopyUtil::logUtil("----");
@@ -74,37 +104,6 @@ class Tokenizer {
     token->appendCharacter(c);
     emitToken();
   }
-
-  std::string temporarybuffer;
-  void createNewToken(Tag::Token::Type type) { token = new Tag::Token(type); }
-  void appendTagName(char c) {
-    c = ToyScopyUtil::asciiUpper2lower(c);
-    token->appendTagName(c);
-  }
-  void createAttribute() { token->createAttribute(); }
-  void appendAttributeName(char c) { token->appendAttributeName(c); }
-  void appendAttributeValue(char c) { token->appendAttributeValue(c); }
-  void appendCharacter(char c) { token->appendCharacter(c); }
-  void appendBuffer(char c) { temporarybuffer += c; }
-  void clearBuffer() { temporarybuffer.clear(); }
-  void reconsumeToken() { index--; };
-  void consumeToken() {
-    ToyScopyUtil::logUtil("--- consume ---");
-    ToyScopyUtil::logUtil(
-        "type: %c", Tag::Token::TagTypeName(nextToken()->getTagType()).c_str());
-    tokenQueue.pop();
-    token = NULL;
-  }
-  bool canTakeNextToken() {
-    bool hasNextToken = !tokenQueue.empty();
-    return hasNextToken;
-  };
-  bool isAppropriateEndTag();
-
- private:
-  Tag::Token *token;
-  std::queue<Tag::Token *> tokenQueue;
-  Tag::Token *lastStartToken;
 };
 
 }  // namespace Tokenizer
