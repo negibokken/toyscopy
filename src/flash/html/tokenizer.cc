@@ -16,7 +16,7 @@ void Tokenizer::ignoreToken(char c) {
 
 bool Tokenizer::pumpToken() {
   char cc = nextInputCharacter();
-  std::cout << ">" << cc << "<" << std::endl;
+  ToyScopyUtil::logUtil(">%c<", cc);
   switch (state) {
     case State::DataState: {
       if (cc == '<') {
@@ -105,7 +105,7 @@ bool Tokenizer::pumpToken() {
       break;
     }
     case State::AfterAttributeNameState: {
-      std::cout << "AfterAttributeNameState" << cc << std::endl;
+      ToyScopyUtil::logUtil("AfterAttributeNameState: %c", cc);
       if (ToyScopyUtil::isKindOfSpace(cc)) {
         ignoreToken(cc);
         return true;
@@ -127,7 +127,7 @@ bool Tokenizer::pumpToken() {
       break;
     }
     case State::BeforeAttributeValueState: {
-      std::cout << "BeforeAttributeValueState" << cc << std::endl;
+      ToyScopyUtil::logUtil("BeforeAttributeValueState: %c", cc);
       if (cc == '\t' || cc == 0x0A || cc == 0x0C || cc == ' ') {
         ignoreToken(cc);
         return true;
@@ -144,7 +144,7 @@ bool Tokenizer::pumpToken() {
       break;
     }
     case State::AttributeValueDoubleQuotedState: {
-      std::cout << "AttributeValueDoubleQuotedState" << cc << std::endl;
+      ToyScopyUtil::logUtil("AttributeDoubleQuotedState: %c", cc);
       if (cc == '"') {
         setState(State::AfterAttributeValueQuotedState);
         return true;
@@ -155,17 +155,15 @@ bool Tokenizer::pumpToken() {
       break;
     }
     case State::AttributeValueSingleQuotedState: {
-      std::cout << "AttributeValueSingleQUotedState is not implemented"
-                << std::endl;
+      ToyScopyUtil::logUtil("AttributeSingleQuotedState is not implemented");
       break;
     }
     case State::AttributeValueUnQuotedState: {
-      std::cout << "AttributeValueUnQUotedState is not implemented"
-                << std::endl;
+      ToyScopyUtil::logUtil("AttributeUnQuotedState is not implemented");
       break;
     }
     case State::AfterAttributeValueQuotedState: {
-      std::cout << "AfterAttributeValueQUotedState" << std::endl;
+      ToyScopyUtil::logUtil("AttributeValueQuotedState: %c", cc);
       if (cc == '\t' || cc == 0x0A || cc == 0x0C || cc == ' ') {
         setState(State::BeforeAttributeNameState);
         return true;
@@ -331,9 +329,6 @@ bool Tokenizer::isAppropriateEndTag() {
   return lastStartToken->tagName == token->tagName;
 }
 
-void Tokenizer::setState(State state) {
-  // printf("state: %d\n", state);
-  this->state = state;
-}
+void Tokenizer::setState(State state) { this->state = state; }
 
 }  // namespace Tokenizer

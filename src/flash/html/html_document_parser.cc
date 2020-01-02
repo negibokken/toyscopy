@@ -8,9 +8,9 @@ void HTMLDocumentParser::parse() {
 
     if (token->type == Tag::Token::Type::StartTag ||
         token->type == Tag::Token::Type::EndTag) {
-      std::cout << "tagname: " << token->tagName << std::endl;
+      ToyScopyUtil::logUtil("tagname: %s", token->tagName.c_str());
     } else if (token->type == Tag::Token::Type::Character) {
-      std::cout << "char: " << token->value << std::endl;
+      ToyScopyUtil::logUtil("char: %s", token->value.c_str());
     }
 
     // Build DOM Tree
@@ -31,7 +31,7 @@ void HTMLDocumentParser::parse() {
       case Mode::before_html: {
         if (isToken(Tag::Token::Type::StartTag,
                     Tag::Token::ElementType::html)) {
-          std::cout << "1" << std::endl;
+          ToyScopyUtil::logUtil("1");
           DOM::Node* n = this->document->createElement("html");
           document->appendChild(n);
           pushOpenElement(n);
@@ -42,7 +42,7 @@ void HTMLDocumentParser::parse() {
         break;
       }
       case Mode::before_head: {
-        std::cout << "2" << std::endl;
+        ToyScopyUtil::logUtil("2");
         if (isToken(Tag::Token::Type::StartTag,
                     Tag::Token::ElementType::head)) {
           DOM::Node* n = this->document->createElement("head");
@@ -53,8 +53,8 @@ void HTMLDocumentParser::parse() {
         break;
       }
       case Mode::in_head: {
-        std::cout << "3" << std::endl;
-        std::cout << "============" << std::endl;
+        ToyScopyUtil::logUtil("3");
+        ToyScopyUtil::logUtil("=============");
         if (isToken(Tag::Token::Character)) {
           // FIXME:
           tokenizer->consumeToken();
@@ -68,8 +68,8 @@ void HTMLDocumentParser::parse() {
           tokenizer->consumeToken();
         } else if (isToken(Tag::Token::Type::StartTag,
                            Tag::Token::ElementType::meta)) {
-          std::cout << "============" << std::endl;
-          std::cout << "start tag meta tag" << std::endl;
+          ToyScopyUtil::logUtil("=============");
+          ToyScopyUtil::logUtil("start tag meta tag");
           DOM::Node* n = this->document->createElement("meta");
 
           DOM::Element* ele = static_cast<DOM::Element*>(n);
@@ -99,7 +99,7 @@ void HTMLDocumentParser::parse() {
           tokenizer->consumeToken();
         } else if (isToken(Tag::Token::Type::StartTag,
                            Tag::Token::ElementType::style)) {
-          std::cout << "style" << std::endl;
+          ToyScopyUtil::logUtil("style");
           // generic raw text element parsing algorihtm
           DOM::Node* n = this->document->createElement("style");
           head_pointer->appendChild(n);
@@ -110,12 +110,12 @@ void HTMLDocumentParser::parse() {
           tokenizer->consumeToken();
         } else if (isToken(Tag::Token::Type::EndTag,
                            Tag::Token::ElementType::title)) {
-          std::cout << "pop title-> " << std::endl;
+          ToyScopyUtil::logUtil("pop title->");
           popOpenElementIf("title");
           tokenizer->consumeToken();
         } else if (isToken(Tag::Token::Type::EndTag,
                            Tag::Token::ElementType::head)) {
-          std::cout << "go to after head ->" << std::endl;
+          ToyScopyUtil::logUtil("go to after head");
           setInsertionMode(Mode::after_head);
           tokenizer->consumeToken();
         }
@@ -149,7 +149,7 @@ void HTMLDocumentParser::parse() {
         break;
       }
       case Mode::after_head: {
-        std::cout << "4" << std::endl;
+        ToyScopyUtil::logUtil("4");
         if (isToken(Tag::Token::Type::StartTag,
                     Tag::Token::ElementType::body)) {
           DOM::Node* n = document->createElement("body");
@@ -164,7 +164,7 @@ void HTMLDocumentParser::parse() {
         break;
       }
       case Mode::in_body: {
-        std::cout << "5" << std::endl;
+        ToyScopyUtil::logUtil("5");
         if (isToken(Tag::Token::Type::Character)) {
           appendCharacterToken(token->value);
           tokenizer->consumeToken();
@@ -180,7 +180,7 @@ void HTMLDocumentParser::parse() {
           setInsertionMode(Mode::after_body);
           tokenizer->consumeToken();
         } else if (isToken(Tag::Token::Type::EndTag)) {
-          std::cout << "***EndTag***" << std::endl;
+          ToyScopyUtil::logUtil("end tag");
           popOpenElementIf(DOM::NodeType::TEXT_NODE);
           popOpenElement();
           tokenizer->consumeToken();
@@ -188,7 +188,7 @@ void HTMLDocumentParser::parse() {
         break;
       }
       case Mode::after_body: {
-        std::cout << "6" << std::endl;
+        ToyScopyUtil::logUtil("6");
         if (isToken(Tag::Token::Type::EndTag, Tag::Token::ElementType::html)) {
           setInsertionMode(Mode::after_after_body);
           tokenizer->consumeToken();
@@ -196,7 +196,7 @@ void HTMLDocumentParser::parse() {
         break;
       }
       case Mode::after_after_body: {
-        std::cout << "7" << std::endl;
+        ToyScopyUtil::logUtil("7");
         this->stopParsing();
         return;
       }
@@ -220,20 +220,21 @@ void HTMLDocumentParser::setInsertionMode(Mode mode) {
                               "in_template",      "after_body",
                               "in_frameset",      "after_frameset",
                               "after_after_body", "after_after_frameset"};
-  std::cout << "=========================" << std::endl;
-  std::cout << "## mode: " << Mode[mode] << std::endl;
+
+  ToyScopyUtil::logUtil("======================");
+  ToyScopyUtil::logUtil("## mode: %s", Mode[mode].c_str());
   insertion_mode = mode;
 }
 
 void HTMLDocumentParser::pushOpenElement(DOM::Node* n) {
   DOM::Element* ele = static_cast<DOM::Element*>(n);
-  std::cout << "*** pushed: " << ele->tagName << std::endl;
+  ToyScopyUtil::logUtil("*** pushed %s", ele->tagName.c_str());
   open_elements.push_back(n);
 }
 
 void HTMLDocumentParser::popOpenElement() {
   DOM::Element* ele = static_cast<DOM::Element*>(open_elements.back());
-  std::cout << "*** popped: " << ele->tagName << std::endl;
+  ToyScopyUtil::logUtil("*** popped: %s", ele->tagName.c_str());
   open_elements.pop_back();
 }
 
@@ -241,7 +242,7 @@ void HTMLDocumentParser::popOpenElementIf(std::string tagName) {
   DOM::Element* ele = static_cast<DOM::Element*>(open_elements.back());
   if (open_elements.size() == 0) return;
   if (ele->getTagName() != tagName) return;
-  std::cout << "*** popped: " << ele->tagName << std::endl;
+  ToyScopyUtil::logUtil("*** popped: %s", ele->tagName.c_str());
   open_elements.pop_back();
 }
 
@@ -249,7 +250,7 @@ void HTMLDocumentParser::popOpenElementIf(DOM::NodeType type) {
   if (open_elements.size() == 0) return;
   if (open_elements.back()->nodeType != type) return;
   DOM::Text* text = static_cast<DOM::Text*>(open_elements.back());
-  std::cout << "*** popped: " << text->data << std::endl;
+  ToyScopyUtil::logUtil("*** popped: %s", text->data.c_str());
   open_elements.pop_back();
 }
 
@@ -260,13 +261,13 @@ void HTMLDocumentParser::setFramesetOkFlag(std::string str) {
 void HTMLDocumentParser::appendToCurrentNode(DOM::Node* n) {
   DOM::Element* ele = static_cast<DOM::Element*>(open_elements.back());
   DOM::Element* child = static_cast<DOM::Element*>(n);
-  std::cout << "append to " << ele->tagName << std::endl;
-  std::cout << "appended: " << child->tagName << std::endl;
+  ToyScopyUtil::logUtil("append to %s", ele->tagName.c_str());
+  ToyScopyUtil::logUtil("appended: %s", child->tagName.c_str());
   if (open_elements.size() > 0 &&
       open_elements.back()->nodeType == DOM::NodeType::TEXT_NODE) {
     popOpenElement();
   }
-  std::cout << "open last: " << open_elements.back()->nodeType << std::endl;
+  ToyScopyUtil::logUtil("open last: %d", open_elements.back()->nodeType);
   open_elements.back()->appendChild(n);
 }
 
@@ -294,22 +295,21 @@ DOM::Node* HTMLDocumentParser::findTextNode() {
 }
 
 void HTMLDocumentParser::appendCharacterToken(std::string data) {
-  std::cout << "### append character token" << std::endl;
+  ToyScopyUtil::logUtil("### append character token");
   DOM::Node* node = findTextNode();
   if (node == NULL) {
-    std::cout << "create text node" << std::endl;
+    ToyScopyUtil::logUtil("create text node");
     node = document->createText("");
-    std::cout << "**********" << std::endl;
+    ToyScopyUtil::logUtil("**********");
     DOM::Element* ele = static_cast<DOM::Element*>(open_elements.back());
-    std::cout << ele->nodeName << std::endl;
-    std::cout << ele->nodeType << std::endl;
-    std::cout << ele->tagName << std::endl;
+    ToyScopyUtil::logUtil("%d", ele->nodeType);
+    ToyScopyUtil::logUtil("%s", ele->tagName.c_str());
     open_elements.back()->appendChild(node);
     pushOpenElement(node);
   }
   DOM::Text* textNode = (static_cast<DOM::Text*>(node));
   textNode->appendData(data);
-  std::cout << "text: " << textNode->data << std::endl;
+  // ToyScopyUtil::logUtil("%s", textNode->data.c_str());
 }
 
 void HTMLDocumentParser::setOriginalInsertionMode(Mode mode) {
@@ -321,7 +321,8 @@ void HTMLDocumentParser::appendAttributesToCurrentNode(DOM::Node* n) {
 
   Tag::Token* token = tokenizer->nextToken();
   for (auto a : token->getAttributes()) {
-    std::cout << "attr: " << a->getName() << ":" << a->getValue() << std::endl;
+    ToyScopyUtil::logUtil("attr: %s : %s", a->getName().c_str(),
+                          a->getValue().c_str());
     ele->setAttribute(a->getName(), a->getValue());
   }
 }

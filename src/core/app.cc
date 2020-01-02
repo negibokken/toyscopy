@@ -33,7 +33,7 @@ void ToyScopyApp::on_enter() {
   this->remove();
   m_scrolled_window = new Gtk::ScrolledWindow();
   add(*m_scrolled_window);
-  std::cout << "url: " << m_entry.get_text() << std::endl;
+  ToyScopyUtil::logUtil("url: %s", m_entry.get_text().c_str());
   const std::string urlString = m_entry.get_text();
   set_url(urlString);
   src = httpclient->fetch(urlString);
@@ -78,22 +78,22 @@ void ToyScopyApp::load() {
       "NOTATION_NODE",
   };
 
-  std::cout << "=== parsed ===" << std::endl;
-  std::cout << "=== header ===" << std::endl;
+  ToyScopyUtil::logUtil("=== parsed ===");
+  ToyScopyUtil::logUtil("=== header ===");
   for (auto n : hdp->head_pointer->childNodes) {
     DOM::Element *ele = static_cast<DOM::Element *>(n);
-    std::cout << ele->tagName << std::endl;
-    std::cout << "attr: " << ele->attributes.size() << std::endl;
+    ToyScopyUtil::logUtil("%s", ele->tagName.c_str());
+    ToyScopyUtil::logUtil("attr: %d", ele->attributes.size());
     for (auto attr : ele->attributes) {
-      std::cout << attr.first << "=" << attr.second << std::endl;
+      ToyScopyUtil::logUtil("%s = %s", attr.first.c_str(), attr.second.c_str());
     }
-    std::cout << "child:" << ele->childNodes.size() << std::endl;
+    ToyScopyUtil::logUtil("child: %d", ele->childNodes.size());
     for (auto child : ele->childNodes) {
       DOM::Text *t = static_cast<DOM::Text *>(child);
-      std::cout << "child_content: " << t->data << std::endl;
+      ToyScopyUtil::logUtil("child_content: ", t->data.c_str());
     }
   }
-  std::cout << "=== body ===" << std::endl;
+  ToyScopyUtil::logUtil("=== body ===");
   // traverse
   {
     DOM::Node *cur;
@@ -105,36 +105,35 @@ void ToyScopyApp::load() {
       switch (cur->nodeType) {
         case DOM::ELEMENT_NODE: {
           DOM::Element *element = static_cast<DOM::Element *>(cur);
-          std::cout << "tag: " << element->tagName << std::endl;
+          ToyScopyUtil::logUtil("tag: ", element->tagName.c_str());
         }
         case DOM::TEXT_NODE: {
           DOM::Text *textnode = static_cast<DOM::Text *>(cur);
-          std::cout << "text: " << textnode->wholeText() << std::endl;
+          ToyScopyUtil::logUtil("text: ", textnode->wholeText().c_str());
           break;
         }
         case DOM::DOCUMENT_NODE: {
-          std::cout << "Document" << std::endl;
+          ToyScopyUtil::logUtil("Document");
           break;
         }
         default:
           break;
       }
-      std::cout << "child size: " << cur->childNodes.size() << std::endl;
+      ToyScopyUtil::logUtil("child size: %d", cur->childNodes.size());
       std::vector<DOM::Node *> children = cur->childNodes;
       for (auto i = children.rbegin(); i != children.rend(); i++) {
         q.push(*i);
       }
-      std::cout << "---" << std::endl;
-      std::cout << std::endl;
+      ToyScopyUtil::logUtil("---");
     }
   }
-  std::cout << "=== analyzed ===" << std::endl;
+  ToyScopyUtil::logUtil("=== analyzed ===");
   // TODO: make CSSOM
 
   // Renderer
   Render::Renderer *r =
       new Render::Renderer(m_scrolled_window, hdp->document, NULL);
   r->render();
-  std::cout << "=== finish rendering ===" << std::endl;
+  ToyScopyUtil::logUtil("=== finish rendering ===");
   m_scrolled_window->show_all();
 }

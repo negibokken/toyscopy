@@ -4,6 +4,7 @@
 #include <iostream>
 #include <stack>
 
+#include "../../utils/log_util.h"
 #include "css.h"
 #include "dom.h"
 #include "gtk/gtk.h"

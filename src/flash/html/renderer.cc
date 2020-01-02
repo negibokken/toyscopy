@@ -30,7 +30,7 @@ void RenderInline::layout() {
   data[itr] = '\0';
   const gchar *str = data;
 
-  std::cout << str << std::endl;
+  ToyScopyUtil::logUtil("%s", str);
 
   Gtk::Label *label = new Gtk::Label();
   label->set_text(str);
@@ -46,10 +46,10 @@ Renderer::Renderer(Gtk::ScrolledWindow *window, DOM::Document *dom,
     : window(window), dom(dom), cssom(cssom) {}
 
 void Renderer::render() {
-  std::cout << "process-render" << std::endl;
+  ToyScopyUtil::logUtil("process-render");
   Gtk::Container *container =
       (new Gtk::Box(Gtk::Orientation::ORIENTATION_VERTICAL, 0));
-  std::cout << "----" << std::endl;
+  ToyScopyUtil::logUtil("----");
   // container = gtk_box_new(GTK_ORIENTATION_VERTICAL, 0);
 
   std::stack<DOM::Node *> st;
@@ -65,10 +65,10 @@ void Renderer::render() {
 
     RenderObject *ro = RenderObject::createObject(node, NULL);
 
-    std::cout << "=======" << std::endl;
-    std::cout << "nodeType: " << node->nodeType << std::endl;
-    std::cout << "textnode: " << reinterpret_cast<DOM::Text *>(node)->data
-              << std::endl;
+    ToyScopyUtil::logUtil("======");
+    ToyScopyUtil::logUtil("nodeType: %d", node->nodeType);
+    ToyScopyUtil::logUtil("textnode: %s",
+                          reinterpret_cast<DOM::Text *>(node)->data.c_str());
 
     // Process CSS Style
     CSS::Style s;
@@ -85,7 +85,7 @@ void Renderer::render() {
         break;
       }
       case CSS::Style::INLINE: {
-        std::cout << node->nodeType << std::endl;
+        ToyScopyUtil::logUtil("%d", node->nodeType);
         RenderInline *ele = reinterpret_cast<RenderInline *>(ro);
         ele->container = container;
         ele->layout();

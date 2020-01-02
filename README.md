@@ -34,6 +34,12 @@ ToyScopy is a toy browser written in C++.
    ./main
    ```
 
+   - for checking debug log, execute with `DEBUG=true` like below:
+
+   ```sh
+   DEBUG=true ./main
+   ```
+
 ## license
 
 MIT

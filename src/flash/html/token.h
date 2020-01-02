@@ -5,6 +5,7 @@
 #include <string>
 #include <vector>
 
+#include "../../utils/log_util.h"
 #include "util.h"
 
 namespace Tag {
@@ -51,7 +52,6 @@ class Token {
     a->appendName(c);
   };
   void appendAttributeValue(char c) {
-    // std::cout << c << std::endl;
     Attribute* a = currentAttribute();
     a->appendValue(c);
   };
@@ -78,7 +78,7 @@ class Token {
 
   Token(Type t = Type::StartTag) { type = t; }
 
-  void print() { std::cout << type << ":" << tagName << std::endl; }
+  void print() { ToyScopyUtil::logUtil("%d : %s", type, tagName.c_str()); }
 
   static ElementType str2ElementType(std::string str) {
     if (str == "html") {
