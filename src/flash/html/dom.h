@@ -7,6 +7,8 @@
 #include <string>
 #include <vector>
 
+#include "../../utils/log_util.h"
+
 namespace DOM {
 
 class Element;
@@ -41,7 +43,7 @@ class Node {
   std::vector<Node *> childNodes;
 
   Node appendChild(Node *node) {
-    std::cout << "node type:" << node->nodeType << std::endl;
+    ToyScopyUtil::logUtil("node type: %d", node->nodeType);
     this->childNodes.push_back(node);
     return *node;
   }
@@ -133,6 +135,7 @@ class Document : public Node {
       Node *node = q.front();
       q.pop();
       std::cout << node << std::endl;
+      ToyScopyUtil::logUtil("node type: %d", node->nodeType);
       for (auto n : node->childNodes) {
         std::cout << n << std::endl;
       }

@@ -5,6 +5,7 @@
 #include <queue>
 #include <string>
 
+#include "../../utils/log_util.h"
 #include "token.h"
 #include "util.h"
 
@@ -59,8 +60,8 @@ class Tokenizer {
   void setState(State state);
 
   void emitToken() {
-    std::cout << "----" << std::endl;
-    std::cout << "emit: " << token->tagName << std::endl;
+    ToyScopyUtil::logUtil("----");
+    ToyScopyUtil::logUtil("emit: %s", token->tagName.c_str());
     token->setTagType();
     tokenQueue.push(token);
     if (token->type == Tag::Token::StartTag) {
@@ -88,10 +89,9 @@ class Tokenizer {
   void clearBuffer() { temporarybuffer.clear(); }
   void reconsumeToken() { index--; };
   void consumeToken() {
-    std::cout << "----" << std::endl;
-    std::cout << "consume: " << nextToken()->tagName << std::endl;
-    std::cout << "type: " << Tag::Token::TagTypeName(nextToken()->getTagType())
-              << std::endl;
+    ToyScopyUtil::logUtil("--- consume ---");
+    ToyScopyUtil::logUtil(
+        "type: %c", Tag::Token::TagTypeName(nextToken()->getTagType()).c_str());
     tokenQueue.pop();
     token = NULL;
   }

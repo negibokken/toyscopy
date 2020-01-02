@@ -7,6 +7,7 @@
 #include <iostream>
 #include "../flash/html/html_document_parser.h"
 #include "../flash/html/renderer.h"
+#include "../utils/log_util.h"
 #include "../utils/simple_http_client.h"
 
 class ToyScopyApp : public Gtk::Window {

@@ -5,6 +5,7 @@
 #include <string>
 #include <vector>
 
+#include "../../utils/log_util.h"
 #include "dom.h"
 #include "token.h"
 #include "tokenizer.h"
@@ -23,8 +24,8 @@ class HTMLDocumentParser {
   };
   // clang-format on
   HTMLDocumentParser(std::string _doc) {
-    std::cout << "loaded document" << std::endl;
-    std::cout << _doc << std::endl;
+    ToyScopyUtil::logUtil("loaded document");
+    ToyScopyUtil::logUtil("%s", _doc.c_str());
     this->doc = _doc;
     this->document = new DOM::Document();
     this->frameset_ok = "ok";
