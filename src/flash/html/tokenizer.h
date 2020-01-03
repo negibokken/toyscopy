@@ -91,10 +91,10 @@ class Tokenizer {
 
   void emitToken() {
     ToyScopyUtil::logUtil("----");
-    ToyScopyUtil::logUtil("emit: %s", token->tagName.c_str());
-    token->setTagType();
+    ToyScopyUtil::logUtil("emit: %s", token->getTagName().c_str());
+    // token->setTagType();
     tokenQueue.push(token);
-    if (token->type == Tag::Token::StartTag) {
+    if (token->getTagType() == Tag::Token::StartTag) {
       lastStartToken = token;
     }
   }

@@ -6,11 +6,11 @@ void HTMLDocumentParser::parse() {
 
     Tag::Token* token = tokenizer->nextToken();
 
-    if (token->type == Tag::Token::Type::StartTag ||
-        token->type == Tag::Token::Type::EndTag) {
-      ToyScopyUtil::logUtil("tagname: %s", token->tagName.c_str());
-    } else if (token->type == Tag::Token::Type::Character) {
-      ToyScopyUtil::logUtil("char: %s", token->value.c_str());
+    if (token->getTagType() == Tag::Token::Type::StartTag ||
+        token->getTagType() == Tag::Token::Type::EndTag) {
+      ToyScopyUtil::logUtil("tagname: %s", token->getTagName().c_str());
+    } else if (token->getTagType() == Tag::Token::Type::Character) {
+      ToyScopyUtil::logUtil("char: %s", token->getValue().c_str());
     }
 
     // Build DOM Tree
@@ -123,7 +123,7 @@ void HTMLDocumentParser::parse() {
       }
       case Mode::text: {
         if (isToken(Tag::Token::Type::Character)) {
-          appendCharacterToken(token->value);
+          appendCharacterToken(token->getValue());
           tokenizer->consumeToken();
         } else if (isToken(Tag::Token::Type::EndTag,
                            Tag::Token::ElementType::script)) {
@@ -166,7 +166,7 @@ void HTMLDocumentParser::parse() {
       case Mode::in_body: {
         ToyScopyUtil::logUtil("5");
         if (isToken(Tag::Token::Type::Character)) {
-          appendCharacterToken(token->value);
+          appendCharacterToken(token->getValue());
           tokenizer->consumeToken();
         } else if (isToken(Tag::Token::Type::StartTag)) {
           DOM::Node* n = document->createElement(token->getTagName());
@@ -274,15 +274,15 @@ void HTMLDocumentParser::appendToCurrentNode(DOM::Node* n) {
 bool HTMLDocumentParser::isToken(Tag::Token::Type type,
                                  Tag::Token::ElementType eleType) {
   Tag::Token* token = tokenizer->nextToken();
-  return token->type == type && token->elementType == eleType;
+  return token->getTagType() == type && token->getTagElementType() == eleType;
 }
 
 bool HTMLDocumentParser::isToken(Tag::Token::ElementType type) {
-  return tokenizer->nextToken()->elementType == type;
+  return tokenizer->nextToken()->getTagElementType() == type;
 }
 
 bool HTMLDocumentParser::isToken(Tag::Token::Type type) {
-  return tokenizer->nextToken()->type == type;
+  return tokenizer->nextToken()->getTagType() == type;
 }
 
 DOM::Node* HTMLDocumentParser::findTextNode() {
