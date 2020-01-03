@@ -63,7 +63,7 @@ ADD_DEFINITIONS(${CURL_CFLAGS_OTHER})
 set (CMAKE_CXX_STANDARD 14)
 # Now simply link against gtest or gtest_main as needed. Eg
 # add_executable(main core/test.cc)
-add_library(flash flash/html/html_document_parser.cc flash/html/renderer.cc flash/html/tokenizer.cc utils/simple_http_client.cc  utils/log_util.cc)
+add_library(flash flash/html/html_document_parser.cc flash/html/renderer.cc flash/html/tokenizer.cc flash/html/token.cc  utils/simple_http_client.cc  utils/log_util.cc)
 
 
 ## Main
