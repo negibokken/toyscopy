@@ -78,9 +78,10 @@ TARGET_LINK_LIBRARIES(main flash)
 
 ## Test
 enable_testing()
-add_executable(MyTest test/test_main.cc test/flash/html/test_html_document_parser.cc test/flash/html/test_dom.cc test/flash/html/test_tokenizer.cc)
+add_executable(MyTest test/test_main.cc test/flash/html/test_html_document_parser.cc test/flash/html/test_dom.cc test/flash/html/test_tokenizer.cc test/utils/test_log_util.cc)
 target_link_libraries(MyTest flash)
 INCLUDE_DIRECTORIES(test/flash)
+INCLUDE_DIRECTORIES(test/utils)
 target_link_libraries(MyTest gtest)
 target_link_libraries(MyTest gtest_main)
 
