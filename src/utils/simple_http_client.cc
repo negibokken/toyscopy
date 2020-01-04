@@ -13,7 +13,28 @@ inline size_t write(void *contents, size_t size, size_t nmemb, std::string *s) {
   return newLength;
 }
 
+inline std::string getProtocolfromUrl(std::string url) {
+  int cnt = 0;
+  char protocol[4096];
+  for (int i = 0; i < url.size(); i++) {
+    if (url[i] == ':') {
+      if (i + 2 > url.size()) {
+        return "invalid";
+      }
+      if (url[i + 1] == '/' && url[i + 2] == '/') {
+        protocol[cnt] = '\0';
+        return protocol;
+      }
+    }
+    protocol[cnt] = url[i];
+  }
+  return protocol;
+}
+
 std::string ToyScopyUtil::SimpleHttpClient::fetch(std::string url) {
+  if (getProtocolfromUrl(url) == "invalid") {
+    return "";
+  }
   CURL *curl = curl_easy_init();
   std::string s;
   if (curl) {
