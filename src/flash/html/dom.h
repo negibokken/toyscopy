@@ -125,22 +125,8 @@ class Document : public Node {
   std::string contentType;
 
   DocumentReadyState readyState;
-  // Element documentElement;
   Element *createElement(std::string name) { return new Element(name); };
   Text *createText(std::string data) { return new Text(data); };
-  void printAllNode() {
-    std::queue<Node *> q;
-    q.push(this);
-    while (!q.empty()) {
-      Node *node = q.front();
-      q.pop();
-      std::cout << node << std::endl;
-      ToyScopyUtil::logUtil("node type: %d", node->nodeType);
-      for (auto n : node->childNodes) {
-        std::cout << n << std::endl;
-      }
-    }
-  }
 };
 
 }  // namespace DOM
