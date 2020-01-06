@@ -44,8 +44,27 @@ class Node {
 
   Node appendChild(Node *node) {
     ToyScopyUtil::logUtil("node type: %d", node->nodeType);
+    node->parentNode = this;
+    node->parentElement = reinterpret_cast<Element *>(this);
+
+    this->isConnected = true;
+    node->isConnected = true;
+
     this->childNodes.push_back(node);
     return *node;
+  }
+
+  inline Node *firstChild() {
+    if (childNodes.empty()) {
+      return NULL;
+    }
+    return childNodes.front();
+  }
+  inline Node *lastChild() {
+    if (childNodes.empty()) {
+      return NULL;
+    }
+    return childNodes.back();
   }
 };
 
@@ -62,41 +81,55 @@ class DocumentType : public Node {
 };
 
 class Element : public Node {
+ private:
+  std::string tagName;
+  std::map<std::string, std::string> attributes;
+  void setTagName(std::string str) { tagName = str; }
+
  public:
   Element(std::string tagName) : Node(NodeType::ELEMENT_NODE) {
     setTagName(tagName);
   };
-  void setTagName(std::string str) { tagName = str; }
   std::string getTagName() const { return tagName; }
-  std::string tagName;
   inline std::string getAttribute(std::string attrName) {
     return attributes[attrName];
   }
   inline void setAttribute(std::string attrName, std::string attrValue) {
     attributes[attrName] = attrValue;
   }
-  std::map<std::string, std::string> attributes;
+  std::vector<std::string> getAttributeNames() {
+    std::vector<std::string> names;
+    for (auto attribute : attributes) {
+      names.push_back(attribute.first);
+    }
+    return names;
+  };
 };
 
 inline std::ostream &operator<<(std::ostream &os, Element &e) {
   os << "Element:" << std::endl;
-  os << "  tagName: " << e.tagName << std::endl;
+  os << "  tagName: " << e.getTagName() << std::endl;
   os << "  elementType: " << e.nodeType << std::endl;
   return os;
 };
 
 class CharacterData : public Node {
- public:
-  std::string data;
-  CharacterData() : Node(NodeType::TEXT_NODE) { data = ""; };
   unsigned long length;
+  std::string data;
+
+ public:
+  CharacterData(std::string txt) : Node(NodeType::TEXT_NODE) {
+    data = txt;
+  };
+  inline std::string getData() { return data; }
+  inline void setData(std::string data) { data = data; }
   void appendData(std::string data) { this->data.append(data); }
 };
 
 class Text : public CharacterData {
  public:
-  Text(std::string txt) : CharacterData() { this->data = txt; };
-  std::string wholeText() { return this->data; };
+  Text(std::string txt) : CharacterData(txt){};
+  std::string wholeText() { return getData(); };
 };
 
 inline std::ostream &operator<<(std::ostream &os, Text &t) {
@@ -113,6 +146,7 @@ class DOMImplementation {
 };
 
 enum DocumentReadyState { loading, interactive, complete };
+
 class Document : public Node {
  public:
   DOMImplementation *implementation;
@@ -125,22 +159,8 @@ class Document : public Node {
   std::string contentType;
 
   DocumentReadyState readyState;
-  // Element documentElement;
   Element *createElement(std::string name) { return new Element(name); };
   Text *createText(std::string data) { return new Text(data); };
-  void printAllNode() {
-    std::queue<Node *> q;
-    q.push(this);
-    while (!q.empty()) {
-      Node *node = q.front();
-      q.pop();
-      std::cout << node << std::endl;
-      ToyScopyUtil::logUtil("node type: %d", node->nodeType);
-      for (auto n : node->childNodes) {
-        std::cout << n << std::endl;
-      }
-    }
-  }
 };
 
 }  // namespace DOM

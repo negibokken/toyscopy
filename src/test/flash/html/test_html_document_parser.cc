@@ -20,7 +20,7 @@ TEST(HTMLDocumentParser, ParseSimpleHtml) {
         case DOM::NodeType::ELEMENT_NODE: {
           DOM::Element *ele = reinterpret_cast<DOM::Element *>(n);
           std::cout << ele->nodeType << std::endl;
-          std::cout << ele->tagName << std::endl;
+          std::cout << ele->getTagName() << std::endl;
           break;
         }
         case DOM::NodeType::TEXT_NODE: {
@@ -51,7 +51,7 @@ TEST(HTMLDocumentParser, ParseSimpleHtmlPlusBody) {
         case DOM::NodeType::ELEMENT_NODE: {
           DOM::Element *ele = reinterpret_cast<DOM::Element *>(n);
           std::cout << ele->nodeType << std::endl;
-          std::cout << ele->tagName << std::endl;
+          std::cout << ele->getTagName() << std::endl;
           break;
         }
         case DOM::NodeType::TEXT_NODE: {
