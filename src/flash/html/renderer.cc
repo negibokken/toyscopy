@@ -20,7 +20,7 @@ RenderObject *RenderObject::createObject(DOM::Node *node, RenderStyle *style) {
 
 void RenderInline::layout() {
   int itr = 0;
-  std::string dom_str = reinterpret_cast<DOM::Text *>(this->node)->data;
+  std::string dom_str = reinterpret_cast<DOM::Text *>(this->node)->getData();
   const int MAX_CHAR = 4096;
   char data[MAX_CHAR];
   while (dom_str[itr] != '\0' || itr > MAX_CHAR - 1) {
@@ -67,8 +67,8 @@ void Renderer::render() {
 
     ToyScopyUtil::logUtil("======");
     ToyScopyUtil::logUtil("nodeType: %d", node->nodeType);
-    ToyScopyUtil::logUtil("textnode: %s",
-                          reinterpret_cast<DOM::Text *>(node)->data.c_str());
+    ToyScopyUtil::logUtil(
+        "textnode: %s", reinterpret_cast<DOM::Text *>(node)->getData().c_str());
 
     // Process CSS Style
     CSS::Style s;
