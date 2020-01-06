@@ -228,13 +228,13 @@ void HTMLDocumentParser::setInsertionMode(Mode mode) {
 
 void HTMLDocumentParser::pushOpenElement(DOM::Node* n) {
   DOM::Element* ele = static_cast<DOM::Element*>(n);
-  ToyScopyUtil::logUtil("*** pushed %s", ele->tagName.c_str());
+  ToyScopyUtil::logUtil("*** pushed %s", ele->getTagName().c_str());
   open_elements.push_back(n);
 }
 
 void HTMLDocumentParser::popOpenElement() {
   DOM::Element* ele = static_cast<DOM::Element*>(open_elements.back());
-  ToyScopyUtil::logUtil("*** popped: %s", ele->tagName.c_str());
+  ToyScopyUtil::logUtil("*** popped: %s", ele->getTagName().c_str());
   open_elements.pop_back();
 }
 
@@ -242,7 +242,7 @@ void HTMLDocumentParser::popOpenElementIf(std::string tagName) {
   DOM::Element* ele = static_cast<DOM::Element*>(open_elements.back());
   if (open_elements.size() == 0) return;
   if (ele->getTagName() != tagName) return;
-  ToyScopyUtil::logUtil("*** popped: %s", ele->tagName.c_str());
+  ToyScopyUtil::logUtil("*** popped: %s", ele->getTagName().c_str());
   open_elements.pop_back();
 }
 
@@ -250,7 +250,7 @@ void HTMLDocumentParser::popOpenElementIf(DOM::NodeType type) {
   if (open_elements.size() == 0) return;
   if (open_elements.back()->nodeType != type) return;
   DOM::Text* text = static_cast<DOM::Text*>(open_elements.back());
-  ToyScopyUtil::logUtil("*** popped: %s", text->data.c_str());
+  ToyScopyUtil::logUtil("*** popped: %s", text->getData().c_str());
   open_elements.pop_back();
 }
 
@@ -261,8 +261,8 @@ void HTMLDocumentParser::setFramesetOkFlag(std::string str) {
 void HTMLDocumentParser::appendToCurrentNode(DOM::Node* n) {
   DOM::Element* ele = static_cast<DOM::Element*>(open_elements.back());
   DOM::Element* child = static_cast<DOM::Element*>(n);
-  ToyScopyUtil::logUtil("append to %s", ele->tagName.c_str());
-  ToyScopyUtil::logUtil("appended: %s", child->tagName.c_str());
+  ToyScopyUtil::logUtil("append to %s", ele->getTagName().c_str());
+  ToyScopyUtil::logUtil("appended: %s", child->getTagName().c_str());
   if (open_elements.size() > 0 &&
       open_elements.back()->nodeType == DOM::NodeType::TEXT_NODE) {
     popOpenElement();
@@ -303,7 +303,7 @@ void HTMLDocumentParser::appendCharacterToken(std::string data) {
     ToyScopyUtil::logUtil("**********");
     DOM::Element* ele = static_cast<DOM::Element*>(open_elements.back());
     ToyScopyUtil::logUtil("%d", ele->nodeType);
-    ToyScopyUtil::logUtil("%s", ele->tagName.c_str());
+    ToyScopyUtil::logUtil("%s", ele->getTagName().c_str());
     open_elements.back()->appendChild(node);
     pushOpenElement(node);
   }

@@ -82,15 +82,17 @@ void ToyScopyApp::load() {
   ToyScopyUtil::logUtil("=== header ===");
   for (auto n : hdp->head_pointer->childNodes) {
     DOM::Element *ele = static_cast<DOM::Element *>(n);
-    ToyScopyUtil::logUtil("%s", ele->tagName.c_str());
-    ToyScopyUtil::logUtil("attr: %d", ele->attributes.size());
-    for (auto attr : ele->attributes) {
-      ToyScopyUtil::logUtil("%s = %s", attr.first.c_str(), attr.second.c_str());
+    ToyScopyUtil::logUtil("%s", ele->getTagName().c_str());
+    std::vector<std::string> attributeNames = ele->getAttributeNames();
+    ToyScopyUtil::logUtil("attr: %d", ele->getAttributeNames().size());
+    for (auto attr : attributeNames) {
+      ToyScopyUtil::logUtil("%s = %s", attr.c_str(),
+                            ele->getAttribute(attr).c_str());
     }
     ToyScopyUtil::logUtil("child: %d", ele->childNodes.size());
     for (auto child : ele->childNodes) {
       DOM::Text *t = static_cast<DOM::Text *>(child);
-      ToyScopyUtil::logUtil("child_content: ", t->data.c_str());
+      ToyScopyUtil::logUtil("child_content: ", t->getData().c_str());
     }
   }
   ToyScopyUtil::logUtil("=== body ===");
@@ -105,7 +107,7 @@ void ToyScopyApp::load() {
       switch (cur->nodeType) {
         case DOM::ELEMENT_NODE: {
           DOM::Element *element = static_cast<DOM::Element *>(cur);
-          ToyScopyUtil::logUtil("tag: ", element->tagName.c_str());
+          ToyScopyUtil::logUtil("tag: ", element->getTagName().c_str());
         }
         case DOM::TEXT_NODE: {
           DOM::Text *textnode = static_cast<DOM::Text *>(cur);
