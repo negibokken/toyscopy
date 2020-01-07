@@ -10,10 +10,14 @@ inline bool isKindOfSpace(char cc) {
   return (cc == '\t' || cc == 0x0A || cc == 0x0C || cc == ' ');
 }
 
+inline char asciiUpper2lower(char cc) {
+  return ('A' <= cc && cc <= 'Z') ? cc + 32 : cc;
+}
+
 inline std::string toASCIIlower(std::string str) {
   for (int i = 0; i < str.size(); i++) {
     if ('A' <= str[i] && str[i] <= 'Z') {
-      str[i] -= 32;
+      str[i] = asciiUpper2lower(str[i]);
     }
   }
   return str;
@@ -26,10 +30,6 @@ inline bool isASCIIAlphabet(char cc) {
 inline bool isASCIIUpper(char cc) { return ('A' <= cc && cc <= 'Z'); }
 
 inline bool isASCIILower(char cc) { return ('a' <= cc && cc <= 'z'); }
-
-inline char asciiUpper2lower(char cc) {
-  return ('A' <= cc && cc <= 'Z') ? cc + 32 : cc;
-}
 
 }  // namespace ToyScopyUtil
 
