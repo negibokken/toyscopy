@@ -33,3 +33,8 @@
 
 # Auto generated
 Makefile
+
+coverage
+coverage.info
+coverageFiltered.info
+lcovHtml

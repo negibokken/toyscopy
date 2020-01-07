@@ -1,0 +1,7 @@
+#!/bin/bash
+
+./MyTest
+# cd CMakeFiles/MyTest.dir
+lcov -d . -c -o coverage.info
+lcov -r coverage.info '/*/v1/*' '/*/googletest-src/*' '/*/Xcode*/*' -o coverageFiltered.info
+genhtml -o lcovHtml --num-spaces 4 -s --legend coverageFiltered.info

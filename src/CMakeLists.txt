@@ -1,6 +1,9 @@
 # set(CMAKE_OSX_SYSROOT macosx10.14)
 # set(CMAKE_OSX_DEPLOYMENT_TARGET "10.5")
 
+SET(CMAKE_CXX_FLAGS  "${CMAKE_CXX_FLAGS} --coverage")
+SET(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} --coverage")
+
 set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 # Download and unpack googletest at configure time
 configure_file(CMakeLists.txt.in googletest-download/CMakeLists.txt)

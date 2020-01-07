@@ -1,6 +1,7 @@
 # ToyScopy
 
 [![CircleCI](https://circleci.com/gh/negibokken/toyscopy/tree/master.svg?style=svg)](https://circleci.com/gh/negibokken/toyscopy/tree/master)
+[![codecov](https://codecov.io/gh/negibokken/toyscopy/branch/master/graph/badge.svg)](https://codecov.io/gh/negibokken/toyscopy)
 [![](http://img.shields.io/badge/license-MIT-blue.svg)](./LICENSE)
 
 ToyScopy is a toy browser written in C++.

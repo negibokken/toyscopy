@@ -13,7 +13,7 @@ jobs:
       - checkout
       - run:
           command: |
-            apt-get update && apt-get install -y curl cmake git gcc g++ pkg-config libgtk-3-dev libgtkmm-3.0-dev libcurl4-openssl-dev
+            apt-get update && apt-get install -y curl cmake git gcc g++ pkg-config libgtk-3-dev libgtkmm-3.0-dev libcurl4-openssl-dev lcov
       - run:
           command: |
             cd src
@@ -23,6 +23,13 @@ jobs:
           command: |
             cd src
             ./MyTest
+      - run:
+          command: |
+            cd src
+            ./scr/coverage_make
+      - run:
+          command: |
+            bash <(curl -s https://codecov.io/bash) -f coverageFiltered.info || echo "Codecov did not collect coverage reports"
 
 # Orchestrate or schedule a set of jobs, see https://circleci.com/docs/2.0/workflows/
 workflows:
