@@ -1,6 +1,9 @@
 # set(CMAKE_OSX_SYSROOT macosx10.14)
 # set(CMAKE_OSX_DEPLOYMENT_TARGET "10.5")
 
+SET(CMAKE_CXX_FLAGS  "${CMAKE_CXX_FLAGS} --coverage")
+SET(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} --coverage")
+
 set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 # Download and unpack googletest at configure time
 configure_file(CMakeLists.txt.in googletest-download/CMakeLists.txt)
@@ -31,7 +34,7 @@ INCLUDE_DIRECTORIES(${CMAKE_CURRENT_BINARY_DIR}/googletest-src/googletest/includ
 # The gtest/gtest_main targets carry header search path
 # dependencies automatically when using CMake 2.8.11 or
 # later. Otherwise we have to add them here ourselves.
-cmake_minimum_required(VERSION 3.14)
+cmake_minimum_required(VERSION 3.10)
 project(toyscopy)
 if (CMAKE_VERSION VERSION_LESS 2.8.11)
   include_directories("${gtest_SOURCE_DIR}/include")
