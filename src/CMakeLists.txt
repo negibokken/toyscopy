@@ -75,7 +75,7 @@ TARGET_LINK_LIBRARIES(main flash)
 
 ## Test
 enable_testing()
-add_executable(MyTest test/test_main.cc test/flash/html/test_html_document_parser.cc test/flash/html/test_dom.cc test/flash/html/test_tokenizer.cc test/utils/test_log_util.cc test/utils/test_simple_http_client.cc)
+add_executable(MyTest test/test_main.cc test/flash/html/test_html_document_parser.cc test/flash/html/test_dom.cc test/flash/html/test_tokenizer.cc test/flash/html/test_html_util.cc  test/utils/test_log_util.cc test/utils/test_simple_http_client.cc)
 target_link_libraries(MyTest flash)
 target_link_libraries(MyTest ${CURL_LIBRARIES})
 INCLUDE_DIRECTORIES(test/flash)

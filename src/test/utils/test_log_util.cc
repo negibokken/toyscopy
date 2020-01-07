@@ -1,8 +1,8 @@
+#include "../../utils/log_util.h"
+
 #include <gtest/gtest.h>
 #include <gtest/internal/gtest-port.h>
 #include <string>
-
-#include "../../utils/log_util.h"
 
 TEST(LogUtil, NoOutputTest) {
   testing::internal::CaptureStdout();
