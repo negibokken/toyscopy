@@ -3,13 +3,30 @@ version: 2.1
 
 # Use a package of configuration called an orb, see https://circleci.com/docs/2.0/orb-intro/
 orbs:
-  # Declare a dependency on the welcome-orb
-  welcome: circleci/welcome-orb@0.3.1
+  codecov: codecov/codecov@1.0.5
+
+jobs:
+  build-test:
+    docker:
+      - image: ubuntu:18.04
+    steps:
+      - checkout
+      - run:
+          command: |
+            apt-get update && apt-get install -y curl cmake git gcc g++ pkg-config libgtk-3-dev libgtkmm-3.0-dev libcurl4-openssl-dev
+      - run:
+          command: |
+            cd src
+            cmake .
+            make
+      - run:
+          command: |
+            cd src
+            ./MyTest
 
 # Orchestrate or schedule a set of jobs, see https://circleci.com/docs/2.0/workflows/
 workflows:
-  # Name the workflow "Welcome"
-  Welcome:
-    # Run the welcome/run job in its own container
+  version: 2
+  build-test-stage:
     jobs:
-      - welcome/run
+      - build-test
