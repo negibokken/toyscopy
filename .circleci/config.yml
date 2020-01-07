@@ -29,6 +29,7 @@ jobs:
             ./scr/coverage_make
       - run:
           command: |
+            cd src
             bash <(curl -s https://codecov.io/bash) -f coverageFiltered.info || echo "Codecov did not collect coverage reports"
 
 # Orchestrate or schedule a set of jobs, see https://circleci.com/docs/2.0/workflows/
