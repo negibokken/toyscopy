@@ -326,7 +326,7 @@ bool Tokenizer::pumpToken() {
 }
 
 bool Tokenizer::isAppropriateEndTag() {
-  return lastStartToken->tagName == token->tagName;
+  return lastStartToken->getTagName() == token->getTagName();
 }
 
 void Tokenizer::setState(State state) { this->state = state; }

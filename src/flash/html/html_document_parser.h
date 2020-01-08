@@ -23,6 +23,8 @@ class HTMLDocumentParser {
     in_frameset, after_frameset, after_after_body, after_after_frameset
   };
   // clang-format on
+
+  DOM::Node *head_pointer;
   HTMLDocumentParser(std::string _doc) {
     ToyScopyUtil::logUtil("loaded document");
     ToyScopyUtil::logUtil("%s", _doc.c_str());
@@ -32,26 +34,30 @@ class HTMLDocumentParser {
     this->tokenizer = new Tokenizer::Tokenizer(this->doc);
     this->insertion_mode = Mode::initial;
   };
+  void parse();
+  DOM::Document *document;
 
-  int *head = NULL;
-  int itr = 0;
+  inline void setDocumentTitle(const std::string title) {
+    document_title = title;
+  };
+  inline std::string getDocumentTitle() const { return document_title; };
+
+ private:
   std::string doc;
   std::string charset;
   std::string *characterSet = &charset;
   std::string *inputEncoding = &charset;
   std::string contentType;
+
   Mode insertion_mode;
   Mode original_insertion_mode;
   std::vector<DOM::Node *> open_elements;
 
-  DOM::Document *document;
   std::string frameset_ok;
   Tokenizer::Tokenizer *tokenizer;
-  DOM::Node *head_pointer;
 
   std::string document_title;
 
-  void parse();
   void consumeIgnoreToken();
   void consumeToken();
   void setInsertionMode(Mode mode);
@@ -69,10 +75,6 @@ class HTMLDocumentParser {
   void appendCharacterToken(std::string data);
   void stopParsing();
   DOM::Node *findTextNode();
-  inline void setDocumentTitle(const std::string title) {
-    document_title = title;
-  };
-  inline std::string getDocumentTitle() const { return document_title; };
 };
 
 #endif
