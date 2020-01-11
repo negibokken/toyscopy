@@ -118,9 +118,7 @@ class CharacterData : public Node {
   std::string data;
 
  public:
-  CharacterData(std::string txt) : Node(NodeType::TEXT_NODE) {
-    data = txt;
-  };
+  CharacterData(std::string txt) : Node(NodeType::TEXT_NODE) { data = txt; };
   inline std::string getData() { return data; }
   inline void setData(std::string data) { data = data; }
   void appendData(std::string data) { this->data.append(data); }

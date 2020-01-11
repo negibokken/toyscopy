@@ -22,6 +22,13 @@ TEST(DOM, DOMappendChildText) {
   EXPECT_EQ(parent->childNodes.size(), 1);
 }
 
+TEST(DOM, DOMnodeChild) {
+  DOM::Node *parent = new DOM::Node(DOM::NodeType::DOCUMENT_NODE);
+
+  EXPECT_EQ(parent->firstChild(), nullptr);
+  EXPECT_EQ(parent->lastChild(), nullptr);
+}
+
 TEST(DOMNode, DOMNode) {
   DOM::Node *parent = new DOM::Node(DOM::NodeType::DOCUMENT_NODE);
   DOM::Node *node = new DOM::Node(DOM::NodeType::ELEMENT_NODE);
@@ -32,6 +39,13 @@ TEST(DOMNode, DOMNode) {
   EXPECT_EQ(node->nodeName, ret.nodeName);
   EXPECT_EQ(parent->childNodes.size(), 1);
   DOM::Node r = parent->appendChild(node);
+}
+
+TEST(DOM, DocumentType) {
+  DOM::DocumentType *d = new DOM::DocumentType("name", "publicId", "systemId");
+  EXPECT_STREQ(d->name.c_str(), "name");
+  EXPECT_STREQ(d->publicId.c_str(), "publicId");
+  EXPECT_STREQ(d->systemId.c_str(), "systemId");
 }
 
 TEST(DOMElement, ElementTest) {
@@ -62,4 +76,15 @@ TEST(DOMDocument, DocumentTest) {
 
   EXPECT_STREQ(text->wholeText().c_str(), "hello");
   EXPECT_STREQ(element->getTagName().c_str(), "body");
+}
+
+TEST(DOMDocument, DocumentImplementation) {
+  DOM::Document *doc = new DOM::Document();
+
+  DOM::DocumentType *dtype =
+      doc->implementation->createDocumentType("name", "publicId", "systemId");
+
+  EXPECT_STREQ(dtype->name.c_str(), "name");
+  EXPECT_STREQ(dtype->publicId.c_str(), "publicId");
+  EXPECT_STREQ(dtype->systemId.c_str(), "systemId");
 }
