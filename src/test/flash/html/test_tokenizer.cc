@@ -30,6 +30,20 @@ TEST(TokenizerTest, SimpleWithDocType) {
   EXPECT_EQ(8, tokenNum);
 }
 
+TEST(TokenizerTest, SimpleWithSelfClosingTag) {
+  Tokenizer::Tokenizer *t = new Tokenizer::Tokenizer("<html>hello<br/></html>");
+
+  int tokenNum = 0;
+  while (t->pumpToken()) {
+    if (t->canTakeNextToken()) {
+      t->consumeToken();
+      tokenNum++;
+    }
+  }
+  // Start Tag + 5 Character Token + br tag token + End Tag Token = 7 Token
+  EXPECT_EQ(8, tokenNum);
+}
+
 TEST(TokenizerTest, SimpleWithWiredDocType) {
   // Note: <!DOCTYPE  html> includes two spaces in front of name and it's Html.
   Tokenizer::Tokenizer *t =
@@ -110,19 +124,37 @@ TEST(TokenizerTest, RAWTextIncludeLessThanSignAndSlashTest) {
   EXPECT_EQ(40, tokenNum);
 }
 
-// TEST(TokenizerTest, SimpleWithAnchor) {
-//   Tokenizer::Tokenizer *t = new Tokenizer::Tokenizer(
-//       "<html><a Href =\"https://example.com\" >hello</a></html>");
-//
-//   int tokenNum = 0;
-//   while (t->pumpToken()) {
-//     if (t->canTakeNextToken()) {
-//       Tag::Token *tok = t->nextToken();
-//       std::cout << tok->getTagName() << ":" << tok->getValue() << std::endl;
-//       t->consumeToken();
-//       tokenNum++;
-//     }
-//   }
-//   // 4 Tag + 5 Character Token
-//   EXPECT_EQ(9, tokenNum);
-// }
+TEST(TokenizerTest, SimpleWithAnchor) {
+  // Note: second attribute value should be Capital
+  Tokenizer::Tokenizer *t = new Tokenizer::Tokenizer(
+      "<html><a HRef =\"https://example.com\" "
+      "href=\"https://example.com\"><test test=\"test\"/><test "
+      "test>hello</a></html>");
+
+  int tokenNum = 0;
+  while (t->pumpToken()) {
+    if (t->canTakeNextToken()) {
+      t->consumeToken();
+      tokenNum++;
+    }
+  }
+  // 6 Tag + 5 Character Token
+  EXPECT_EQ(11, tokenNum);
+}
+
+TEST(TokenizerTest, SimpleWeirdTag) {
+  Tokenizer::Tokenizer *t = new Tokenizer::Tokenizer(
+      "<html><invalidtag true content= 'single_quoted' "
+      "content=unquoted content=unquoted2>hello</invalid></html>");
+
+  int tokenNum = 0;
+  while (t->pumpToken()) {
+    if (t->canTakeNextToken()) {
+      t->consumeToken();
+      tokenNum++;
+    }
+  }
+  // Start Tag + Weird Tag + 5 Character Token + Weird End Tag + End Tag Token =
+  // 9 Token
+  EXPECT_EQ(9, tokenNum);
+}

@@ -12,6 +12,7 @@ void Tokenizer::ignoreToken(char c) {
   while (cc == '\t' || cc == 0x0A || cc == 0x0C || cc == ' ') {
     cc = nextInputCharacter();
   }
+  index--;
 }
 
 bool Tokenizer::pumpToken() {
@@ -87,6 +88,7 @@ bool Tokenizer::pumpToken() {
     case State::AttributeNameState: {
       if (cc == '\t' || cc == 0x0A || cc == 0x0C || cc == ' ' || cc == '/' ||
           cc == '>' || cc == EOF) {
+        reconsumeToken();
         setState(State::AfterAttributeNameState);
         return true;
       } else if (cc == '=') {
@@ -114,6 +116,7 @@ bool Tokenizer::pumpToken() {
         return true;
       } else if (cc == '>') {
         setState(State::DataState);
+        emitToken();
         return true;
       } else {
         createAttribute();
@@ -136,6 +139,7 @@ bool Tokenizer::pumpToken() {
         return true;
       } else {
         setState(State::AttributeValueUnQuotedState);
+        reconsumeToken();
         return true;
       }
       break;
@@ -152,11 +156,40 @@ bool Tokenizer::pumpToken() {
       break;
     }
     case State::AttributeValueSingleQuotedState: {
-      ToyScopyUtil::logUtil("AttributeSingleQuotedState is not implemented");
+      ToyScopyUtil::logUtil("AttributeSingleQuotedState: %c", cc);
+      if (cc == '\'') {
+        setState(State::AfterAttributeValueQuotedState);
+        return true;
+      } else if (cc == '&') {
+        // TODO:
+        return false;
+      } else if (cc == 0x00) {
+        // TODO
+        return false;
+      } else if (cc == EOF) {
+        // TODO
+        return false;
+      } else {
+        appendAttributeValue(cc);
+        return true;
+      }
       break;
     }
     case State::AttributeValueUnQuotedState: {
-      ToyScopyUtil::logUtil("AttributeUnQuotedState is not implemented");
+      ToyScopyUtil::logUtil("AttributeUnQuotedState: %c", cc);
+      if (ToyScopyUtil::isKindOfSpace(cc)) {
+        setState(State::BeforeAttributeNameState);
+        return true;
+      } else if (cc == '&') {
+        // TODO
+      } else if (cc == '>') {
+        setState(State::DataState);
+        emitToken();
+        return true;
+      } else {
+        appendAttributeValue(cc);
+        return true;
+      }
       break;
     }
     case State::AfterAttributeValueQuotedState: {
