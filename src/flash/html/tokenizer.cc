@@ -89,9 +89,6 @@ bool Tokenizer::pumpToken() {
           cc == '>' || cc == EOF) {
         setState(State::AfterAttributeNameState);
         return true;
-      } else if (cc == '/') {
-        setState(State::SelfClosingStartTagState);
-        return true;
       } else if (cc == '=') {
         setState(State::BeforeAttributeValueState);
         return true;
