@@ -110,8 +110,19 @@ TEST(TokenizerTest, RAWTextIncludeLessThanSignAndSlashTest) {
   EXPECT_EQ(40, tokenNum);
 }
 
-
-  char cc;
-  while (t->pumpToken()) {
-  }
-}
+// TEST(TokenizerTest, SimpleWithAnchor) {
+//   Tokenizer::Tokenizer *t = new Tokenizer::Tokenizer(
+//       "<html><a Href =\"https://example.com\" >hello</a></html>");
+//
+//   int tokenNum = 0;
+//   while (t->pumpToken()) {
+//     if (t->canTakeNextToken()) {
+//       Tag::Token *tok = t->nextToken();
+//       std::cout << tok->getTagName() << ":" << tok->getValue() << std::endl;
+//       t->consumeToken();
+//       tokenNum++;
+//     }
+//   }
+//   // 4 Tag + 5 Character Token
+//   EXPECT_EQ(9, tokenNum);
+// }
