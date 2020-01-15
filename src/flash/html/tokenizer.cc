@@ -9,7 +9,7 @@ char Tokenizer::nextInputCharacter() { return stream[index++]; }
 
 void Tokenizer::ignoreToken(char c) {
   char cc = c;
-  while (cc == '\t' || cc == 0x0A || cc == 0x0C || cc == 0x0A) {
+  while (cc == '\t' || cc == 0x0A || cc == 0x0C || cc == ' ') {
     cc = nextInputCharacter();
   }
 }
@@ -289,6 +289,7 @@ bool Tokenizer::pumpToken() {
       } else {
         emitToken('<');
         emitToken('/');
+        reconsumeToken();
         setState(State::RAWTEXTState);
         return true;
       }
