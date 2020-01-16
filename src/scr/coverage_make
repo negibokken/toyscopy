@@ -1,7 +1,12 @@
 #!/bin/bash
 
+# delete previous files
+for i in `find . -name "*gcda"`; do rm $i; done
+# Execute test
 ./MyTest
-# cd CMakeFiles/MyTest.dir
+# Collect coverage info
 lcov -d . -c -o coverage.info
+# Delete unnecessary codes' coverage
 lcov -r coverage.info '/*/v1/*' '/*/googletest-src/*' '/*/Xcode*/*' -o coverageFiltered.info
+# Generate html files
 genhtml -o lcovHtml --num-spaces 4 -s --legend coverageFiltered.info

@@ -54,6 +54,10 @@ void Token::setTagType() {
     elementType = ElementType::meta;
   } else if (tagName == "style") {
     elementType = ElementType::style;
+  } else if (tagName == "br") {
+    elementType = ElementType::br;
+  } else if (tagName == "input") {
+    elementType = ElementType::input;
   } else {
     this->elementType = ElementType::none;
   }
