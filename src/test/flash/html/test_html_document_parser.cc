@@ -73,7 +73,8 @@ TEST(HTMLDocumentParser, ParseSimpleHtmlPlusBody) {
 
 TEST(HTMLDocumentParser, ParseStandard) {
   std::string str =
-      "<!doctype html><html><head>"
+      // "<!doctype html>"
+      "<html><head>"
       "<meta charset=\"utf-8\" />"
       "<meta http-equiv=\"Content-type\" content=\"text/html; charset=utf-8\""
       "/>"
