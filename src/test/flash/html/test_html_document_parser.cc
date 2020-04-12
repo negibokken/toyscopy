@@ -75,7 +75,7 @@ TEST(HTMLDocumentParser, ParseStandard) {
   std::string str =
       "<!doctype html>"
       "<html>"
-      // "<head>"
+      "<head>"
       // "<meta charset=\"utf-8\" />"
       // "<meta http-equiv=\"Content-type\" content=\"text/html;
       // charset=utf-8\""
@@ -99,7 +99,7 @@ TEST(HTMLDocumentParser, ParseStandard) {
       // "        box-shadow: 2px 3px 7px 2px rgba(0,0,0,0.02);"
       // "    }"
       // "</style>"
-      // "</head>"
+      "</head>"
       "<body>"
       // "<div>"
       // "<h1>ToyScopy</h1>"
