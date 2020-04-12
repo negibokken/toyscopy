@@ -1,0 +1,4 @@
+#!/bin/bash
+for i in `find . -name "*.gcda"`; do
+  rm $i;
+done
