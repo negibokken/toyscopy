@@ -22,7 +22,7 @@ jobs:
       - run:
           command: |
             cd src
-            ./MyTest
+            DEBUG=true ./MyTest
       - run:
           command: |
             cd src

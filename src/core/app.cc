@@ -59,6 +59,7 @@ void ToyScopyApp::load() {
   if (src.empty()) src = defaultSrc;
   HTMLDocumentParser *hdp = new HTMLDocumentParser(src);
   hdp->parse();
+  ToyScopyUtil::logUtil("parse finished");
 
   set_title(hdp->getDocumentTitle());
 

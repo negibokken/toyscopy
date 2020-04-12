@@ -42,10 +42,9 @@ class Node {
   Element *parentElement;
   std::vector<Node *> childNodes;
 
-  Node appendChild(Node *node) {
+  virtual Node appendChild(Node *node) {
     ToyScopyUtil::logUtil("node type: %d", node->nodeType);
     node->parentNode = this;
-    node->parentElement = reinterpret_cast<Element *>(this);
 
     this->isConnected = true;
     node->isConnected = true;
@@ -82,7 +81,7 @@ class DocumentType : public Node {
 
 class Element : public Node {
  private:
-  std::string tagName;
+  std::string tagName = "";
   std::map<std::string, std::string> attributes;
   void setTagName(std::string str) { tagName = str; }
 
@@ -104,6 +103,12 @@ class Element : public Node {
     }
     return names;
   };
+  virtual Node appendChild(Node *node) {
+    ToyScopyUtil::logUtil("node type: %d", node->nodeType);
+    Node::appendChild(node);
+    node->parentElement = this;
+    return *node;
+  }
 };
 
 inline std::ostream &operator<<(std::ostream &os, Element &e) {
@@ -115,7 +120,7 @@ inline std::ostream &operator<<(std::ostream &os, Element &e) {
 
 class CharacterData : public Node {
   unsigned long length;
-  std::string data;
+  std::string data = "";
 
  public:
   CharacterData(std::string txt) : Node(NodeType::TEXT_NODE) { data = txt; };
