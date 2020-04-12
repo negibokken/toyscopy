@@ -73,9 +73,9 @@ TEST(HTMLDocumentParser, ParseSimpleHtmlPlusBody) {
 
 TEST(HTMLDocumentParser, ParseStandard) {
   std::string str =
-      // "<!doctype html>"
+      "<!doctype html>"
       "<html><head>"
-      // "<meta charset=\"utf-8\" />"
+      "<meta charset=\"utf-8\" />"
       "<meta http-equiv=\"Content-type\" content=\"text/html; charset=utf-8\""
       "/>"
       "<meta name=\"viewport\" content=\"width=device-width,"
@@ -97,14 +97,15 @@ TEST(HTMLDocumentParser, ParseStandard) {
       "        box-shadow: 2px 3px 7px 2px rgba(0,0,0,0.02);"
       "    }"
       "</style>"
-      "</head><body><div>"
+      "</head><body>"
+      // "<div>"
       // "<h1>ToyScopy</h1>"
-      // "<p>A tiny browser written in C++.</p>"
+      "<p>A tiny browser written in C++.</p>"
       // "<p><a href=\"https://github.com/negibokken/toyscopy\">"
       // "For more information, see here:
       // https://github.com/negibokken/toyscopy"
       // "</a></p>"
-      "</div>"
+      // "</div>"
       "</body></html>";
 
   HTMLDocumentParser h(str);
