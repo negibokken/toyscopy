@@ -1,8 +1,8 @@
-#include "../../../flash/html/html_document_parser.h"
-#include "gtest/gtest.h"
-
 #include <queue>
 #include <string>
+
+#include "../../../flash/html/html_document_parser.h"
+#include "gtest/gtest.h"
 
 TEST(HTMLDocumentParser, ParseSimpleHtml) {
   std::string str = "<html>helloworld</html>";
@@ -29,12 +29,15 @@ TEST(HTMLDocumentParser, ParseSimpleHtml) {
                     << std::endl;
           break;
         }
-        default: { break; }
+        default: {
+          break;
+        }
       }
     }
   }
 }
 
+// test
 TEST(HTMLDocumentParser, ParseSimpleHtmlPlusBody) {
   std::string str = "<html><body>helloworld</body></html>";
   HTMLDocumentParser h(str);
@@ -60,7 +63,9 @@ TEST(HTMLDocumentParser, ParseSimpleHtmlPlusBody) {
                     << std::endl;
           break;
         }
-        default: { break; }
+        default: {
+          break;
+        }
       }
     }
   }
