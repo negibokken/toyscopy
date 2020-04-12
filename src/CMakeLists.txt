@@ -1,3 +1,4 @@
+set (CMAKE_CXX_STANDARD 17)
 # set(CMAKE_OSX_SYSROOT macosx10.14)
 # set(CMAKE_OSX_DEPLOYMENT_TARGET "10.5")
 
@@ -63,7 +64,7 @@ LINK_DIRECTORIES(${CURL_LIBRARY_DIR})
 ADD_DEFINITIONS(${CURL_CFLAGS_OTHER})
 # target_link_libraries(curl-demo ${CURL_LIBRARIES})
 
-set (CMAKE_CXX_STANDARD 14)
+# set (CMAKE_CXX_STANDARD 17)
 # Now simply link against gtest or gtest_main as needed. Eg
 # add_executable(main core/test.cc)
 add_library(flash flash/html/html_document_parser.cc flash/html/renderer.cc flash/html/tokenizer.cc flash/html/token.cc  utils/simple_http_client.cc  utils/log_util.cc)
