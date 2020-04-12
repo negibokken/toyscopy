@@ -103,6 +103,7 @@ TEST(HTMLDocumentParser, ParseStandard) {
       "<body>"
       // "<div>"
       // "<h1>ToyScopy</h1>"
+      "aaaaa"
       // "<p>A tiny browser written in C++.</p>"
       // "<p><a href=\"https://github.com/negibokken/toyscopy\">"
       // "For more information, see here:
