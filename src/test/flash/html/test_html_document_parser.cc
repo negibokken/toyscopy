@@ -75,7 +75,7 @@ TEST(HTMLDocumentParser, ParseStandard) {
   std::string str =
       // "<!doctype html>"
       "<html><head>"
-      "<meta charset=\"utf-8\" />"
+      // "<meta charset=\"utf-8\" />"
       "<meta http-equiv=\"Content-type\" content=\"text/html; charset=utf-8\""
       "/>"
       "<meta name=\"viewport\" content=\"width=device-width,"
@@ -99,7 +99,7 @@ TEST(HTMLDocumentParser, ParseStandard) {
       "</style>"
       "</head><body><div>"
       // "<h1>ToyScopy</h1>"
-      "<p>A tiny browser written in C++.</p>"
+      // "<p>A tiny browser written in C++.</p>"
       // "<p><a href=\"https://github.com/negibokken/toyscopy\">"
       // "For more information, see here:
       // https://github.com/negibokken/toyscopy"
