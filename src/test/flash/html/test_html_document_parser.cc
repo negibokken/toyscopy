@@ -21,6 +21,7 @@ TEST(HTMLDocumentParser, ParseSimpleHtmlPlusBody) {
   EXPECT_STREQ(actual.c_str(), str.c_str());
 }
 
+// test
 TEST(HTMLDocumentParser, ParseStandard) {
   std::string str =
       "<!doctype html><html>"
