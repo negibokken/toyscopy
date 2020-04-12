@@ -2,6 +2,7 @@
 #define HTML_Document_Parser_h
 
 #include <stdio.h>
+
 #include <string>
 #include <vector>
 
@@ -24,6 +25,7 @@ class HTMLDocumentParser {
   };
   // clang-format on
 
+  DOM::Document *document;
   DOM::Node *head_pointer;
   HTMLDocumentParser(std::string _doc) {
     ToyScopyUtil::logUtil("loaded document");
@@ -35,7 +37,6 @@ class HTMLDocumentParser {
     this->insertion_mode = Mode::initial;
   };
   void parse();
-  DOM::Document *document;
 
   inline void setDocumentTitle(const std::string title) {
     document_title = title;
