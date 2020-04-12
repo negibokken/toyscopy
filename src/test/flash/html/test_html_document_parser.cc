@@ -99,13 +99,15 @@ TEST(HTMLDocumentParser, ParseStandard) {
       "</head><body><div>"
       "<h1>ToyScopy</h1>"
       "<p>A tiny browser written in C++.</p>"
-      "<p><a href=\"https://github.com/negibokken/toyscopy\">"
-      "For more information, see here: https://github.com/negibokken/toyscopy"
-      "</a></p></div></body></html>";
+      // "<p><a href=\"https://github.com/negibokken/toyscopy\">"
+      // "For more information, see here:
+      // https://github.com/negibokken/toyscopy"
+      // "</a></p>"
+      "</div>"
+      "</body></html>";
 
   HTMLDocumentParser h(str);
   h.parse();
-  return;
 
   std::queue<DOM::Node *> q;
   q.push(h.document);
