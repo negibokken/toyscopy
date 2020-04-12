@@ -75,8 +75,7 @@ TEST(HTMLDocumentParser, ParseStandard) {
   std::string str =
       "<!doctype html><html><head>"
       "<meta charset=\"utf-8\" />"
-      "<meta http-equiv=\"Content-type\" content=\"text/html;
-      charset=utf-8\""
+      "<meta http-equiv=\"Content-type\" content=\"text/html; charset=utf-8\""
       "/>"
       "<meta name=\"viewport\" content=\"width=device-width,"
       "initial-scale=1\" "
@@ -106,8 +105,8 @@ TEST(HTMLDocumentParser, ParseStandard) {
 
   HTMLDocumentParser h(str);
   h.parse();
-
   return;
+
   std::queue<DOM::Node *> q;
   q.push(h.document);
   while (!q.empty()) {
