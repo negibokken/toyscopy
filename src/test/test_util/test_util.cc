@@ -7,10 +7,10 @@ std::string dfs(DOM::Node *node) {
 
   // If Element <element>
   if (node->nodeType == DOM::NodeType::ELEMENT_NODE) {
-    std::cout << "element_translation" << std::endl;
+    // std::cout << "element_translation" << std::endl;
     str += ("<" + reinterpret_cast<DOM::Element *>(node)->getTagName() + ">");
   } else if (node->nodeType == DOM::NodeType::TEXT_NODE) {
-    std::cout << "text_translation" << std::endl;
+    // std::cout << "text_translation" << std::endl;
     str += (reinterpret_cast<DOM::Text *>(node)->getData());
   }
 
@@ -20,7 +20,7 @@ std::string dfs(DOM::Node *node) {
 
   // If Element </element>
   if (node->nodeType == DOM::NodeType::ELEMENT_NODE) {
-    std::cout << "end_tag_translation" << std::endl;
+    // std::cout << "end_tag_translation" << std::endl;
     str += ("</" + reinterpret_cast<DOM::Element *>(node)->getTagName() + ">");
   }
   return str;

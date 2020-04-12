@@ -5,6 +5,14 @@
 #include "../../test_util/test_util.cc"
 #include "gtest/gtest.h"
 
+TEST(HTMLDocumentParser, ParseVerySimpleHtml) {
+  std::string str = "<html></html>";
+  HTMLDocumentParser h(str);
+  h.parse();
+  std::string actual = dom2string(h.document);
+  EXPECT_STREQ(actual.c_str(), str.c_str());
+}
+
 TEST(HTMLDocumentParser, ParseSimpleHtml) {
   std::string str = "<html>helloworld</html>";
   HTMLDocumentParser h(str);
@@ -26,10 +34,9 @@ TEST(HTMLDocumentParser, ParseStandard) {
   std::string str =
       "<!doctype html><html>"
       "<head>"
-      "<meta charset=\"utf-8\" />"
+      // "<meta charset=\"utf-8\" />"
       // "<meta http-equiv=\"Content-type\" content=\"text/html;
-      // charset=utf-8\""
-      // "/>"
+      // charset=utf-8\"/>"
       // "<meta name=\"viewport\" content=\"width=device-width,"
       // "initial-scale=1\" "
       // "/>"
