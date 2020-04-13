@@ -12,7 +12,9 @@ RenderObject *RenderObject::createObject(DOM::Node *node, RenderStyle *style) {
       o = reinterpret_cast<RenderObject *>(r);
       break;
     }
-    default: { break; }
+    default: {
+      break;
+    }
   }
 
   return o;
@@ -92,7 +94,9 @@ void Renderer::render() {
         ele->paint();
         break;
       }
-      default: { break; }
+      default: {
+        break;
+      }
     }
   }
   this->window->add(*container);
