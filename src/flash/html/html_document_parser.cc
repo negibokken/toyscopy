@@ -114,6 +114,7 @@ void HTMLDocumentParser::parse() {
           DOM::Node* n = this->document->createElement("style");
           head_pointer->appendChild(n);
           pushOpenElement(n);
+          appendAttributesToCurrentNode(n);
           tokenizer->setState(Tokenizer::Tokenizer::RAWTEXTState);
           setOriginalInsertionMode(Mode::in_head);
           setInsertionMode(Mode::text);

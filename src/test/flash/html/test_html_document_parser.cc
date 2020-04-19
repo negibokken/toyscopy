@@ -9,7 +9,7 @@ TEST(HTMLDocumentParser, ParseVerySimpleHtml) {
   std::string str = "<html></html>";
   HTMLDocumentParser h(str);
   h.parse();
-  std::string actual = dom2string(h.document);
+  std::string actual = dom2string(h.document, h.head_pointer);
   EXPECT_STREQ(actual.c_str(), str.c_str());
 }
 
@@ -17,7 +17,7 @@ TEST(HTMLDocumentParser, ParseSimpleHtml) {
   std::string str = "<html>helloworld</html>";
   HTMLDocumentParser h(str);
   h.parse();
-  std::string actual = dom2string(h.document);
+  std::string actual = dom2string(h.document, h.head_pointer);
   EXPECT_STREQ(actual.c_str(), str.c_str());
 }
 
@@ -25,7 +25,7 @@ TEST(HTMLDocumentParser, ParseSimpleHtmlPlusBody) {
   std::string str = "<html><body>helloworld</body></html>";
   HTMLDocumentParser h(str);
   h.parse();
-  std::string actual = dom2string(h.document);
+  std::string actual = dom2string(h.document, h.head_pointer);
   EXPECT_STREQ(actual.c_str(), str.c_str());
 }
 
@@ -34,11 +34,10 @@ TEST(HTMLDocumentParser, ParseStandard) {
   std::string str =
       "<!doctype html><html>"
       "<head>"
-      "<meta charset=\"utf-8\" />"
+      "<meta charset=\"utf-8\"/>"
       "<meta http-equiv=\"Content-type\" content=\"text/html;charset=utf-8\"/>"
       "<meta name=\"viewport\" content=\"width=device-width,"
-      "initial-scale=1\" "
-      "/>"
+      "initial-scale=1\"/>"
       "<title>About ToyScopy</title>"
       "<style type=\"text/css\">"
       "    body {"
@@ -91,6 +90,6 @@ TEST(HTMLDocumentParser, ParseStandard) {
     }
   }
 
-  std::string actual = dom2string(h.document);
+  std::string actual = dom2string(h.document, h.head_pointer);
   EXPECT_STREQ(actual.c_str(), str.c_str());
 }
