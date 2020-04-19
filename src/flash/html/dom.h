@@ -32,17 +32,17 @@ enum NodeType {
 class Node {
  public:
   unsigned short nodeType;
-  std::string nodeName;
+  std::string nodeName = "";
 
   Node(unsigned short t) { nodeType = t; }
 
-  std::string baseURI;
+  std::string baseURI = "";
   bool isConnected;
-  Node *parentNode;
-  Element *parentElement;
-  std::vector<Node *> childNodes;
+  Node* parentNode;
+  Element* parentElement;
+  std::vector<Node*> childNodes;
 
-  virtual Node appendChild(Node *node) {
+  virtual Node appendChild(Node* node) {
     ToyScopyUtil::logUtil("node type: %d", node->nodeType);
     node->parentNode = this;
 
@@ -53,13 +53,13 @@ class Node {
     return *node;
   }
 
-  inline Node *firstChild() {
+  inline Node* firstChild() {
     if (childNodes.empty()) {
       return NULL;
     }
     return childNodes.front();
   }
-  inline Node *lastChild() {
+  inline Node* lastChild() {
     if (childNodes.empty()) {
       return NULL;
     }
@@ -69,9 +69,9 @@ class Node {
 
 class DocumentType : public Node {
  public:
-  std::string name;
-  std::string publicId;
-  std::string systemId;
+  std::string name = "";
+  std::string publicId = "";
+  std::string systemId = "";
   DocumentType(std::string name, std::string publicId, std::string systemId)
       : name(name),
         publicId(publicId),
@@ -103,7 +103,7 @@ class Element : public Node {
     }
     return names;
   };
-  virtual Node appendChild(Node *node) {
+  virtual Node appendChild(Node* node) {
     ToyScopyUtil::logUtil("node type: %d", node->nodeType);
     Node::appendChild(node);
     node->parentElement = this;
@@ -111,7 +111,7 @@ class Element : public Node {
   }
 };
 
-inline std::ostream &operator<<(std::ostream &os, Element &e) {
+inline std::ostream& operator<<(std::ostream& os, Element& e) {
   os << "Element:" << std::endl;
   os << "  tagName: " << e.getTagName() << std::endl;
   os << "  elementType: " << e.nodeType << std::endl;
@@ -135,15 +135,16 @@ class Text : public CharacterData {
   std::string wholeText() { return getData(); };
 };
 
-inline std::ostream &operator<<(std::ostream &os, Text &t) {
+inline std::ostream& operator<<(std::ostream& os, Text& t) {
   os << t.wholeText();
   return os;
 };
 
 class DOMImplementation {
  public:
-  DocumentType *createDocumentType(std::string qualifiedName,
-                                   std::string publicId, std::string systemId) {
+  DocumentType* createDocumentType(std::string qualifiedName,
+                                   std::string publicId,
+                                   std::string systemId) {
     return new DocumentType(qualifiedName, publicId, systemId);
   }
 };
@@ -152,18 +153,18 @@ enum DocumentReadyState { loading, interactive, complete };
 
 class Document : public Node {
  public:
-  DOMImplementation *implementation;
+  DOMImplementation* implementation;
   Document() : Node(NodeType::DOCUMENT_NODE){};
-  std::string URL;
-  std::string DocumentURI;
-  std::string origin;
-  std::string characterSet;
-  std::string charset;
-  std::string contentType;
+  std::string URL = "";
+  std::string DocumentURI = "";
+  std::string origin = "";
+  std::string characterSet = "";
+  std::string charset = "";
+  std::string contentType = "";
 
   DocumentReadyState readyState;
-  Element *createElement(std::string name) { return new Element(name); };
-  Text *createText(std::string data) { return new Text(data); };
+  Element* createElement(std::string name) { return new Element(name); };
+  Text* createText(std::string data) { return new Text(data); };
 };
 
 }  // namespace DOM

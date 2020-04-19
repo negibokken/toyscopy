@@ -41,11 +41,11 @@ class Tokenizer {
 
   Tokenizer(std::string stream);
   bool pumpToken();
-  Tag::Token *nextToken() {
+  Tag::Token* nextToken() {
     if (!canTakeNextToken()) {
       return NULL;
     }
-    Tag::Token *tok = tokenQueue.front();
+    Tag::Token* tok = tokenQueue.front();
     return tok;
   };
   void setState(State state);
@@ -65,17 +65,17 @@ class Tokenizer {
  private:
   State state;
   bool emitted;
-  std::string stream;
+  std::string stream = "";
   long long int index;
-  Tag::Token *token;
-  std::queue<Tag::Token *> tokenQueue;
-  Tag::Token *lastStartToken;
+  Tag::Token* token;
+  std::queue<Tag::Token*> tokenQueue;
+  Tag::Token* lastStartToken;
 
   char isNext(char c);
   char nextInputCharacter();
   bool isAppropriateEndTag();
   void ignoreToken(char c);
-  std::string temporarybuffer;
+  std::string temporarybuffer = "";
   void createNewToken(Tag::Token::Type type) { token = new Tag::Token(type); }
   void appendTagName(char c) {
     c = ToyScopyUtil::asciiUpper2lower(c);

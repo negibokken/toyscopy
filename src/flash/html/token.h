@@ -21,8 +21,8 @@ class Attribute {
   inline void appendValue(char c) { value += c; };
 
  private:
-  std::string name;
-  std::string value;
+  std::string name = "";
+  std::string value = "";
 };
 
 class Token {
@@ -66,10 +66,10 @@ class Token {
   void appendCharacter(char c) { value += c; }
 
  private:
-  std::string tagName;
+  std::string tagName = "";
   Type type;
   ElementType elementType;
-  std::string value;
+  std::string value = "";
   std::vector<Attribute*> attributes;
 
   Attribute* currentAttribute();
