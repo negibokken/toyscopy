@@ -10,8 +10,8 @@ std::string expandAttribute(DOM::Element* ele) {
 
   int cnt = 0;
   result += " ";
-  std::reverse(attrs.begin(), attrs.end());
-  for (auto attr : attrs) {
+  for (auto it = attrs.rbegin(); it != attrs.rend(); it++) {
+    std::string attr = *it;
     result += (attr + "=" + "\"" + ele->getAttribute(attr) + "\"");
     if (cnt < attrs.size() - 1) {
       result += " ";
