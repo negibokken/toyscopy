@@ -288,7 +288,7 @@ void HTMLDocumentParser::popOpenElement() {
     ToyScopyUtil::logUtil("*** popped: %s", ele->getTagName().c_str());
   } else if (last->nodeType == DOM::TEXT_NODE) {
     DOM::Text* ele = static_cast<DOM::Text*>(last);
-    ToyScopyUtil::logUtil("*** popped%s", ele->wholeText().c_str());
+    ToyScopyUtil::logUtil("*** popped %s", ele->wholeText().c_str());
   }
   open_elements.pop_back();
 }
@@ -305,7 +305,7 @@ void HTMLDocumentParser::popOpenElementIf(std::string tagName) {
     ToyScopyUtil::logUtil("*** popped: %s", ele->getTagName().c_str());
   } else if (last->nodeType == DOM::TEXT_NODE) {
     DOM::Text* ele = static_cast<DOM::Text*>(last);
-    ToyScopyUtil::logUtil("*** popped%s", ele->wholeText().c_str());
+    ToyScopyUtil::logUtil("*** popped %s", ele->wholeText().c_str());
   }
 
   open_elements.pop_back();
@@ -323,7 +323,7 @@ void HTMLDocumentParser::popOpenElementIf(DOM::NodeType type) {
     ToyScopyUtil::logUtil("*** popped: %s", ele->getTagName().c_str());
   } else if (last->nodeType == DOM::TEXT_NODE) {
     DOM::Text* ele = static_cast<DOM::Text*>(last);
-    ToyScopyUtil::logUtil("*** popped%s", ele->wholeText().c_str());
+    ToyScopyUtil::logUtil("*** popped %s", ele->wholeText().c_str());
   }
   open_elements.pop_back();
 }
