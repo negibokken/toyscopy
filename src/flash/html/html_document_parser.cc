@@ -336,19 +336,24 @@ void HTMLDocumentParser::setFramesetOkFlag(std::string str) {
 void HTMLDocumentParser::appendToCurrentNode(DOM::Node* n) {
   ToyScopyUtil::logUtil("appendToCurrentNode");
   DOM::Node* last = lastOpenElement();
+  while (last != nullptr && last->nodeType == DOM::NodeType::TEXT_NODE) {
+    popOpenElement();
+    last = lastOpenElement();
+  }
   if (last == nullptr)
     return;
+
   ToyScopyUtil::logUtil("here");
-  DOM::Element* ele = static_cast<DOM::Element*>(last);
-  ToyScopyUtil::logUtil("current node %s", ele->getTagName().c_str());
-  DOM::Element* child = static_cast<DOM::Element*>(n);
-  ToyScopyUtil::logUtil("append to %s", ele->getTagName().c_str());
-  ToyScopyUtil::logUtil("appended: %s", child->getTagName().c_str());
-  if (last->nodeType == DOM::NodeType::TEXT_NODE) {
-    popOpenElement();
+  ToyScopyUtil::logUtil("%d %s", last->nodeType, last->nodeName.c_str());
+  if (last->nodeType == DOM::NodeType::ELEMENT_NODE) {
+    DOM::Element* ele = static_cast<DOM::Element*>(last);
+    ToyScopyUtil::logUtil("current node %s", ele->getTagName().c_str());
+    DOM::Element* child = static_cast<DOM::Element*>(n);
+    ToyScopyUtil::logUtil("append to %s", ele->getTagName().c_str());
+    ToyScopyUtil::logUtil("appended: %s", child->getTagName().c_str());
+    ToyScopyUtil::logUtil("open last: %d", open_elements.back()->nodeType);
+    last->appendChild(n);
   }
-  ToyScopyUtil::logUtil("open last: %d", open_elements.back()->nodeType);
-  open_elements.back()->appendChild(n);
 }
 
 bool HTMLDocumentParser::isToken(Tag::Token::Type type,

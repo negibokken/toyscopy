@@ -36,12 +36,6 @@ std::string dfs(DOM::Node* node, DOM::Node* head) {
   // If the type of node is Element put <element>
   if (node->nodeType == DOM::NodeType::ELEMENT_NODE) {
     DOM::Element* ele = static_cast<DOM::Element*>(node);
-    if (ele->getTagName() == "style") {
-      std::cout << "size: " << ele->getAttributeNames().size() << std::endl;
-      for (auto a : ele->getAttributeNames()) {
-        std::cout << a << " " << std::endl;
-      }
-    }
     str += (expandElement(ele));
   } else if (node->nodeType == DOM::NodeType::TEXT_NODE) {
     str += (reinterpret_cast<DOM::Text*>(node)->getData());
