@@ -29,7 +29,8 @@ std::string Token::getAttributeValue(std::string attr) {
 }
 
 Attribute* Token::currentAttribute() {
-  if (attributes.empty()) attributes.push_back(new Attribute());
+  if (attributes.empty())
+    attributes.push_back(new Attribute());
   return attributes.back();
 }
 
@@ -46,6 +47,16 @@ void Token::setTagType() {
     elementType = ElementType::div;
   } else if (tagName == "h1") {
     elementType = ElementType::h1;
+  } else if (tagName == "h2") {
+    elementType = ElementType::h2;
+  } else if (tagName == "h3") {
+    elementType = ElementType::h3;
+  } else if (tagName == "h4") {
+    elementType = ElementType::h4;
+  } else if (tagName == "h5") {
+    elementType = ElementType::h5;
+  } else if (tagName == "h6") {
+    elementType = ElementType::h6;
   } else if (tagName == "title") {
     elementType = ElementType::title;
   } else if (tagName == "a") {

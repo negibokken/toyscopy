@@ -25,8 +25,8 @@ class HTMLDocumentParser {
   };
   // clang-format on
 
-  DOM::Document *document;
-  DOM::Node *head_pointer;
+  DOM::Document* document;
+  DOM::Node* head_pointer;
   HTMLDocumentParser(std::string _doc) {
     ToyScopyUtil::logUtil("loaded document");
     ToyScopyUtil::logUtil("%s", _doc.c_str());
@@ -44,39 +44,39 @@ class HTMLDocumentParser {
   inline std::string getDocumentTitle() const { return document_title; };
 
  private:
-  std::string doc;
-  std::string charset;
-  std::string *characterSet = &charset;
-  std::string *inputEncoding = &charset;
-  std::string contentType;
+  std::string doc = "";
+  std::string charset = "";
+  std::string* characterSet = &charset;
+  std::string* inputEncoding = &charset;
+  std::string contentType = "";
 
   Mode insertion_mode;
   Mode original_insertion_mode;
-  std::vector<DOM::Node *> open_elements = std::vector<DOM::Node *>(0);
+  std::vector<DOM::Node*> open_elements = std::vector<DOM::Node*>(0);
 
-  std::string frameset_ok;
-  Tokenizer::Tokenizer *tokenizer;
+  std::string frameset_ok = "";
+  Tokenizer::Tokenizer* tokenizer;
 
-  std::string document_title;
+  std::string document_title = "";
 
   void consumeIgnoreToken();
   void consumeToken();
   void setInsertionMode(Mode mode);
   void setOriginalInsertionMode(Mode mode);
-  void pushOpenElement(DOM::Node *n);
+  void pushOpenElement(DOM::Node* n);
   void popOpenElement();
   void popOpenElementIf(std::string eleType);
   void popOpenElementIf(DOM::NodeType type);
   void setFramesetOkFlag(std::string str);
-  void appendToCurrentNode(DOM::Node *n);
-  void appendAttributesToCurrentNode(DOM::Node *n);
+  void appendToCurrentNode(DOM::Node* n);
+  void appendAttributesToCurrentNode(DOM::Node* n);
   bool isToken(Tag::Token::Type type, Tag::Token::ElementType eleType);
   bool isToken(Tag::Token::Type type);
   bool isToken(Tag::Token::ElementType type);
   void appendCharacterToken(std::string data);
   void stopParsing();
-  DOM::Node *lastOpenElement();
-  DOM::Node *findTextNode();
+  DOM::Node* lastOpenElement();
+  DOM::Node* findTextNode();
 };
 
 #endif

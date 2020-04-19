@@ -2,7 +2,7 @@
 #include "gtest/gtest.h"
 
 TEST(Token, TokenAttribute) {
-  Tag::Attribute *attr = new Tag::Attribute();
+  Tag::Attribute* attr = new Tag::Attribute();
   attr->setName("Content-Type");
   attr->setValue("text/html");
   EXPECT_STREQ("Content-Type", attr->getName().c_str());
@@ -15,15 +15,16 @@ TEST(Token, TokenAttribute) {
 }
 
 TEST(Token, TokenTagType) {
-  Tag::Token *t = new Tag::Token(Tag::Token::StartTag);
+  Tag::Token* t = new Tag::Token(Tag::Token::StartTag);
 
   EXPECT_STREQ("StartTag", Tag::Token::TagTypeName(t->getTagType()).c_str());
 
-  std::string elementNames[] = {"html",  "head", "body", "p",     "div",   "h1",
-                                "title", "a",    "meta", "style", "unnown"};
+  std::string elementNames[] = {"html", "head",  "body",   "p",
+                                "div",  "h1",    "title",  "a",
+                                "meta", "style", "unknown"};
 
   for (auto elementName : elementNames) {
-    Tag::Token *temp = new Tag::Token(Tag::Token::StartTag);
+    Tag::Token* temp = new Tag::Token(Tag::Token::StartTag);
     for (auto c : elementName) {
       temp->appendTagName(c);
     }
@@ -38,14 +39,16 @@ TEST(Token, TokenTagType) {
 }
 
 TEST(Token, TokenAttributeOperation) {
-  Tag::Token *t = new Tag::Token(Tag::Token::StartTag);
+  Tag::Token* t = new Tag::Token(Tag::Token::StartTag);
   t->createAttribute();
   std::string name = "Content-Type";
   std::string value = "text/html";
-  for (auto c : name) t->appendAttributeName(c);
-  for (auto c : value) t->appendAttributeValue(c);
+  for (auto c : name)
+    t->appendAttributeName(c);
+  for (auto c : value)
+    t->appendAttributeValue(c);
 
-  std::vector<Tag::Attribute *> attrs = t->getAttributes();
+  std::vector<Tag::Attribute*> attrs = t->getAttributes();
 
   EXPECT_EQ(true, t->hasAttribute("Content-Type"));
   EXPECT_EQ(false, t->hasAttribute("Content-Type2"));

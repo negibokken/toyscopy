@@ -5,6 +5,7 @@
 #include <gtkmm.h>
 
 #include <iostream>
+
 #include "../flash/html/html_document_parser.h"
 #include "../flash/html/renderer.h"
 #include "../utils/log_util.h"
@@ -16,20 +17,20 @@ class ToyScopyApp : public Gtk::Window {
   ~ToyScopyApp();
 
  private:
-  std::string url;
+  std::string url = "";
   Gtk::Entry m_entry;
   void on_enter();
   Gtk::HeaderBar m_header_bar;
 
   Gtk::Label m_title;
-  Gtk::ScrolledWindow *m_scrolled_window;
+  Gtk::ScrolledWindow* m_scrolled_window;
 
-  ToyScopyUtil::SimpleHttpClient *httpclient;
+  ToyScopyUtil::SimpleHttpClient* httpclient;
 
   void set_title(std::string title);
   void set_url(std::string url);
 
-  std::string src;
+  std::string src = "";
   const std::string defaultSrc =
       "<!doctype html><html><head>"
       "<meta charset=\"utf-8\" />"

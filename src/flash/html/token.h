@@ -21,15 +21,15 @@ class Attribute {
   inline void appendValue(char c) { value += c; };
 
  private:
-  std::string name;
-  std::string value;
+  std::string name = "";
+  std::string value = "";
 };
 
 class Token {
  public:
   // clang-format off
   enum Type { DOCTYPE, StartTag, EndTag, Comment, Character, };
-  enum ElementType { html, head, meta, style, script, body, title, div, h1, p, a, br, input, none };
+  enum ElementType { html, head, meta, style, script, body, title, div, h1, h2, h3, h4, h5, h6, p, a, br, input, none };
   // clang-format on
 
   Token(Type t = Type::StartTag) { type = t; }
@@ -38,7 +38,8 @@ class Token {
   static std::string TagTypeName(Type type) {
     const std::vector<std::string> names = {"DOCTYPE", "StartTag", "EndTag",
                                             "Comment", "Character"};
-    if (type < 0 || type >= names.size()) return "";
+    if (type < 0 || type >= names.size())
+      return "";
     return names[type];
   }
   inline std::string getTagName() { return tagName; }
@@ -65,10 +66,10 @@ class Token {
   void appendCharacter(char c) { value += c; }
 
  private:
-  std::string tagName;
+  std::string tagName = "";
   Type type;
   ElementType elementType;
-  std::string value;
+  std::string value = "";
   std::vector<Attribute*> attributes;
 
   Attribute* currentAttribute();
