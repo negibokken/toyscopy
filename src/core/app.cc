@@ -63,8 +63,9 @@ void ToyScopyApp::load() {
   if (src.empty())
     src = defaultSrc;
   HTMLDocumentParser* hdp = new HTMLDocumentParser(src);
+  ToyScopyUtil::logUtil("start parsing");
   hdp->parse();
-  ToyScopyUtil::logUtil("parse finished");
+  ToyScopyUtil::logUtil("finished parsing");
 
   set_title(hdp->getDocumentTitle());
 
@@ -84,7 +85,6 @@ void ToyScopyApp::load() {
       "NOTATION_NODE",
   };
 
-  ToyScopyUtil::logUtil("=== parsed ===");
   ToyScopyUtil::logUtil("=== header ===");
   for (auto n : hdp->head_pointer->childNodes) {
     DOM::Element* ele = static_cast<DOM::Element*>(n);

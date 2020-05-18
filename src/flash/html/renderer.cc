@@ -85,6 +85,10 @@ void Renderer::render() {
       s = CSS::Style::INLINE;
     } else if (node->nodeType == DOM::NodeType::DOCUMENT_NODE) {
       s = CSS::Style::BLOCK;
+    } else if (node->nodeType == DOM::NodeType::ELEMENT_NODE) {
+      s = CSS::Style::BLOCK;
+      DOM::Element* ele = static_cast<DOM::Element*>(node);
+      ToyScopyUtil::logUtil("%s", ele->getTagName().c_str());
     } else {
       s = CSS::Style::BLOCK;
     }
