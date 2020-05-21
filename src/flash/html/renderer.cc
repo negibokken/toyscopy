@@ -2,14 +2,14 @@
 
 namespace Render {
 
-RenderObject *RenderObject::createObject(DOM::Node *node, RenderStyle *style) {
+RenderObject* RenderObject::createObject(DOM::Node* node, RenderStyle* style) {
   CSS::Style s = CSS::Style::INLINE;
 
-  RenderObject *o = NULL;
+  RenderObject* o = NULL;
   switch (s) {
     case CSS::Style::INLINE: {
-      RenderInline *r = new RenderInline(node);
-      o = reinterpret_cast<RenderObject *>(r);
+      RenderInline* r = new RenderInline(node);
+      o = reinterpret_cast<RenderObject*>(r);
       break;
     }
     default: {
@@ -22,7 +22,7 @@ RenderObject *RenderObject::createObject(DOM::Node *node, RenderStyle *style) {
 
 void RenderInline::layout() {
   int itr = 0;
-  std::string dom_str = reinterpret_cast<DOM::Text *>(this->node)->getData();
+  std::string dom_str = reinterpret_cast<DOM::Text*>(this->node)->getData();
   const int MAX_CHAR = 4096;
   char data[MAX_CHAR];
   while (dom_str[itr] != '\0' || itr > MAX_CHAR - 1) {
@@ -30,34 +30,41 @@ void RenderInline::layout() {
     itr++;
   }
   data[itr] = '\0';
-  const gchar *str = data;
+  const gchar* str = data;
 
   ToyScopyUtil::logUtil("%s", str);
 
-  Gtk::Label *label = new Gtk::Label();
+  Gtk::Label* label = new Gtk::Label();
   label->set_text(str);
   label->set_selectable(true);
   label->set_xalign(0.0);
+  label->set_line_wrap(true);
+  // label->override_color(Gdk::RGBA("#ff0000"));
   widget = label;
 }
 
-void RenderInline::paint() { container->add(*widget); }
+void RenderInline::paint() {
+  // Gdk::RGBA color = Gdk::RGBA("#ff0000");
+  // widget->override_background_color(color);
+  container->add(*widget);
+}
 
-Renderer::Renderer(Gtk::ScrolledWindow *window, DOM::Document *dom,
-                   CSS::CSSOM *cssom)
+Renderer::Renderer(Gtk::ScrolledWindow* window,
+                   DOM::Document* dom,
+                   CSS::CSSOM* cssom)
     : window(window), dom(dom), cssom(cssom) {}
 
 void Renderer::render() {
   ToyScopyUtil::logUtil("process-render");
-  Gtk::Container *container =
+  Gtk::Container* container =
       (new Gtk::Box(Gtk::Orientation::ORIENTATION_VERTICAL, 0));
   ToyScopyUtil::logUtil("----");
   // container = gtk_box_new(GTK_ORIENTATION_VERTICAL, 0);
 
-  std::stack<DOM::Node *> st;
+  std::stack<DOM::Node*> st;
   st.push(dom);
   while (!st.empty()) {
-    DOM::Node *node = st.top();
+    DOM::Node* node = st.top();
     st.pop();
     if (node->childNodes.size() != 0) {
       for (int i = node->childNodes.size() - 1; i >= 0; i--) {
@@ -65,12 +72,12 @@ void Renderer::render() {
       }
     }
 
-    RenderObject *ro = RenderObject::createObject(node, NULL);
+    RenderObject* ro = RenderObject::createObject(node, NULL);
 
     ToyScopyUtil::logUtil("======");
     ToyScopyUtil::logUtil("nodeType: %d", node->nodeType);
     ToyScopyUtil::logUtil(
-        "textnode: %s", reinterpret_cast<DOM::Text *>(node)->getData().c_str());
+        "textnode: %s", reinterpret_cast<DOM::Text*>(node)->getData().c_str());
 
     // Process CSS Style
     CSS::Style s;
@@ -88,7 +95,7 @@ void Renderer::render() {
       }
       case CSS::Style::INLINE: {
         ToyScopyUtil::logUtil("%d", node->nodeType);
-        RenderInline *ele = reinterpret_cast<RenderInline *>(ro);
+        RenderInline* ele = reinterpret_cast<RenderInline*>(ro);
         ele->container = container;
         ele->layout();
         ele->paint();
