@@ -89,16 +89,20 @@ void ToyScopyApp::load() {
   for (auto n : hdp->head_pointer->childNodes) {
     DOM::Element* ele = static_cast<DOM::Element*>(n);
     ToyScopyUtil::logUtil("%s", ele->getTagName().c_str());
+    std::cout << ele->getTagName() << std::endl;
     std::vector<std::string> attributeNames = ele->getAttributeNames();
     ToyScopyUtil::logUtil("attr: %d", ele->getAttributeNames().size());
+    std::cout << ele->getAttributeNames().size() << std::endl;
     for (auto attr : attributeNames) {
       ToyScopyUtil::logUtil("%s = %s", attr.c_str(),
                             ele->getAttribute(attr).c_str());
+      std::cout << ele->getAttribute(attr) << std::endl;
     }
     ToyScopyUtil::logUtil("child: %d", ele->childNodes.size());
     for (auto child : ele->childNodes) {
       DOM::Text* t = static_cast<DOM::Text*>(child);
       ToyScopyUtil::logUtil("child_content: ", t->getData().c_str());
+      std::cout << t->getData() << std::endl;
     }
   }
   ToyScopyUtil::logUtil("=== body ===");
@@ -137,6 +141,7 @@ void ToyScopyApp::load() {
   }
   ToyScopyUtil::logUtil("=== analyzed ===");
   // TODO: make CSSOM
+  
 
   // Renderer
   Render::Renderer* r =

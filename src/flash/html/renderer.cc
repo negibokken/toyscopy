@@ -39,7 +39,7 @@ void RenderInline::layout() {
   label->set_selectable(true);
   label->set_xalign(0.0);
   label->set_line_wrap(true);
-  // label->override_color(Gdk::RGBA("#ff0000"));
+  label->override_color(Gdk::RGBA("#ff0000"));
   widget = label;
 }
 

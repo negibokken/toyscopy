@@ -67,7 +67,11 @@ ADD_DEFINITIONS(${CURL_CFLAGS_OTHER})
 # set (CMAKE_CXX_STANDARD 17)
 # Now simply link against gtest or gtest_main as needed. Eg
 # add_executable(main core/test.cc)
-add_library(flash flash/html/html_document_parser.cc flash/html/renderer.cc flash/html/tokenizer.cc flash/html/token.cc  utils/simple_http_client.cc  utils/log_util.cc)
+add_library(
+  flash flash/html/html_document_parser.cc flash/html/renderer.cc
+  flash/html/html_tokenizer.cc flash/html/token.cc
+  flash/css/css_tokenizer.cc
+  utils/simple_http_client.cc  utils/log_util.cc)
 
 
 ## Main
@@ -79,7 +83,12 @@ TARGET_LINK_LIBRARIES(main flash)
 
 ## Test
 enable_testing()
-add_executable(MyTest test/test_main.cc test/flash/html/test_html_document_parser.cc test/flash/html/test_dom.cc test/flash/html/test_token.cc test/flash/html/test_tokenizer.cc test/flash/html/test_html_util.cc  test/utils/test_log_util.cc test/utils/test_simple_http_client.cc)
+add_executable(
+  MyTest test/test_main.cc test/flash/html/test_html_document_parser.cc
+  test/flash/html/test_dom.cc test/flash/html/test_token.cc
+  test/flash/css/test_csstokenizer.cc
+  test/flash/html/test_tokenizer.cc test/flash/html/test_html_util.cc
+  test/utils/test_log_util.cc test/utils/test_simple_http_client.cc)
 target_link_libraries(MyTest flash)
 target_link_libraries(MyTest ${CURL_LIBRARIES})
 INCLUDE_DIRECTORIES(test/flash)

@@ -1,13 +1,15 @@
-#include "tokenizer.h"
+#include "html_tokenizer.h"
 
-namespace Tokenizer {
+namespace Flash {
 
-Tokenizer::Tokenizer(std::string stream)
+HTMLTokenizer::HTMLTokenizer(std::string stream)
     : index(0), stream(stream), state(State::DataState) {}
 
-char Tokenizer::nextInputCharacter() { return stream[index++]; }
+char HTMLTokenizer::nextInputCharacter() {
+  return stream[index++];
+}
 
-void Tokenizer::ignoreToken(char c) {
+void HTMLTokenizer::ignoreToken(char c) {
   char cc = c;
   while (cc == '\t' || cc == 0x0A || cc == 0x0C || cc == ' ') {
     cc = nextInputCharacter();
@@ -15,7 +17,7 @@ void Tokenizer::ignoreToken(char c) {
   index--;
 }
 
-bool Tokenizer::pumpToken() {
+bool HTMLTokenizer::pumpToken() {
   char cc = nextInputCharacter();
   ToyScopyUtil::logUtil(">%c<", cc);
   switch (state) {
@@ -351,15 +353,19 @@ bool Tokenizer::pumpToken() {
       }
       break;
     }
-    default: { return true; }
+    default: {
+      return true;
+    }
   }
   return true;
 }
 
-bool Tokenizer::isAppropriateEndTag() {
+bool HTMLTokenizer::isAppropriateEndTag() {
   return lastStartToken->getTagName() == token->getTagName();
 }
 
-void Tokenizer::setState(State state) { this->state = state; }
+void HTMLTokenizer::setState(State state) {
+  this->state = state;
+}
 
-}  // namespace Tokenizer
+}  // namespace Flash

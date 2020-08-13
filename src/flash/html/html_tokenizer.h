@@ -1,5 +1,5 @@
-#ifndef Tokenizer_h
-#define Tokenizer_h
+#ifndef HTMLTokenizer_h
+#define HTMLTokenizer_h
 
 #include <iostream>
 #include <queue>
@@ -9,9 +9,9 @@
 #include "token.h"
 #include "util.h"
 
-namespace Tokenizer {
+namespace Flash {
 
-class Tokenizer {
+class HTMLTokenizer {
  public:
   enum State {
     DataState,
@@ -39,7 +39,7 @@ class Tokenizer {
     RCDATAState
   };
 
-  Tokenizer(std::string stream);
+  HTMLTokenizer(std::string stream);
   bool pumpToken();
   Tag::Token* nextToken() {
     if (!canTakeNextToken()) {
@@ -106,5 +106,5 @@ class Tokenizer {
   }
 };
 
-}  // namespace Tokenizer
+}  // namespace Flash
 #endif
