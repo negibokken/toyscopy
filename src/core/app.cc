@@ -1,7 +1,10 @@
 #include "app.h"
 
 ToyScopyApp::ToyScopyApp() {
+  // 初期化
+  // TODO: 実際にはここは各種オブジェクトを渡す方がよさそう
   httpclient = new ToyScopyUtil::SimpleHttpClient();
+  cssTokenizer = new Flash::CSSTokenizer();
 
   this->set_title("toyscopy");
   this->set_titlebar(m_header_bar);
@@ -27,7 +30,11 @@ ToyScopyApp::ToyScopyApp() {
   this->load();
 }
 
-ToyScopyApp::~ToyScopyApp() {}
+ToyScopyApp::~ToyScopyApp() {
+  delete httpclient;
+  delete m_scrolled_window;
+  delete cssTokenizer;
+}
 
 void ToyScopyApp::on_enter() {
   this->remove();
@@ -141,7 +148,6 @@ void ToyScopyApp::load() {
   }
   ToyScopyUtil::logUtil("=== analyzed ===");
   // TODO: make CSSOM
-  
 
   // Renderer
   Render::Renderer* r =

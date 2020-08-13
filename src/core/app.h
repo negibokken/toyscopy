@@ -6,6 +6,7 @@
 
 #include <iostream>
 
+#include "../flash/css/css_tokenizer.h"
 #include "../flash/html/html_document_parser.h"
 #include "../flash/html/renderer.h"
 #include "../utils/log_util.h"
@@ -26,6 +27,7 @@ class ToyScopyApp : public Gtk::Window {
   Gtk::ScrolledWindow* m_scrolled_window;
 
   ToyScopyUtil::SimpleHttpClient* httpclient;
+  Flash::CSSTokenizer *cssTokenizer;
 
   void set_title(std::string title);
   void set_url(std::string url);
