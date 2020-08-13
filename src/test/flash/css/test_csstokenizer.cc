@@ -3,7 +3,7 @@
 
 #include <utility>
 
-TEST(CSSTokenizerTest, ParseSimpleCSS) {
+TEST(CSSTokenizerTest, ParseSimpleText) {
   Flash::CSSTokenizer* t = new Flash::CSSTokenizer(" 'hello'");
   const std::pair<Flash::CSSToken::CSSTokenType, std::string> expected[] = {
       {Flash::CSSToken::WhitespaceToken, " "},
