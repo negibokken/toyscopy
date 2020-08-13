@@ -21,3 +21,22 @@ TEST(CSSTokenizerTest, ParseSimpleText) {
     cnt++;
   }
 }
+
+TEST(CSSTokenizerTest, ParseSimpleText) {
+  Flash::CSSTokenizer* t = new Flash::CSSTokenizer(" span {color: #ff0000;}");
+  const std::pair<Flash::CSSToken::CSSTokenType, std::string> expected[] = {
+      {Flash::CSSToken::WhitespaceToken, " "},
+      {Flash::CSSToken::StringToken, "hello"}};
+
+  // parse all
+  while (t->canTakeNextToken())
+    t->pumpToken();
+
+  int cnt = 0;
+  while (!t->isEmpty()) {
+    Flash::CSSToken* token = t->nextToken();
+    EXPECT_EQ(token->getTokenType(), expected[cnt].first);
+    EXPECT_STREQ(token->getValue().c_str(), expected[cnt].second.c_str());
+    cnt++;
+  }
+}

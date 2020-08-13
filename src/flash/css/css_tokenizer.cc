@@ -110,7 +110,31 @@ void CSSTokenizer::pumpToken() {
     }
     // U+0027 APOSTROPHE
     case '\'': {
-      break;
+      CSSToken* token = createCSSToken(CSSToken::CSSTokenType::StringToken);
+      while (hasNextCharacter()) {
+        c = nextInputCharacter();
+        // Consume a string token
+        if (c == '"') {
+          emitToken(token);
+          return;
+        } else if (c == '\0') {
+          // This is a parse error.
+          emitToken(token);
+          return;
+        } else if (c == '\n') {
+          // This is a parse error.
+          token = createCSSToken(CSSToken::CSSTokenType::BadstringToken);
+          return;
+        } else if (c == '\\') {
+          // TODO:
+          // if EOF do nothing
+          // if newline consume it
+          // if valid escape append codepoint
+        } else {
+          token->appendValue(c);
+        }
+      }
+      return;
     }
     // U+0028 LEFT PARENTHESIS(()
     case '(': {
