@@ -72,17 +72,17 @@ TEST(HTMLDocumentParser, ParseStandard) {
   Flash::HTMLDocumentParser h(str);
   h.parse();
 
-  std::queue<DOM::Node*> q;
+  std::queue<Flash::DOM::Node*> q;
   q.push(h.head_pointer);
   while (!q.empty()) {
-    DOM::Node* node = q.front();
+    Flash::DOM::Node* node = q.front();
     q.pop();
     std::cout << node->nodeName << " " << std::endl;
-    if (node->nodeType == DOM::NodeType::TEXT_NODE) {
-      DOM::Text* txt = static_cast<DOM::Text*>(node);
+    if (node->nodeType == Flash::DOM::NodeType::TEXT_NODE) {
+      Flash::DOM::Text* txt = static_cast<Flash::DOM::Text*>(node);
       std::cout << txt->wholeText() << std::endl;
-    } else if (node->nodeType == DOM::NodeType::ELEMENT_NODE) {
-      DOM::Element* ele = static_cast<DOM::Element*>(node);
+    } else if (node->nodeType == Flash::DOM::NodeType::ELEMENT_NODE) {
+      Flash::DOM::Element* ele = static_cast<Flash::DOM::Element*>(node);
       std::cout << ele->getTagName() << std::endl;
     }
     for (auto child : node->childNodes) {

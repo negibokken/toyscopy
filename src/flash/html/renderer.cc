@@ -1,5 +1,6 @@
 #include "renderer.h"
 
+namespace Flash {
 namespace Render {
 
 RenderObject* RenderObject::createObject(DOM::Node* node, RenderStyle* style) {
@@ -115,3 +116,4 @@ void Renderer::render() {
 }
 
 }  // namespace Render
+}  // namespace Flash

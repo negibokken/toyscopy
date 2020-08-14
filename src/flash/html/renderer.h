@@ -10,6 +10,8 @@
 #include "gtk/gtk.h"
 #include "gtkmm.h"
 
+namespace Flash {
+
 namespace Render {
 
 class Renderer;
@@ -45,9 +47,12 @@ class Renderer {
   Gtk::ScrolledWindow* window;
   DOM::Document* dom;
   CSS::CSSOM* cssom;
-  Renderer(Gtk::ScrolledWindow* window, DOM::Document* dom, CSS::CSSOM* cssom);
+  Renderer(Gtk::ScrolledWindow* window,
+           DOM::Document* dom,
+           CSS::CSSOM* cssom);
   void render();
 };
 
 }  // namespace Render
+}
 #endif

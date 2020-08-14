@@ -8,6 +8,9 @@
 #include <vector>
 
 #include "../../utils/log_util.h"
+#include "../css/css.h"
+
+namespace Flash {
 
 namespace DOM {
 
@@ -152,6 +155,9 @@ class DOMImplementation {
 enum DocumentReadyState { loading, interactive, complete };
 
 class Document : public Node {
+ private:
+  CSS::StyleSheetList* styleSheets;
+
  public:
   DOMImplementation* implementation;
   Document() : Node(NodeType::DOCUMENT_NODE){};
@@ -168,4 +174,5 @@ class Document : public Node {
 };
 
 }  // namespace DOM
+}  // namespace Flash
 #endif
