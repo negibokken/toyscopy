@@ -38,6 +38,7 @@ class CSSToken {
  private:
   CSSTokenType tokenType;
   std::string value;
+  std::string flag;
 
  public:
   CSSToken(CSSTokenType tokenType) : tokenType(tokenType){};
@@ -45,6 +46,8 @@ class CSSToken {
   inline void appendValue(char c) { value += c; }
   inline void appendValue(std::string str) { value += str; }
   inline std::string getValue() { return value; }
+  inline void setFlag(std::string str) { flag = str; }
+  inline std::string getFlag() { return flag; }
 };
 
 class CSSTokenizer {
@@ -61,9 +64,10 @@ class CSSTokenizer {
   bool isNext(char c);
   char nextInputCharacter();
   void ignoreToken();
-  bool hasNextCharacter();
   CSSToken* createCSSToken(CSSToken::CSSTokenType tokenName);
   std::queue<CSSToken*> tokenQueue;
+  bool isNextThreeWouldStartIdentifier();
+  void reconsumeToken() { idx--; };
 
   std::string src;
 
@@ -71,6 +75,7 @@ class CSSTokenizer {
   CSSTokenizer();
   CSSTokenizer(std::string src);
   void pumpToken();
+  bool hasNextCharacter();
   bool canTakeNextToken();
   void consumeToken();
   CSSToken* nextToken();
