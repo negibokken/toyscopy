@@ -31,9 +31,8 @@ bool CSSTokenizer::isNextThreeWouldStartIdentifier() {
          isIdentifierStart(src[idx + 2]);
 }
 
-CSSTokenizer::CSSTokenizer(std::string src) : idx(0), src(src) {}
-
-CSSTokenizer::CSSTokenizer() : idx(0), src("\0") {}
+CSSTokenizer::CSSTokenizer(std::string src) : idx(0), src(src), isEOF(false) {}
+CSSTokenizer::CSSTokenizer() : idx(0), src("\0"), isEOF(false) {}
 
 bool CSSTokenizer::isNext(char c) {
   return src[idx] == c;
@@ -81,11 +80,26 @@ CSSToken* CSSTokenizer::nextToken() {
   return token;
 }
 
-void CSSTokenizer::pumpToken() {
+bool CSSTokenizer::pumpToken() {
   // If no token here return
-  if (!hasNextCharacter()) {
-    return;
+  if (!hasNextCharacter() && isEOF) {
+    return false;
   }
+
+  if (isNext('\0')) {
+    CSSToken* token = createCSSToken(CSSToken::CSSTokenType::EOFToken);
+    token->appendValue('\0');
+    emitToken(token);
+    isEOF = true;
+    return false;
+  }
+  //   std::cout << 'isNext(0)' << std::endl;
+  //   CSSToken* token = createCSSToken(CSSToken::CSSTokenType::EOFToken);
+  //   token->appendValue('\0');
+  //   emitToken(token);
+  //   isEOF = true;
+  //   return false;
+  // }
 
   char c = nextInputCharacter();
 
@@ -100,7 +114,7 @@ void CSSTokenizer::pumpToken() {
       nextInputCharacter();
     CSSToken* token = createCSSToken(CSSToken::CSSTokenType::WhitespaceToken);
     emitToken(token);
-    return;
+    return true;
   }
   // U+0022 QUOTATION MARK (")
   else if (c == '"') {
@@ -110,25 +124,26 @@ void CSSTokenizer::pumpToken() {
       // Consume a string token
       if (c == '"') {
         emitToken(token);
-        return;
+        return true;
       } else if (c == '\0') {
         // This is a parse error.
         emitToken(token);
-        return;
+        return true;
       } else if (c == '\n') {
         // This is a parse error.
         token = createCSSToken(CSSToken::CSSTokenType::BadstringToken);
-        return;
+        return true;
       } else if (c == '\\') {
         // TODO:
         // if EOF do nothing
         // if newline consume it
         // if valid escape append codepoint
+        return true;
       } else {
         token->appendValue(c);
       }
     }
-    return;
+    return true;
   }
   // U+0023 NUMBER SIGN
   else if (c == '#') {
@@ -147,36 +162,36 @@ void CSSTokenizer::pumpToken() {
     }
     reconsumeToken();
     emitToken(token);
-    return;
+    return true;
   }
   // U+0027 APOSTROPHE
   else if (c == '\'') {
-    std::cout << "'" << std::endl;
     CSSToken* token = createCSSToken(CSSToken::CSSTokenType::StringToken);
     while (hasNextCharacter()) {
       c = nextInputCharacter();
       // Consume a string token
-      if (c == '"') {
+      if (c == '\'') {
         emitToken(token);
-        return;
+        return true;
       } else if (c == '\0') {
         // This is a parse error.
         emitToken(token);
-        return;
+        return true;
       } else if (c == '\n') {
         // This is a parse error.
         token = createCSSToken(CSSToken::CSSTokenType::BadstringToken);
-        return;
+        return true;
       } else if (c == '\\') {
         // TODO:
         // if EOF do nothing
         // if newline consume it
         // if valid escape append codepoint
+        return true;
       } else {
         token->appendValue(c);
       }
     }
-    return;
+    return true;
   }
   // U+0028 LEFT PARENTHESIS(()
   else if (c == '(') {
@@ -184,7 +199,7 @@ void CSSTokenizer::pumpToken() {
     CSSToken* token = createCSSToken(CSSToken::CSSTokenType::LeftBracketToken);
     token->appendValue(c);
     emitToken(token);
-    return;
+    return true;
   }
   // U+0029 RIGHT PARENTHESIS())
   else if (c == ')') {
@@ -192,12 +207,12 @@ void CSSTokenizer::pumpToken() {
     CSSToken* token = createCSSToken(CSSToken::CSSTokenType::RightBracketToken);
     token->appendValue(c);
     emitToken(token);
-    return;
+    return true;
   }
   // U+002B PLUS SIGN (+)
   else if (c == '+') {
     // std::cout << "+" << std::endl;
-    return;
+    return true;
   }
   // U+002C COMMA (,)
   else if (c == ',') {
@@ -205,17 +220,17 @@ void CSSTokenizer::pumpToken() {
     CSSToken* token = createCSSToken(CSSToken::CSSTokenType::CommaToken);
     token->appendValue(c);
     emitToken(token);
-    return;
+    return true;
   }
   // U+002D HYPHEN-MINUS (-)
   else if (c == '-') {
     // std::cout << "-" << std::endl;
-    return;
+    return true;
   }
   // U+002E FULL STOP (.)
   else if (c == '.') {
     // std::cout << "." << std::endl;
-    return;
+    return true;
   }
   // U+003A COLON ())
   else if (c == ':') {
@@ -223,7 +238,7 @@ void CSSTokenizer::pumpToken() {
     CSSToken* token = createCSSToken(CSSToken::CSSTokenType::ColonToken);
     token->appendValue(c);
     emitToken(token);
-    return;
+    return true;
   }
   // U+003B SEMI COLON (;)
   else if (c == ';') {
@@ -231,17 +246,17 @@ void CSSTokenizer::pumpToken() {
     CSSToken* token = createCSSToken(CSSToken::CSSTokenType::SemicolonToken);
     token->appendValue(c);
     emitToken(token);
-    return;
+    return true;
   }
   // U+003C LESS-THAN SIGN (<)
   else if (c == '<') {
     // std::cout << "<" << std::endl;
-    return;
+    return true;
   }
   // U+0040 COMMERCIAL AT (@)
   else if (c == '@') {
     // std::cout << "@" << std::endl;
-    return;
+    return true;
   }
   // U+005B LEFT SQUARE BRACKET ([)
   else if (c == '[') {
@@ -249,7 +264,7 @@ void CSSTokenizer::pumpToken() {
         createCSSToken(CSSToken::CSSTokenType::LeftBlockBracketToken);
     token->appendValue(c);
     emitToken(token);
-    return;
+    return true;
   }
   // U+005D RIGHT SQUARE BRACKET (])
   else if (c == ']') {
@@ -258,7 +273,7 @@ void CSSTokenizer::pumpToken() {
         createCSSToken(CSSToken::CSSTokenType::RightBlockBracketToken);
     token->appendValue(c);
     emitToken(token);
-    return;
+    return true;
   }
   // U+007B LEFT CURLY BRACKET ({)
   else if (c == '{') {
@@ -267,7 +282,7 @@ void CSSTokenizer::pumpToken() {
         createCSSToken(CSSToken::CSSTokenType::LeftCurlyBracketToken);
     token->appendValue(c);
     emitToken(token);
-    return;
+    return true;
   }
   // U+007D RIGHT CURLY BRACKET (})
   else if (c == '}') {
@@ -276,17 +291,21 @@ void CSSTokenizer::pumpToken() {
         createCSSToken(CSSToken::CSSTokenType::RightCurlyBracketToken);
     token->appendValue(c);
     emitToken(token);
-    return;
+    return true;
   }
   // digit
   else if (c == '0' <= c && c <= '9') {
     // std::cout << "num: " << c << std::endl;
-    return;
+    return true;
   }
   // EOF
   else if (c == '\0') {
     // std::cout << "null" << std::endl;
-    return;
+    CSSToken* token = createCSSToken(CSSToken::CSSTokenType::EOFToken);
+    token->appendValue(c);
+    emitToken(token);
+    isEOF = true;
+    return false;
   }
   // identifier-start code point
   else if (isIdentifierStart(c)) {
@@ -299,12 +318,13 @@ void CSSTokenizer::pumpToken() {
     }
     reconsumeToken();
     emitToken(token);
-    return;
+    return true;
   }
   // delim
   else {
     std::cout << "else" << std::endl;
   }
+  return true;
 }  // namespace Flash
 
 }  // namespace Flash

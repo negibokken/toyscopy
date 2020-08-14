@@ -33,6 +33,7 @@ class CSSToken {
     RightBracketToken,
     LeftCurlyBracketToken,
     RightCurlyBracketToken,
+    EOFToken,
   };
 
  private:
@@ -61,6 +62,7 @@ class CSSTokenizer {
   // <(-token>, <)-token>, <{-token>, and <}-token>.
  private:
   int idx;
+  bool isEOF;
   bool isNext(char c);
   char nextInputCharacter();
   void ignoreToken();
@@ -74,7 +76,7 @@ class CSSTokenizer {
  public:
   CSSTokenizer();
   CSSTokenizer(std::string src);
-  void pumpToken();
+  bool pumpToken();
   bool hasNextCharacter();
   bool canTakeNextToken();
   void consumeToken();

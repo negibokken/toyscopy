@@ -7,11 +7,13 @@ TEST(CSSTokenizerTest, ParseSimpleText) {
   Flash::CSSTokenizer* t = new Flash::CSSTokenizer(" 'hello'");
   const std::pair<Flash::CSSToken::CSSTokenType, std::string> expected[] = {
       {Flash::CSSToken::WhitespaceToken, " "},
-      {Flash::CSSToken::StringToken, "hello"}};
+      {Flash::CSSToken::StringToken, "hello"},
+      {Flash::CSSToken::EOFToken, "\0"},
+  };
 
   // parse all
-  while (t->hasNextCharacter())
-    t->pumpToken();
+  while (t->pumpToken())
+    ;
 
   int cnt = 0;
   while (t->canTakeNextToken()) {
@@ -36,17 +38,16 @@ TEST(CSSTokenizerTest, ParseSimpleStyle) {
           {Flash::CSSToken::SemicolonToken, ";"},
           {Flash::CSSToken::WhitespaceToken, " "},
           {Flash::CSSToken::RightCurlyBracketToken, "}"},
+          {Flash::CSSToken::EOFToken, "\0"},
       };
 
   // parse all
-  while (t->hasNextCharacter())
-    t->pumpToken();
+  while (t->pumpToken())
+    ;
 
   int cnt = 0;
   while (t->canTakeNextToken()) {
     Flash::CSSToken* token = t->nextToken();
-    std::cout << "(" << token->getValue() << ", " << token->getTokenType()
-              << ")" << std::endl;
     EXPECT_EQ(token->getTokenType(), expected[cnt].first);
     EXPECT_STREQ(token->getValue().c_str(), expected[cnt].second.c_str());
     cnt++;
