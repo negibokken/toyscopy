@@ -76,6 +76,7 @@ class CSSTokenizer {
  public:
   CSSTokenizer();
   CSSTokenizer(std::string src);
+  ~CSSTokenizer();
   bool pumpToken();
   bool hasNextCharacter();
   bool canTakeNextToken();

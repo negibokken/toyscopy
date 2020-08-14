@@ -33,6 +33,7 @@ bool CSSTokenizer::isNextThreeWouldStartIdentifier() {
 
 CSSTokenizer::CSSTokenizer(std::string src) : idx(0), src(src), isEOF(false) {}
 CSSTokenizer::CSSTokenizer() : idx(0), src("\0"), isEOF(false) {}
+CSSTokenizer::~CSSTokenizer() {}
 
 bool CSSTokenizer::isNext(char c) {
   return src[idx] == c;
