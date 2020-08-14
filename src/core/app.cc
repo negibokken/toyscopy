@@ -69,7 +69,7 @@ void ToyScopyApp::load() {
   // Call HTML Renderer
   if (src.empty())
     src = defaultSrc;
-  HTMLDocumentParser* hdp = new HTMLDocumentParser(src);
+  Flash::HTMLDocumentParser* hdp = new Flash::HTMLDocumentParser(src);
   ToyScopyUtil::logUtil("start parsing");
   hdp->parse();
   ToyScopyUtil::logUtil("finished parsing");

@@ -7,7 +7,7 @@
 
 TEST(HTMLDocumentParser, ParseVerySimpleHtml) {
   std::string str = "<html></html>";
-  HTMLDocumentParser h(str);
+  Flash::HTMLDocumentParser h(str);
   h.parse();
   std::string actual = dom2string(h.document, h.head_pointer);
   EXPECT_STREQ(actual.c_str(), str.c_str());
@@ -15,7 +15,7 @@ TEST(HTMLDocumentParser, ParseVerySimpleHtml) {
 
 TEST(HTMLDocumentParser, ParseSimpleHtml) {
   std::string str = "<html>helloworld</html>";
-  HTMLDocumentParser h(str);
+  Flash::HTMLDocumentParser h(str);
   h.parse();
   std::string actual = dom2string(h.document, h.head_pointer);
   EXPECT_STREQ(actual.c_str(), str.c_str());
@@ -23,7 +23,7 @@ TEST(HTMLDocumentParser, ParseSimpleHtml) {
 
 TEST(HTMLDocumentParser, ParseSimpleHtmlPlusBody) {
   std::string str = "<html><body>helloworld</body></html>";
-  HTMLDocumentParser h(str);
+  Flash::HTMLDocumentParser h(str);
   h.parse();
   std::string actual = dom2string(h.document, h.head_pointer);
   EXPECT_STREQ(actual.c_str(), str.c_str());
@@ -69,7 +69,7 @@ TEST(HTMLDocumentParser, ParseStandard) {
       "</a>"
       "</p></div></body></html>";
 
-  HTMLDocumentParser h(str);
+  Flash::HTMLDocumentParser h(str);
   h.parse();
 
   std::queue<DOM::Node*> q;
