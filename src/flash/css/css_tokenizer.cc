@@ -93,13 +93,6 @@ bool CSSTokenizer::pumpToken() {
     isEOF = true;
     return false;
   }
-  //   std::cout << 'isNext(0)' << std::endl;
-  //   CSSToken* token = createCSSToken(CSSToken::CSSTokenType::EOFToken);
-  //   token->appendValue('\0');
-  //   emitToken(token);
-  //   isEOF = true;
-  //   return false;
-  // }
 
   char c = nextInputCharacter();
 
