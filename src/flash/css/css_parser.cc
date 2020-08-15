@@ -15,7 +15,11 @@ CSSParser::~CSSParser() {
   delete tokenizer;
 }
 
-CSSToken* CSSParser::consumeASimpleBlock() {}
+CSSToken* CSSParser::consumeASimpleBlock() {
+  // aaa
+  CSSToken* token;
+  return token;
+}
 
 CSSToken* CSSParser::consumeAComponentValue() {
   if (!tokenizer->canTakeNextToken()) {
@@ -34,6 +38,7 @@ CSSToken* CSSParser::consumeAComponentValue() {
   } else {
     return token;
   }
+  return nullptr;
 }
 
 CSS::CSSRule* CSSParser::consumeAQualifiedRule() {

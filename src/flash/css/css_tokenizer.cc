@@ -68,7 +68,7 @@ CSSToken* CSSTokenizer::createCSSToken(CSSToken::CSSTokenType tokenName) {
 }
 
 void CSSTokenizer::emitToken(CSSToken* token) {
-  tokenQueue.push(token);
+  tokenQueue.push_back(token);
 }
 
 bool CSSTokenizer::isEmpty() {
@@ -100,7 +100,7 @@ bool CSSTokenizer::pumpToken() {
 
   char c = nextInputCharacter();
 
-  // std::cout << "C: " << c << std::endl;
+  std::cout << "C: >" << c << "<" << std::endl;
 
   // TODO: consume comments
   // whitespace
@@ -157,7 +157,7 @@ bool CSSTokenizer::pumpToken() {
         break;
       c = nextInputCharacter();
     }
-    reconsumeToken();
+    reconsumeInputCharacter();
     emitToken(token);
     return true;
   }
@@ -166,7 +166,7 @@ bool CSSTokenizer::pumpToken() {
     CSSToken* token = createCSSToken(CSSToken::CSSTokenType::StringToken);
     while (hasNextCharacter()) {
       c = nextInputCharacter();
-      // Consume a string token
+      std::cout << "c: >" << c << "<" << std::endl;
       if (c == '\'') {
         emitToken(token);
         return true;
@@ -297,7 +297,7 @@ bool CSSTokenizer::pumpToken() {
   }
   // EOF
   else if (c == '\0') {
-    // std::cout << "null" << std::endl;
+    std::cout << "null" << std::endl;
     CSSToken* token = createCSSToken(CSSToken::CSSTokenType::EOFToken);
     token->appendValue(c);
     emitToken(token);
@@ -313,7 +313,7 @@ bool CSSTokenizer::pumpToken() {
         break;
       c = nextInputCharacter();
     }
-    reconsumeToken();
+    reconsumeInputCharacter();
     emitToken(token);
     return true;
   }
@@ -326,15 +326,12 @@ bool CSSTokenizer::pumpToken() {
 
 void CSSTokenizer::consumeToken() {
   if (!tokenQueue.empty()) {
-    tokenQueue.pop();
+    tokenQueue.pop_front();
   }
 }
 
-void CSSTokenizer::consumeToken() {
-  if (currentInputToken == nullptr) {
-    return;
-  }
-  tokenQueue.push(currentInputToken);
+void CSSTokenizer::reconsumeToken() {
+  tokenQueue.push_front(currentInputToken);
 }
 
 }  // namespace Flash

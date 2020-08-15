@@ -56,7 +56,7 @@ class CSSStyleDeclaration {
   CSSStyleDeclaration(/* args */);
   ~CSSStyleDeclaration();
   inline unsigned long getLength() { return length; }
-  inline std::string item(unsigned long index) {}
+  inline std::string item(unsigned long index);
   std::string setProperty(std::string property, std::string value);
   std::string setProperty(std::string property,
                           std::string value,
@@ -71,10 +71,6 @@ class CSSStyleDeclaration {
   inline void setCSSFloat(std::string cssFloat) { cssFloat = cssFloat; }
 };
 
-CSSStyleDeclaration::CSSStyleDeclaration(/* args */) {}
-
-CSSStyleDeclaration::~CSSStyleDeclaration() {}
-
 class CSSStyleRule : public CSSRule {
  private:
   std::string selectorText;
@@ -83,8 +79,7 @@ class CSSStyleRule : public CSSRule {
   CSSStyleRule();
   ~CSSStyleRule();
   inline const std::string getSelectorText() const { return selectorText; }
-
-}
+};
 
 class CSSImportRule : public CSSRule {
  private:
@@ -102,7 +97,7 @@ class CSSImportRule : public CSSRule {
 
 class CSSRuleList {
  private:
-  std::vector<StyleSheet*> items;
+  std::vector<CSSRule*> items;
   unsigned long length;
 
  public:

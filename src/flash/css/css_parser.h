@@ -1,3 +1,5 @@
+#ifndef CSS_PARSER_h
+#define CSS_PARSER_h
 #include <string>
 #include "css.h"
 #include "css_tokenizer.h"
@@ -27,3 +29,4 @@ class CSSParser {
 };
 
 }  // namespace Flash
+#endif
