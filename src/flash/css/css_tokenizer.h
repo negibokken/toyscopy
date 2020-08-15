@@ -70,6 +70,8 @@ class CSSTokenizer {
   std::queue<CSSToken*> tokenQueue;
   bool isNextThreeWouldStartIdentifier();
   void reconsumeToken() { idx--; };
+  bool hasNextCharacter();
+  CSSToken* currentInputToken;
 
   std::string src;
 
@@ -78,9 +80,9 @@ class CSSTokenizer {
   CSSTokenizer(std::string src);
   ~CSSTokenizer();
   bool pumpToken();
-  bool hasNextCharacter();
   bool canTakeNextToken();
   void consumeToken();
+  void reconsumeToken();
   CSSToken* nextToken();
   bool isEmpty();
   void emitToken(CSSToken* token);

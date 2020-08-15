@@ -8,9 +8,12 @@
 #include <vector>
 
 #include "../../utils/log_util.h"
-#include "../css/css.h"
 
 namespace Flash {
+
+namespace CSS {
+class StyleSheetList;
+}
 
 namespace DOM {
 

@@ -31,9 +31,13 @@ bool CSSTokenizer::isNextThreeWouldStartIdentifier() {
          isIdentifierStart(src[idx + 2]);
 }
 
-CSSTokenizer::CSSTokenizer(std::string src) : idx(0), src(src), isEOF(false) {}
-CSSTokenizer::CSSTokenizer() : idx(0), src("\0"), isEOF(false) {}
-CSSTokenizer::~CSSTokenizer() {}
+CSSTokenizer::CSSTokenizer(std::string src)
+    : idx(0), src(src), isEOF(false), currentInputToken(nullptr) {}
+CSSTokenizer::CSSTokenizer()
+    : idx(0), src("\0"), isEOF(false), currentInputToken(nullptr) {}
+CSSTokenizer::~CSSTokenizer() {
+  delete currentInputToken;
+}
 
 bool CSSTokenizer::isNext(char c) {
   return src[idx] == c;
@@ -77,7 +81,6 @@ bool CSSTokenizer::canTakeNextToken() {
 
 CSSToken* CSSTokenizer::nextToken() {
   CSSToken* token = tokenQueue.front();
-  tokenQueue.pop();
   return token;
 }
 
@@ -319,6 +322,19 @@ bool CSSTokenizer::pumpToken() {
     std::cout << "else" << std::endl;
   }
   return true;
-}  // namespace Flash
+}
+
+void CSSTokenizer::consumeToken() {
+  if (!tokenQueue.empty()) {
+    tokenQueue.pop();
+  }
+}
+
+void CSSTokenizer::consumeToken() {
+  if (currentInputToken == nullptr) {
+    return;
+  }
+  tokenQueue.push(currentInputToken);
+}
 
 }  // namespace Flash
