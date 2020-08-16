@@ -16,9 +16,37 @@ CSSParser::~CSSParser() {
 }
 
 CSSToken* CSSParser::consumeASimpleBlock() {
-  // aaa
-  CSSToken* token;
-  return token;
+  // Determin Ending token
+  CSSToken::CSSTokenType endingToken;
+  if (currentEndingToken->getTokenType() == CSSToken::LeftBlockBracketToken) {
+    endingToken = CSSToken::RightBlockBracketToken;
+  } else if (currentEndingToken->getTokenType() == CSSToken::LeftBracketToken) {
+    endingToken = CSSToken::RightBracketToken;
+  } else if (currentEndingToken->getTokenType() ==
+             CSSToken::LeftCurlyBracketToken) {
+    endingToken = CSSToken::RightCurlyBracketToken;
+  }
+
+  // create a simple block
+  CSSToken* block;
+  // empty list
+  while (tokenizer->canTakeNextToken()) {
+    CSSToken* token = tokenizer->nextToken();
+    tokenizer->consumeToken();
+    CSSToken::CSSTokenType tokenType = token->getTokenType();
+    if (tokenType == endingToken) {
+      // TODO:
+      return block;
+    } else if (tokenType == CSSToken::EOFToken) {
+      // this is a parse error.
+      return block;
+    } else {
+      tokenizer->reconsumeToken();
+      auto Something = consumeAComponentValue();
+      // appent thi to the value of the block
+    }
+  }
+  return nullptr;
 }
 
 CSSToken* CSSParser::consumeAComponentValue() {
@@ -42,7 +70,12 @@ CSSToken* CSSParser::consumeAComponentValue() {
 }
 
 CSS::CSSRule* CSSParser::consumeAQualifiedRule() {
-  CSS::CSSRuleList* cssRuleList = new CSS::CSSRuleList();
+  // create a new qualified rule with its prelude initially set to an empty list
+  CSS::CSSRule* cssRule =
+      CSS::CSSRuleFactory::createCSSRule(CSS::CSSRule::STYLE_RULE);
+
+  // it depends on the context
+  unsigned short prelude = CSS::CSSRule::STYLE_RULE;
 
   while (tokenizer->canTakeNextToken()) {
     CSSToken* token = tokenizer->nextToken();
@@ -59,10 +92,13 @@ CSS::CSSRule* CSSParser::consumeAQualifiedRule() {
     } else if (isSimpleBlockWithAnAssociatedToken()) {
     } else {
       tokenizer->reconsumeToken();
-      auto Something = consumeAComponentValue();
-      // append
+      CSSToken* selectorToken = consumeAComponentValue();
+      // append the rules prelude
+      CSS::CSSStyleRule* styleRule = static_cast<CSS::CSSStyleRule*>(cssRule);
+      styleRule->setSelectorText(selectorToken->getValue());
     }
   }
+  return nullptr;
 }
 
 CSS::CSSRuleList* CSSParser::consumeAListOfRule() {
@@ -85,8 +121,8 @@ CSS::CSSRuleList* CSSParser::consumeAListOfRule() {
       consumeAQualifiedRule();
       // consume a component value
     }
-    return nullptr;
   }
+  return nullptr;
 }
 
 void CSSParser::parse() {

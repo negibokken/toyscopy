@@ -1,6 +1,7 @@
 #ifndef CCS_h
 #define CCS_h
 
+#include <map>
 #include <string>
 #include <vector>
 #include "../html/dom.h"
@@ -11,6 +12,7 @@ namespace CSS {
 enum Style { INLINE, NONE, BLOCK, INLINE_BLOCK, LIST_ITEM };
 
 class CSSRule;
+class CSSStyleRule;
 class CSSStyleSheet;
 class CSSRuleList;
 class MediaList;
@@ -19,14 +21,14 @@ class CSSOM {};
 
 class CSSRule {
  public:
-  const unsigned short STYLE_RULE = 1;
-  const unsigned short CHARSET_RULE = 2;
-  const unsigned short IMPORT_RULE = 3;
-  const unsigned short MEDIA_RULE = 4;
-  const unsigned short FONT_FACE_RULE = 5;
-  const unsigned short PAGE_RULE = 6;
-  const unsigned short MARGIN_RULE = 9;
-  const unsigned short NAMESPACE_RULE = 10;
+  static const unsigned short STYLE_RULE = 1;
+  static const unsigned short CHARSET_RULE = 2;
+  static const unsigned short IMPORT_RULE = 3;
+  static const unsigned short MEDIA_RULE = 4;
+  static const unsigned short FONT_FACE_RULE = 5;
+  static const unsigned short PAGE_RULE = 6;
+  static const unsigned short MARGIN_RULE = 9;
+  static const unsigned short NAMESPACE_RULE = 10;
 
  private:
   unsigned short type;
@@ -36,7 +38,7 @@ class CSSRule {
   CSSRuleList* children;
 
  public:
-  CSSRule();
+  CSSRule(unsigned short type) : type(type){};
   ~CSSRule();
   inline unsigned short getType() const { return type; }
   inline std::string getCSSText() const { return cssText; }
@@ -45,12 +47,38 @@ class CSSRule {
   inline const CSSStyleSheet* getStyleSheet() const { return parentStyleSheet; }
 };
 
+class CSSStyleRule : public CSSRule {
+ private:
+  std::string selectorText;
+
+ public:
+  CSSStyleRule() : CSSRule(CSSRule::STYLE_RULE){};
+  ~CSSStyleRule();
+  inline const std::string getSelectorText() const { return selectorText; }
+  inline void setSelectorText(std::string selector) { selectorText = selector; }
+};
+
+class CSSRuleFactory {
+ public:
+  static CSSRule* createCSSRule(unsigned short type) {
+    switch (type) {
+      case CSSRule::STYLE_RULE: {
+        return new CSSStyleRule();
+      }
+      default: {
+        return new CSSStyleRule();
+      }
+    }
+  }
+};
+
 class CSSStyleDeclaration {
  private:
   std::string cssText;
   unsigned long length;
   CSSRule* parentRule;
   std::string cssFloat;
+  std::map<std::string, std::string> properties;
 
  public:
   CSSStyleDeclaration(/* args */);
@@ -69,16 +97,6 @@ class CSSStyleDeclaration {
   inline CSSRule* getParentRule() const { return parentRule; };
   inline std::string getCSSFloat() { return cssFloat; }
   inline void setCSSFloat(std::string cssFloat) { cssFloat = cssFloat; }
-};
-
-class CSSStyleRule : public CSSRule {
- private:
-  std::string selectorText;
-
- public:
-  CSSStyleRule();
-  ~CSSStyleRule();
-  inline const std::string getSelectorText() const { return selectorText; }
 };
 
 class CSSImportRule : public CSSRule {
@@ -101,6 +119,7 @@ class CSSRuleList {
   unsigned long length;
 
  public:
+  CSSRule*& operator[](unsigned long index) { return items[index]; }
   CSSRuleList() : length(0){};
   ~CSSRuleList();
   inline CSSRule* item(unsigned long index) {
@@ -108,9 +127,9 @@ class CSSRuleList {
       return nullptr;
     return items[index];
   }
-  void append(CSSRule* cssRule) {
+  void insertRule(CSSRule* cssRule, unsigned long index) {
     length++;
-    items.push_back(cssRule);
+    items[index] = cssRule;
   }
 };
 
@@ -153,9 +172,22 @@ class StyleSheet {
 };
 
 class CSSStyleSheet : public StyleSheet {
+ private:
+  CSSRule* ownerRule;
+  CSSRuleList* cssRules;
+
  public:
   CSSStyleSheet();
   ~CSSStyleSheet();
+  inline CSSRuleList* const getCSSRules() const { return cssRules; }
+  inline CSSRule* const getOwnerRule() const { return ownerRule; }
+  inline unsigned long insertRule(std::string rule, unsigned long index) {
+    // TODO: create css rule from rule
+    CSSRule* cssRule = CSSRuleFactory::createCSSRule(CSSRule::STYLE_RULE);
+    cssRules->insertRule(cssRule, index);
+    return index;
+  };
+  void deleteRule(unsigned long index);
 };
 
 class StyleSheetList {
@@ -171,7 +203,7 @@ class StyleSheetList {
       return nullptr;
     return items[index];
   }
-  void append(StyleSheet* styleSheet) {
+  void insert(StyleSheet* styleSheet) {
     length++;
     items.push_back(styleSheet);
   }

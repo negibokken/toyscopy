@@ -100,7 +100,7 @@ bool CSSTokenizer::pumpToken() {
 
   char c = nextInputCharacter();
 
-  std::cout << "C: >" << c << "<" << std::endl;
+  // std::cout << "C: >" << c << "<" << std::endl;
 
   // TODO: consume comments
   // whitespace
