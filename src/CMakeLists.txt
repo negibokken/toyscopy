@@ -71,6 +71,7 @@ add_library(
   flash flash/html/html_document_parser.cc flash/html/renderer.cc
   flash/html/html_tokenizer.cc flash/html/token.cc
   flash/css/css_tokenizer.cc
+  flash/css/css_parser.cc
   utils/simple_http_client.cc  utils/log_util.cc)
 
 
@@ -86,8 +87,9 @@ enable_testing()
 add_executable(
   MyTest test/test_main.cc test/flash/html/test_html_document_parser.cc
   test/flash/html/test_dom.cc test/flash/html/test_token.cc
-  test/flash/css/test_csstokenizer.cc
+  test/flash/css/test_css_tokenizer.cc
   test/flash/html/test_tokenizer.cc test/flash/html/test_html_util.cc
+  test/flash/css/test_css_parser.cc
   test/utils/test_log_util.cc test/utils/test_simple_http_client.cc)
 target_link_libraries(MyTest flash)
 target_link_libraries(MyTest ${CURL_LIBRARIES})
