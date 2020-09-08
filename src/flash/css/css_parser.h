@@ -16,7 +16,8 @@ class CSSParser {
   CSS::CSSRuleList* consumeAListOfRule();
   CSS::CSSRule* consumeAQualifiedRule();
   CSSToken* consumeAComponentValue();
-  CSSToken* consumeASimpleBlock();
+  CSS::CSSStyleDeclaration* consumeASimpleBlock();
+  CSS::CSSStyleDeclaration* consumeAListOfDeclarations();
   CSSToken* currentEndingToken;
   inline void setCurrentEndingToken(CSSToken* token) {
     currentEndingToken = token;

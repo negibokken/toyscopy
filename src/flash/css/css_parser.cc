@@ -15,7 +15,30 @@ CSSParser::~CSSParser() {
   delete tokenizer;
 }
 
-CSSToken* CSSParser::consumeASimpleBlock() {
+// CSS::CSSStyleDeclaration* CSSParser::consumeAListOfDeclarations() {
+CSS::CSSStyleDeclaration* CSSParser::consumeAListOfDeclarations() {
+  CSS::CSSStyleDeclaration* block = new CSS::CSSStyleDeclaration();
+  while (tokenizer->canTakeNextToken()) {
+    auto token = tokenizer->nextToken();
+    tokenizer->consumeToken();
+    auto tokenType = token->getTokenType();
+    if (tokenType == CSSToken::WhitespaceToken ||
+        tokenType == CSSToken::SemicolonToken) {
+      // Do nothing
+    } else if (tokenType == CSSToken::EOFToken) {
+      return block;
+    } else if (tokenType == CSSToken::AtKeywordToken) {
+      // TODO:
+    } else if (tokenType == CSSToken::IdentToken) {
+      //
+    } else {
+      // this is a parse error
+    }
+  }
+  return block;
+}
+
+CSS::CSSStyleDeclaration* CSSParser::consumeASimpleBlock() {
   // Determin Ending token
   CSSToken::CSSTokenType endingToken;
   if (currentEndingToken->getTokenType() == CSSToken::LeftBlockBracketToken) {
@@ -28,14 +51,13 @@ CSSToken* CSSParser::consumeASimpleBlock() {
   }
 
   // create a simple block
-  CSSToken* block;
+  CSS::CSSStyleDeclaration* block = new CSS::CSSStyleDeclaration();
   // empty list
   while (tokenizer->canTakeNextToken()) {
     CSSToken* token = tokenizer->nextToken();
     tokenizer->consumeToken();
     CSSToken::CSSTokenType tokenType = token->getTokenType();
     if (tokenType == endingToken) {
-      // TODO:
       return block;
     } else if (tokenType == CSSToken::EOFToken) {
       // this is a parse error.
@@ -43,7 +65,7 @@ CSSToken* CSSParser::consumeASimpleBlock() {
     } else {
       tokenizer->reconsumeToken();
       auto Something = consumeAComponentValue();
-      // appent thi to the value of the block
+      // append this to the value of the block
     }
   }
   return nullptr;

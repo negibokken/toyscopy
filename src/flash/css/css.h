@@ -1,8 +1,8 @@
 #ifndef CCS_h
 #define CCS_h
 
-#include <map>
 #include <string>
+#include <unordered_map>
 #include <vector>
 #include "../html/dom.h"
 
@@ -78,22 +78,56 @@ class CSSStyleDeclaration {
   unsigned long length;
   CSSRule* parentRule;
   std::string cssFloat;
-  std::map<std::string, std::string> properties;
+  std::unordered_map<std::string, std::string> properties;
+  std::unordered_map<std::string, std::string> propertyPriorities;
 
  public:
   CSSStyleDeclaration(/* args */);
   ~CSSStyleDeclaration();
   inline unsigned long getLength() { return length; }
-  inline std::string item(unsigned long index);
-  std::string setProperty(std::string property, std::string value);
-  std::string setProperty(std::string property,
-                          std::string value,
-                          std::string priority);
-  std::string getPropertyValue(std::string property);
-  std::string getPropertyPriority(std::string property);
-  void setPropertyValue(std::string property, std::string value);
-  void setPropertyPriority(std::string property, std::string priority);
-  std::string removeProperty(std::string property);
+  inline std::string item(unsigned long index) {
+    std::unordered_map<std::string, std::string>::iterator it =
+        properties.begin();
+    for (int i = 0; i < index; i++)
+      it++;
+    return it->first;
+  };
+  void setProperty(std::string property, std::string value) {
+    properties[property] = value;
+  };
+  void setProperty(std::string property,
+                   std::string value,
+                   std::string priority) {
+    properties[property] = value;
+    propertyPriorities[property] = priority;
+  };
+  std::string getPropertyValue(std::string property) {
+    if (properties.count(property) == 0) {
+      return "";
+    }
+    return properties[property];
+  };
+  std::string getPropertyPriority(std::string property) {
+    if (propertyPriorities.count(property) == 0) {
+      return "";
+    }
+    return propertyPriorities[property];
+  };
+  void setPropertyValue(std::string property, std::string value) {
+    properties[property] = value;
+  };
+  void setPropertyPriority(std::string property, std::string priority) {
+    propertyPriorities[property] = priority;
+  };
+  std::string removeProperty(std::string property) {
+    if (properties.count(property) == 0) {
+      return "";
+    }
+    std::string s = properties[property];
+    properties.erase(property);
+    propertyPriorities.erase(property);
+    return s;
+  };
   inline CSSRule* getParentRule() const { return parentRule; };
   inline std::string getCSSFloat() { return cssFloat; }
   inline void setCSSFloat(std::string cssFloat) { cssFloat = cssFloat; }
