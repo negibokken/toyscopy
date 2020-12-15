@@ -53,7 +53,11 @@ class CSSStyleRule : public CSSRule {
   std::string selectorText;
 
  public:
-  CSSStyleRule() : CSSRule(CSSRule::STYLE_RULE){};
+  CSSStyleRule() : CSSRule(CSSRule::STYLE_RULE), selectorText("") { }
+  CSSStyleRule(CSSRule* rule) : CSSRule(CSSRule::STYLE_RULE) {
+    auto text = rule->getCSSText();
+    this->selectorText = text;
+  };
   ~CSSStyleRule();
   inline const std::string getSelectorText() const { return selectorText; }
   inline void setSelectorText(std::string selector) { selectorText = selector; }

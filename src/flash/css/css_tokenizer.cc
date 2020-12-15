@@ -76,6 +76,7 @@ bool CSSTokenizer::isEmpty() {
 }
 
 bool CSSTokenizer::canTakeNextToken() {
+  ToyScopyUtil::logUtil("token queue !empty:: %d", !tokenQueue.empty());
   return !tokenQueue.empty();
 }
 

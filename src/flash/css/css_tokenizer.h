@@ -4,6 +4,8 @@
 #include <deque>
 #include <string>
 
+#include "../../utils/log_util.h"
+
 namespace Flash {
 
 class CSSToken {

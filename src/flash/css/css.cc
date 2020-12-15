@@ -26,6 +26,7 @@ void MediaList::deleteMedium(std::string medium) {
 
 StyleSheet::StyleSheet() {}
 
+// CSSStyleSheet
 CSSStyleSheet::CSSStyleSheet(CSSRuleList* list) {
   ownerRule = new CSSRule(CSSRule::STYLE_RULE);
   cssRules = list;
