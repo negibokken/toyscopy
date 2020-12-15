@@ -1,6 +1,7 @@
 #ifndef CSS_PARSER_h
 #define CSS_PARSER_h
 #include <string>
+
 #include "css.h"
 #include "css_tokenizer.h"
 
@@ -13,6 +14,7 @@ class CSSParser {
   std::string src;
   CSSTokenizer* tokenizer;
   CSS::StyleSheetList* styleSheets;
+  CSS::CSSStyleSheet* parseAStyleSheet();
   CSS::CSSRuleList* consumeAListOfRule();
   CSS::CSSRule* consumeAQualifiedRule();
   CSSToken* consumeAComponentValue();
@@ -26,7 +28,7 @@ class CSSParser {
  public:
   CSSParser(std::string src);
   ~CSSParser();
-  void parse();
+  CSS::CSSStyleSheet* parse();
 };
 
 }  // namespace Flash

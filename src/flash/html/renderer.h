@@ -47,12 +47,10 @@ class Renderer {
   Gtk::ScrolledWindow* window;
   DOM::Document* dom;
   CSS::CSSOM* cssom;
-  Renderer(Gtk::ScrolledWindow* window,
-           DOM::Document* dom,
-           CSS::CSSOM* cssom);
+  Renderer(Gtk::ScrolledWindow* window, DOM::Document* dom, CSS::CSSOM* cssom);
   void render();
 };
 
 }  // namespace Render
-}
+}  // namespace Flash
 #endif

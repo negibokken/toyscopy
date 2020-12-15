@@ -147,7 +147,7 @@ void ToyScopyApp::load() {
     }
   }
   ToyScopyUtil::logUtil("=== analyzed ===");
-  // TODO: make CSSOM
+  // TODO: make COSMO
 
   // Renderer
   Flash::Render::Renderer* r =

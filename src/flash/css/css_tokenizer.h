@@ -70,7 +70,6 @@ class CSSTokenizer {
   std::deque<CSSToken*> tokenQueue;
   bool isNextThreeWouldStartIdentifier();
   void reconsumeInputCharacter() { idx--; };
-  bool hasNextCharacter();
   CSSToken* currentInputToken;
 
   std::string src;
@@ -86,6 +85,7 @@ class CSSTokenizer {
   CSSToken* nextToken();
   bool isEmpty();
   void emitToken(CSSToken* token);
+  bool hasNextCharacter();
 };
 }  // namespace Flash
 #endif

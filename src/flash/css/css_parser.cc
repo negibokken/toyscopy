@@ -15,7 +15,6 @@ CSSParser::~CSSParser() {
   delete tokenizer;
 }
 
-// CSS::CSSStyleDeclaration* CSSParser::consumeAListOfDeclarations() {
 CSS::CSSStyleDeclaration* CSSParser::consumeAListOfDeclarations() {
   CSS::CSSStyleDeclaration* block = new CSS::CSSStyleDeclaration();
   while (tokenizer->canTakeNextToken()) {
@@ -83,6 +82,7 @@ CSSToken* CSSParser::consumeAComponentValue() {
       tokenType == CSSToken::LeftBlockBracketToken ||
       tokenType == CSSToken::LeftBracketToken) {
     // consumeASimpleBlock and return it
+    CSS::CSSStyleDeclaration* dec = consumeASimpleBlock();
   } else if (tokenType == CSSToken::FunctionToken) {
     // consume a function and return it
   } else {
@@ -92,6 +92,7 @@ CSSToken* CSSParser::consumeAComponentValue() {
 }
 
 CSS::CSSRule* CSSParser::consumeAQualifiedRule() {
+  CSS::CSSRuleList* cssRuleList = new CSS::CSSRuleList();
   // create a new qualified rule with its prelude initially set to an empty list
   CSS::CSSRule* cssRule =
       CSS::CSSRuleFactory::createCSSRule(CSS::CSSRule::STYLE_RULE);
@@ -110,7 +111,7 @@ CSS::CSSRule* CSSParser::consumeAQualifiedRule() {
       // consume a simple block and assign it to the qualified rule's block
       // return the qualified rule
       setCurrentEndingToken(token);
-      consumeASimpleBlock();
+      CSS::CSSStyleDeclaration* declaration = consumeASimpleBlock();
     } else if (isSimpleBlockWithAnAssociatedToken()) {
     } else {
       tokenizer->reconsumeToken();
@@ -125,6 +126,7 @@ CSS::CSSRule* CSSParser::consumeAQualifiedRule() {
 
 CSS::CSSRuleList* CSSParser::consumeAListOfRule() {
   CSS::CSSRuleList* cssRuleList = new CSS::CSSRuleList();
+
   while (tokenizer->canTakeNextToken()) {
     CSSToken* token = tokenizer->nextToken();
     tokenizer->consumeToken();
@@ -137,8 +139,9 @@ CSS::CSSRuleList* CSSParser::consumeAListOfRule() {
                tokenType == CSSToken::CDCToken) {
       // TODO:
     } else if (tokenType == CSSToken::AtKeywordToken) {
+      // TODO: Consume an at rule
     } else {
-      // reconsume the current input token
+      // re-consume the current input token
       tokenizer->reconsumeToken();
       consumeAQualifiedRule();
       // consume a component value
@@ -147,18 +150,26 @@ CSS::CSSRuleList* CSSParser::consumeAListOfRule() {
   return nullptr;
 }
 
-void CSSParser::parse() {
-  while (tokenizer->pumpToken())
-    ;
+// parse a stylesheet
+CSS::CSSStyleSheet* CSSParser::parseAStyleSheet() {
+  CSS::CSSStyleSheet* sheet = new CSS::CSSStyleSheet();
+  // Consume a list of rule
+  // TODO: set top level flag
+  CSS::CSSRuleList* cssRuleList = consumeAListOfRule();
+  sheet->setCSSRuleList(cssRuleList);
+  // listRule を sheet に付加する
+  return sheet;
+}
 
-  // while (tokenizer->canTakeNextToken()) {
-  //   CSSToken* token = tokenizer->nextToken();
-  //   tokenizer->consumeToken();
-  //   // ## parser stylesheet
-  //   // ### consume a list of a rule
-  //   if (token->getTokenType() == CSSToken::WhitespaceToken) {
-  //     // do nothing
-  //   }
-  // }
+CSS::CSSStyleSheet* CSSParser::parse() {
+  std::cout << "css parse started" << std::endl;
+  // while (tokenizer->pumpToken())
+  //  ;
+
+  CSS::CSSStyleSheet* sheet = parseAStyleSheet();
+
+  std::cout << "parse completed" << std::endl;
+
+  return nullptr;
 }
 }  // namespace Flash

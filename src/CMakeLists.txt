@@ -1,9 +1,10 @@
 set (CMAKE_CXX_STANDARD 17)
-# set(CMAKE_OSX_SYSROOT macosx10.14)
+set(CMAKE_OSX_SYSROOT macosx11.0)
 # set(CMAKE_OSX_DEPLOYMENT_TARGET "10.5")
 
 SET(CMAKE_CXX_FLAGS  "${CMAKE_CXX_FLAGS} --coverage")
 SET(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} --coverage")
+SET(DCMAKE_EXPORT_COMPILE_COMMANDS "ON")
 
 set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 # Download and unpack googletest at configure time
@@ -41,6 +42,20 @@ if (CMAKE_VERSION VERSION_LESS 2.8.11)
   include_directories("${gtest_SOURCE_DIR}/include")
 endif()
 
+# Glib
+FIND_PACKAGE(PkgConfig REQUIRED)
+PKG_CHECK_MODULES(GLIB REQUIRED glib-2.0)
+INCLUDE_DIRECTORIES(${GLIB_INCLUDE_DIRS})
+LINK_DIRECTORIES(${GLIB_LIBRARY_DIRS})
+ADD_DEFINITIONS(${GLIB_CFLAGS_OTHER})
+
+# Pangomm
+FIND_PACKAGE(PkgConfig REQUIRED)
+PKG_CHECK_MODULES(PANGOMM REQUIRED pangomm-1.4)
+INCLUDE_DIRECTORIES(${PANGOMM_INCLUDE_DIRS})
+LINK_DIRECTORIES(${PANGOMM_LIBRARY_DIRS})
+ADD_DEFINITIONS(${PANGOMM_CFLAGS_OTHER})
+
 
 # Gtk3.0
 FIND_PACKAGE(PkgConfig REQUIRED)
@@ -72,6 +87,7 @@ add_library(
   flash/html/html_tokenizer.cc flash/html/token.cc
   flash/css/css_tokenizer.cc
   flash/css/css_parser.cc
+  flash/css/css.cc
   utils/simple_http_client.cc  utils/log_util.cc)
 
 

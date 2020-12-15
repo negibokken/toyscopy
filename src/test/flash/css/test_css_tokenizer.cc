@@ -46,8 +46,6 @@ TEST(CSSTokenizerTest, ParseSimpleStyle) {
   while (t->pumpToken())
     ;
 
-  return;
-
   int cnt = 0;
   while (t->canTakeNextToken()) {
     Flash::CSSToken* token = t->nextToken();

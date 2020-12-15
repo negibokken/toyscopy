@@ -4,6 +4,7 @@
 #include <string>
 #include <unordered_map>
 #include <vector>
+
 #include "../html/dom.h"
 
 namespace Flash {
@@ -39,7 +40,7 @@ class CSSRule {
 
  public:
   CSSRule(unsigned short type) : type(type){};
-  ~CSSRule();
+  ~CSSRule(){};
   inline unsigned short getType() const { return type; }
   inline std::string getCSSText() const { return cssText; }
   inline void setCSSText(std::string cssText) { cssText = cssText; }
@@ -82,8 +83,8 @@ class CSSStyleDeclaration {
   std::unordered_map<std::string, std::string> propertyPriorities;
 
  public:
-  CSSStyleDeclaration(/* args */);
-  ~CSSStyleDeclaration();
+  CSSStyleDeclaration(/* args */) : parentRule(nullptr){};
+  ~CSSStyleDeclaration() { delete parentRule; };
   inline unsigned long getLength() { return length; }
   inline std::string item(unsigned long index) {
     std::unordered_map<std::string, std::string>::iterator it =
@@ -133,6 +134,25 @@ class CSSStyleDeclaration {
   inline void setCSSFloat(std::string cssFloat) { cssFloat = cssFloat; }
 };
 
+class CSSStyleDeclarationBlock {
+ private:
+  bool readOnlyFlag;
+  std::vector<CSSStyleDeclaration*> declarations;
+  CSSStyleRule* parentRule;
+  Flash::DOM::Element* ownerNode;
+
+ public:
+  CSSStyleDeclarationBlock()
+      : readOnlyFlag(false),
+        declarations(std::vector<CSSStyleDeclaration*>()),
+        parentRule(nullptr),
+        ownerNode(nullptr){};
+  ~CSSStyleDeclarationBlock() {
+    delete parentRule;
+    delete ownerNode;
+  };
+};
+
 class CSSImportRule : public CSSRule {
  private:
   std::string href;
@@ -153,9 +173,9 @@ class CSSRuleList {
   unsigned long length;
 
  public:
-  CSSRule*& operator[](unsigned long index) { return items[index]; }
+  CSSRule* operator[](unsigned long index) { return items[index]; }
   CSSRuleList() : length(0){};
-  ~CSSRuleList();
+  ~CSSRuleList(){};
   inline CSSRule* item(unsigned long index) {
     if (index >= items.size())
       return nullptr;
@@ -165,6 +185,7 @@ class CSSRuleList {
     length++;
     items[index] = cssRule;
   }
+  inline unsigned int size() const { return items.size(); }
 };
 
 class MediaList {
@@ -212,16 +233,18 @@ class CSSStyleSheet : public StyleSheet {
 
  public:
   CSSStyleSheet();
+  CSSStyleSheet(CSSRuleList* list);
   ~CSSStyleSheet();
   inline CSSRuleList* const getCSSRules() const { return cssRules; }
   inline CSSRule* const getOwnerRule() const { return ownerRule; }
   inline unsigned long insertRule(std::string rule, unsigned long index) {
-    // TODO: create css rule from rule
     CSSRule* cssRule = CSSRuleFactory::createCSSRule(CSSRule::STYLE_RULE);
     cssRules->insertRule(cssRule, index);
     return index;
   };
-  void deleteRule(unsigned long index);
+  inline void setCSSRuleList(CSSRuleList* list) { cssRules = list; }
+  // TODO: implement it
+  void deleteRule(unsigned long index){};
 };
 
 class StyleSheetList {
