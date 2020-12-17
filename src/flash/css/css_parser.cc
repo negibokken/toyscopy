@@ -18,7 +18,7 @@ CSSParser::~CSSParser() {
 CSS::CSSStyleDeclaration* CSSParser::consumeAListOfDeclarations() {
   ToyScopyUtil::logUtil("start consume a list of declarations");
   CSS::CSSStyleDeclaration* block = new CSS::CSSStyleDeclaration();
-  while (tokenizer->canTakeNextToken()) {
+  while (tokenizer->pumpToken()) {
     auto token = tokenizer->nextToken();
     tokenizer->consumeToken();
     auto tokenType = token->getTokenType();
@@ -54,7 +54,7 @@ CSS::CSSStyleDeclaration* CSSParser::consumeASimpleBlock() {
   // create a simple block
   CSS::CSSStyleDeclaration* block = new CSS::CSSStyleDeclaration();
   // empty list
-  while (tokenizer->canTakeNextToken()) {
+  while (tokenizer->pumpToken()) {
     CSSToken* token = tokenizer->nextToken();
     tokenizer->consumeToken();
     CSSToken::CSSTokenType tokenType = token->getTokenType();
@@ -104,7 +104,7 @@ CSS::CSSRule* CSSParser::consumeAQualifiedRule() {
   // it depends on the context
   unsigned short prelude = CSS::CSSRule::STYLE_RULE;
 
-  while (tokenizer->canTakeNextToken()) {
+  while (tokenizer->pumpToken()) {
     ToyScopyUtil::logUtil("next canTakeNextToken");
     CSSToken* token = tokenizer->nextToken();
     if (token == nullptr) {
@@ -140,7 +140,7 @@ CSS::CSSRuleList* CSSParser::consumeAListOfRule() {
   ToyScopyUtil::logUtil("start consume a list of rule");
   CSS::CSSRuleList* cssRuleList = new CSS::CSSRuleList();
 
-  while (tokenizer->canTakeNextToken()) {
+  while (tokenizer->pumpToken()) {
     CSSToken* token = tokenizer->nextToken();
     ToyScopyUtil::logUtil("token:: %s", token->getValue().c_str());
     tokenizer->consumeToken();

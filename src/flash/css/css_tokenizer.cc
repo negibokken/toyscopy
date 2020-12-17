@@ -68,6 +68,7 @@ CSSToken* CSSTokenizer::createCSSToken(CSSToken::CSSTokenType tokenName) {
 }
 
 void CSSTokenizer::emitToken(CSSToken* token) {
+  std::cout << "getValue() ->" << token->getValue() << "<" << std::endl;
   tokenQueue.push_back(token);
 }
 
@@ -82,6 +83,7 @@ bool CSSTokenizer::canTakeNextToken() {
 
 CSSToken* CSSTokenizer::nextToken() {
   CSSToken* token = tokenQueue.front();
+  currentInputToken = token;
   return token;
 }
 
