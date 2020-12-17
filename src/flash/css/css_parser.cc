@@ -105,9 +105,17 @@ CSS::CSSRule* CSSParser::consumeAQualifiedRule() {
   unsigned short prelude = CSS::CSSRule::STYLE_RULE;
 
   while (tokenizer->canTakeNextToken()) {
+    ToyScopyUtil::logUtil("next canTakeNextToken");
     CSSToken* token = tokenizer->nextToken();
+    if (token == nullptr) {
+      std::cout << "null" << std::endl;
+    }
+    ToyScopyUtil::logUtil("next nextToken");
+
     tokenizer->consumeToken();
+    ToyScopyUtil::logUtil("next consumeToken");
     CSSToken::CSSTokenType tokenType = token->getTokenType();
+    ToyScopyUtil::logUtil("next consumeToken>> %d", tokenType);
     if (tokenType == CSSToken::EOFToken) {
       // This is a parser error. return nothing.
       return nullptr;

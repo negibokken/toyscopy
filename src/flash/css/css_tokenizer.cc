@@ -99,6 +99,7 @@ bool CSSTokenizer::pumpToken() {
     return false;
   }
 
+  std::cout << "nextInputCharacter" << std::endl;
   char c = nextInputCharacter();
 
   std::cout << "C: >" << c << "<" << std::endl;
