@@ -17,6 +17,7 @@ class CSSStyleRule;
 class CSSStyleSheet;
 class CSSRuleList;
 class MediaList;
+class CSSStyleDeclaration;
 
 class CSSOM {};
 
@@ -51,9 +52,10 @@ class CSSRule {
 class CSSStyleRule : public CSSRule {
  private:
   std::string selectorText;
+  CSSStyleDeclaration* declaration;
 
  public:
-  CSSStyleRule() : CSSRule(CSSRule::STYLE_RULE), selectorText("") { }
+  CSSStyleRule() : CSSRule(CSSRule::STYLE_RULE), selectorText("") {}
   CSSStyleRule(CSSRule* rule) : CSSRule(CSSRule::STYLE_RULE) {
     auto text = rule->getCSSText();
     this->selectorText = text;
@@ -61,6 +63,7 @@ class CSSStyleRule : public CSSRule {
   ~CSSStyleRule();
   inline const std::string getSelectorText() const { return selectorText; }
   inline void setSelectorText(std::string selector) { selectorText = selector; }
+  void appendDeclarations(CSSStyleDeclaration* dec);
 };
 
 class CSSRuleFactory {
@@ -133,6 +136,14 @@ class CSSStyleDeclaration {
     propertyPriorities.erase(property);
     return s;
   };
+  std::vector<std::string> getPropertyKeys() {
+    std::vector<std::string> keys(properties.size());
+    int i = 0;
+    for (auto const& a : properties) {
+      keys[i++] = a.first;
+    }
+    return keys;
+  }
   inline CSSRule* getParentRule() const { return parentRule; };
   inline std::string getCSSFloat() { return cssFloat; }
   inline void setCSSFloat(std::string cssFloat) { cssFloat = cssFloat; }
@@ -188,6 +199,10 @@ class CSSRuleList {
   void insertRule(CSSRule* cssRule, unsigned long index) {
     length++;
     items[index] = cssRule;
+  }
+  void pushRule(CSSRule* cssRule, unsigned long index) {
+    length++;
+    items.push_back(cssRule);
   }
   inline unsigned int size() const { return items.size(); }
 };

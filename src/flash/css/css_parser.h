@@ -16,7 +16,7 @@ class CSSParser {
   CSS::StyleSheetList* styleSheets;
   CSS::CSSStyleSheet* parseAStyleSheet();
   CSS::CSSRuleList* consumeAListOfRule();
-  CSS::CSSRule* consumeAQualifiedRule();
+  CSS::CSSStyleRule* consumeAQualifiedRule();
   CSSToken* consumeAComponentValue();
   CSS::CSSStyleDeclaration* consumeASimpleBlock();
   CSS::CSSStyleDeclaration* consumeAListOfDeclarations();

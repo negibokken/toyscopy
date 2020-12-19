@@ -42,5 +42,18 @@ CSSStyleSheet::~CSSStyleSheet() {
   delete cssRules;
 }
 
+CSSStyleRule::~CSSStyleRule() {
+  delete declaration;
+}
+
+void CSSStyleRule::appendDeclarations(CSSStyleDeclaration* dec) {
+  const std::vector<std::string> keys = dec->getPropertyKeys();
+  for (const auto& key : keys) {
+    std::string val = dec->getPropertyValue(key);
+    std::string priority = dec->getPropertyPriority(key);
+    declaration->setProperty(key, val, priority);
+  }
+}
+
 }  // namespace CSS
 }  // namespace Flash

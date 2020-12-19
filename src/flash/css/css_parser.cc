@@ -89,31 +89,24 @@ CSSToken* CSSParser::consumeAComponentValue() {
   } else if (tokenType == CSSToken::FunctionToken) {
     // consume a function and return it
   } else {
+    ToyScopyUtil::logUtil("returned component value > type: %d: value: %s",
+                          token->getTokenType(), token->getValue().c_str());
     return token;
   }
   return nullptr;
 }
 
-CSS::CSSRule* CSSParser::consumeAQualifiedRule() {
+CSS::CSSStyleRule* CSSParser::consumeAQualifiedRule() {
   ToyScopyUtil::logUtil("start consume a qualified rule");
-  CSS::CSSRuleList* cssRuleList = new CSS::CSSRuleList();
-  // create a new qualified rule with its prelude initially set to an empty list
-  CSS::CSSRule* cssRule =
-      CSS::CSSRuleFactory::createCSSRule(CSS::CSSRule::STYLE_RULE);
+  CSS::CSSStyleRule* cssStyleRule = new CSS::CSSStyleRule();
 
   // it depends on the context
   unsigned short prelude = CSS::CSSRule::STYLE_RULE;
 
   while (tokenizer->pumpToken()) {
-    ToyScopyUtil::logUtil("next canTakeNextToken");
     CSSToken* token = tokenizer->nextToken();
-    if (token == nullptr) {
-      std::cout << "null" << std::endl;
-    }
-    ToyScopyUtil::logUtil("next nextToken");
 
     tokenizer->consumeToken();
-    ToyScopyUtil::logUtil("next consumeToken");
     CSSToken::CSSTokenType tokenType = token->getTokenType();
     ToyScopyUtil::logUtil("next consumeToken>> %d", tokenType);
     if (tokenType == CSSToken::EOFToken) {
@@ -124,16 +117,16 @@ CSS::CSSRule* CSSParser::consumeAQualifiedRule() {
       // return the qualified rule
       setCurrentEndingToken(token);
       CSS::CSSStyleDeclaration* declaration = consumeASimpleBlock();
+      cssStyleRule->appendDeclarations(declaration);
     } else if (isSimpleBlockWithAnAssociatedToken()) {
     } else {
       tokenizer->reconsumeToken();
       CSSToken* selectorToken = consumeAComponentValue();
       // append the rules prelude
-      CSS::CSSStyleRule* styleRule = new CSS::CSSStyleRule(cssRule);
-      styleRule->setSelectorText(selectorToken->getValue());
+      cssStyleRule->setSelectorText(selectorToken->getValue());
     }
   }
-  return nullptr;
+  return cssStyleRule;
 }
 
 CSS::CSSRuleList* CSSParser::consumeAListOfRule() {
