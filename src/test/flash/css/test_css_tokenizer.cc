@@ -1,7 +1,7 @@
+#include <utility>
+
 #include "../../../flash/css/css_tokenizer.h"
 #include "gtest/gtest.h"
-
-#include <utility>
 
 TEST(CSSTokenizerTest, ParseSimpleText) {
   Flash::CSSTokenizer* t = new Flash::CSSTokenizer(" 'hello'");
@@ -45,8 +45,6 @@ TEST(CSSTokenizerTest, ParseSimpleStyle) {
   // parse all
   while (t->pumpToken())
     ;
-
-  return;
 
   int cnt = 0;
   while (t->canTakeNextToken()) {

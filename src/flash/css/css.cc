@@ -3,8 +3,6 @@
 namespace Flash {
 namespace CSS {
 
-
-
 MediaList::MediaList() {}
 MediaList::~MediaList() {}
 std::string MediaList::item(unsigned long index) {
@@ -27,7 +25,35 @@ void MediaList::deleteMedium(std::string medium) {
 }
 
 StyleSheet::StyleSheet() {}
+
+// CSSStyleSheet
+CSSStyleSheet::CSSStyleSheet(CSSRuleList* list) {
+  ownerRule = new CSSRule(CSSRule::STYLE_RULE);
+  cssRules = list;
+}
 StyleSheet::~StyleSheet() {}
+
+CSSStyleSheet::CSSStyleSheet() {
+  ownerRule = new CSSRule(CSSRule::STYLE_RULE);
+  cssRules = new CSSRuleList();
+}
+CSSStyleSheet::~CSSStyleSheet() {
+  delete ownerRule;
+  delete cssRules;
+}
+
+CSSStyleRule::~CSSStyleRule() {
+  delete declaration;
+}
+
+void CSSStyleRule::appendDeclarations(CSSStyleDeclaration* dec) {
+  const std::vector<std::string> keys = dec->getPropertyKeys();
+  for (const auto& key : keys) {
+    std::string val = dec->getPropertyValue(key);
+    std::string priority = dec->getPropertyPriority(key);
+    declaration->setProperty(key, val, priority);
+  }
+}
 
 }  // namespace CSS
 }  // namespace Flash
