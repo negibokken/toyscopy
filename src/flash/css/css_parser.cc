@@ -118,6 +118,7 @@ CSS::CSSStyleRule* CSSParser::consumeAQualifiedRule() {
       setCurrentEndingToken(token);
       CSS::CSSStyleDeclaration* declaration = consumeASimpleBlock();
       cssStyleRule->appendDeclarations(declaration);
+      return cssStyleRule;
     } else if (isSimpleBlockWithAnAssociatedToken()) {
     } else {
       tokenizer->reconsumeToken();
