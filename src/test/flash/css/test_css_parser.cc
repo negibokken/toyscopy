@@ -7,6 +7,8 @@ TEST(CSSParserTest, SimpleTextColor) {
   CSSParser* parser = new Flash::CSSParser(src);
   CSS::CSSStyleSheet* sheet = parser->parse();
 
+  ASSERT_TRUE(sheet != nullptr);
+
   CSS::CSSRuleList* list = sheet->getCSSRules();
   for (int i = 0; i < list->size(); i++) {
     // CSS::CSSRule* rule = list[(unsigned int)i];
