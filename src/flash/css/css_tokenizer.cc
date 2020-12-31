@@ -106,7 +106,6 @@ bool CSSTokenizer::pumpToken() {
     return false;
   }
 
-  std::cout << "nextInputCharacter" << std::endl;
   char c = nextInputCharacter();
 
   std::cout << "C: >" << c << "<" << std::endl;
@@ -334,7 +333,8 @@ bool CSSTokenizer::pumpToken() {
 }
 
 void CSSTokenizer::consumeToken() {
-  if (!tokenQueue.empty()) {
+  std::cout << "size:" << tokenQueue.size() << std::endl;
+  if (!tokenQueue.empty() && !isEOF) {
     tokenQueue.pop_front();
   }
 }

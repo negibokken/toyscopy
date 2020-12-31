@@ -20,9 +20,9 @@ class CSSParser {
   CSSToken* consumeAComponentValue();
   CSS::CSSStyleDeclaration* consumeASimpleBlock();
   CSS::CSSStyleDeclaration* consumeAListOfDeclarations();
-  CSSToken* currentEndingToken;
-  inline void setCurrentEndingToken(CSSToken* token) {
-    currentEndingToken = token;
+  CSSToken* currentBlockToken;
+  inline void setCurrentBlockToken(CSSToken* token) {
+    currentBlockToken = token;
   }
 
  public:

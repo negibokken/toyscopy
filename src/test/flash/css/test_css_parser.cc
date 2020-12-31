@@ -9,8 +9,9 @@ TEST(CSSParserTest, SimpleTextColor) {
 
   ASSERT_TRUE(sheet != nullptr);
 
-  CSS::CSSRuleList* list = sheet->getCSSRules();
-  for (int i = 0; i < list->size(); i++) {
-    // CSS::CSSRule* rule = list[(unsigned int)i];
+  CSS::CSSRuleList list = *sheet->getCSSRules();
+  for (int i = 0; i < list.size(); i++) {
+    const CSS::CSSRule* rule = list[i];
+    std::cout << rule->getType() << std::endl;
   }
 }
