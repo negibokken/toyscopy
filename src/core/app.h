@@ -27,7 +27,7 @@ class ToyScopyApp : public Gtk::Window {
   Gtk::ScrolledWindow* m_scrolled_window;
 
   ToyScopyUtil::SimpleHttpClient* httpclient;
-  Flash::CSSTokenizer *cssTokenizer;
+  Flash::CSSTokenizer* cssTokenizer;
 
   void set_title(std::string title);
   void set_url(std::string url);

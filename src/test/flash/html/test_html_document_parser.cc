@@ -7,7 +7,7 @@
 
 TEST(HTMLDocumentParser, ParseVerySimpleHtml) {
   std::string str = "<html></html>";
-  HTMLDocumentParser h(str);
+  Flash::HTMLDocumentParser h(str);
   h.parse();
   std::string actual = dom2string(h.document, h.head_pointer);
   EXPECT_STREQ(actual.c_str(), str.c_str());
@@ -15,7 +15,7 @@ TEST(HTMLDocumentParser, ParseVerySimpleHtml) {
 
 TEST(HTMLDocumentParser, ParseSimpleHtml) {
   std::string str = "<html>helloworld</html>";
-  HTMLDocumentParser h(str);
+  Flash::HTMLDocumentParser h(str);
   h.parse();
   std::string actual = dom2string(h.document, h.head_pointer);
   EXPECT_STREQ(actual.c_str(), str.c_str());
@@ -23,7 +23,7 @@ TEST(HTMLDocumentParser, ParseSimpleHtml) {
 
 TEST(HTMLDocumentParser, ParseSimpleHtmlPlusBody) {
   std::string str = "<html><body>helloworld</body></html>";
-  HTMLDocumentParser h(str);
+  Flash::HTMLDocumentParser h(str);
   h.parse();
   std::string actual = dom2string(h.document, h.head_pointer);
   EXPECT_STREQ(actual.c_str(), str.c_str());
@@ -69,20 +69,20 @@ TEST(HTMLDocumentParser, ParseStandard) {
       "</a>"
       "</p></div></body></html>";
 
-  HTMLDocumentParser h(str);
+  Flash::HTMLDocumentParser h(str);
   h.parse();
 
-  std::queue<DOM::Node*> q;
+  std::queue<Flash::DOM::Node*> q;
   q.push(h.head_pointer);
   while (!q.empty()) {
-    DOM::Node* node = q.front();
+    Flash::DOM::Node* node = q.front();
     q.pop();
     std::cout << node->nodeName << " " << std::endl;
-    if (node->nodeType == DOM::NodeType::TEXT_NODE) {
-      DOM::Text* txt = static_cast<DOM::Text*>(node);
+    if (node->nodeType == Flash::DOM::NodeType::TEXT_NODE) {
+      Flash::DOM::Text* txt = static_cast<Flash::DOM::Text*>(node);
       std::cout << txt->wholeText() << std::endl;
-    } else if (node->nodeType == DOM::NodeType::ELEMENT_NODE) {
-      DOM::Element* ele = static_cast<DOM::Element*>(node);
+    } else if (node->nodeType == Flash::DOM::NodeType::ELEMENT_NODE) {
+      Flash::DOM::Element* ele = static_cast<Flash::DOM::Element*>(node);
       std::cout << ele->getTagName() << std::endl;
     }
     for (auto child : node->childNodes) {

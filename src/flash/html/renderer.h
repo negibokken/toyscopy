@@ -10,6 +10,8 @@
 #include "gtk/gtk.h"
 #include "gtkmm.h"
 
+namespace Flash {
+
 namespace Render {
 
 class Renderer;
@@ -50,4 +52,5 @@ class Renderer {
 };
 
 }  // namespace Render
+}  // namespace Flash
 #endif

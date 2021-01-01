@@ -69,7 +69,7 @@ void ToyScopyApp::load() {
   // Call HTML Renderer
   if (src.empty())
     src = defaultSrc;
-  HTMLDocumentParser* hdp = new HTMLDocumentParser(src);
+  Flash::HTMLDocumentParser* hdp = new Flash::HTMLDocumentParser(src);
   ToyScopyUtil::logUtil("start parsing");
   hdp->parse();
   ToyScopyUtil::logUtil("finished parsing");
@@ -94,7 +94,7 @@ void ToyScopyApp::load() {
 
   ToyScopyUtil::logUtil("=== header ===");
   for (auto n : hdp->head_pointer->childNodes) {
-    DOM::Element* ele = static_cast<DOM::Element*>(n);
+    Flash::DOM::Element* ele = static_cast<Flash::DOM::Element*>(n);
     ToyScopyUtil::logUtil("%s", ele->getTagName().c_str());
     std::cout << ele->getTagName() << std::endl;
     std::vector<std::string> attributeNames = ele->getAttributeNames();
@@ -107,7 +107,7 @@ void ToyScopyApp::load() {
     }
     ToyScopyUtil::logUtil("child: %d", ele->childNodes.size());
     for (auto child : ele->childNodes) {
-      DOM::Text* t = static_cast<DOM::Text*>(child);
+      Flash::DOM::Text* t = static_cast<Flash::DOM::Text*>(child);
       ToyScopyUtil::logUtil("child_content: ", t->getData().c_str());
       std::cout << t->getData() << std::endl;
     }
@@ -115,23 +115,23 @@ void ToyScopyApp::load() {
   ToyScopyUtil::logUtil("=== body ===");
   // traverse
   {
-    DOM::Node* cur;
-    std::stack<DOM::Node*> q;
+    Flash::DOM::Node* cur;
+    std::stack<Flash::DOM::Node*> q;
     q.push(hdp->document);
     while (!q.empty()) {
       cur = q.top();
       q.pop();
       switch (cur->nodeType) {
-        case DOM::ELEMENT_NODE: {
-          DOM::Element* element = static_cast<DOM::Element*>(cur);
+        case Flash::DOM::ELEMENT_NODE: {
+          Flash::DOM::Element* element = static_cast<Flash::DOM::Element*>(cur);
           ToyScopyUtil::logUtil("tag: ", element->getTagName().c_str());
         }
-        case DOM::TEXT_NODE: {
-          DOM::Text* textnode = static_cast<DOM::Text*>(cur);
+        case Flash::DOM::TEXT_NODE: {
+          Flash::DOM::Text* textnode = static_cast<Flash::DOM::Text*>(cur);
           ToyScopyUtil::logUtil("text: ", textnode->wholeText().c_str());
           break;
         }
-        case DOM::DOCUMENT_NODE: {
+        case Flash::DOM::DOCUMENT_NODE: {
           ToyScopyUtil::logUtil("Document");
           break;
         }
@@ -139,7 +139,7 @@ void ToyScopyApp::load() {
           break;
       }
       ToyScopyUtil::logUtil("child size: %d", cur->childNodes.size());
-      std::vector<DOM::Node*> children = cur->childNodes;
+      std::vector<Flash::DOM::Node*> children = cur->childNodes;
       for (auto i = children.rbegin(); i != children.rend(); i++) {
         q.push(*i);
       }
@@ -147,11 +147,11 @@ void ToyScopyApp::load() {
     }
   }
   ToyScopyUtil::logUtil("=== analyzed ===");
-  // TODO: make CSSOM
+  // TODO: make COSMO
 
   // Renderer
-  Render::Renderer* r =
-      new Render::Renderer(m_scrolled_window, hdp->document, NULL);
+  Flash::Render::Renderer* r =
+      new Flash::Render::Renderer(m_scrolled_window, hdp->document, NULL);
   r->render();
   ToyScopyUtil::logUtil("=== finish rendering ===");
   m_scrolled_window->show_all();

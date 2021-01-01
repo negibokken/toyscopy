@@ -1,8 +1,10 @@
 #ifndef CSSTokenizer_h
 #define CSSTokenizer_h
 
-#include <queue>
+#include <deque>
 #include <string>
+
+#include "../../utils/log_util.h"
 
 namespace Flash {
 
@@ -33,11 +35,13 @@ class CSSToken {
     RightBracketToken,
     LeftCurlyBracketToken,
     RightCurlyBracketToken,
+    EOFToken,
   };
 
  private:
   CSSTokenType tokenType;
   std::string value;
+  std::string flag;
 
  public:
   CSSToken(CSSTokenType tokenType) : tokenType(tokenType){};
@@ -45,6 +49,8 @@ class CSSToken {
   inline void appendValue(char c) { value += c; }
   inline void appendValue(std::string str) { value += str; }
   inline std::string getValue() { return value; }
+  inline void setFlag(std::string str) { flag = str; }
+  inline std::string getFlag() { return flag; }
 };
 
 class CSSTokenizer {
@@ -58,24 +64,30 @@ class CSSTokenizer {
   // <(-token>, <)-token>, <{-token>, and <}-token>.
  private:
   int idx;
+  bool isEOF;
   bool isNext(char c);
   char nextInputCharacter();
   void ignoreToken();
-  bool hasNextCharacter();
   CSSToken* createCSSToken(CSSToken::CSSTokenType tokenName);
-  std::queue<CSSToken*> tokenQueue;
+  std::deque<CSSToken*> tokenQueue;
+  bool isNextThreeWouldStartIdentifier();
+  void reconsumeInputCharacter() { idx--; };
+  CSSToken* currentInputToken;
 
   std::string src;
 
  public:
   CSSTokenizer();
   CSSTokenizer(std::string src);
-  void pumpToken();
+  ~CSSTokenizer();
+  bool pumpToken();
   bool canTakeNextToken();
   void consumeToken();
+  void reconsumeToken();
   CSSToken* nextToken();
   bool isEmpty();
   void emitToken(CSSToken* token);
+  bool hasNextCharacter();
 };
 }  // namespace Flash
 #endif

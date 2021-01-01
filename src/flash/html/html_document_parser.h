@@ -12,6 +12,7 @@
 #include "token.h"
 #include "util.h"
 
+namespace Flash {
 class HTMLDocumentParser {
  public:
   // described here:
@@ -79,5 +80,6 @@ class HTMLDocumentParser {
   DOM::Node* lastOpenElement();
   DOM::Node* findTextNode();
 };
+};  // namespace Flash
 
 #endif

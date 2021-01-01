@@ -1,5 +1,7 @@
 #include "html_document_parser.h"
 
+namespace Flash {
+
 void HTMLDocumentParser::parse() {
   while (htmlTokenizer->pumpToken()) {
     if (!htmlTokenizer->canTakeNextToken())
@@ -432,3 +434,5 @@ void HTMLDocumentParser::appendAttributesToCurrentNode(DOM::Node* n) {
 }
 
 void HTMLDocumentParser::stopParsing() {}
+
+}  // namespace Flash
