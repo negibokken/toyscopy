@@ -12,6 +12,5 @@ TEST(CSSParserTest, SimpleTextColor) {
   CSS::CSSRuleList list = *sheet->getCSSRules();
   for (int i = 0; i < list.size(); i++) {
     const CSS::CSSRule* rule = list[i];
-    std::cout << rule->getType() << std::endl;
   }
 }

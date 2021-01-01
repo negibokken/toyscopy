@@ -70,7 +70,7 @@ CSSToken* CSSTokenizer::createCSSToken(CSSToken::CSSTokenType tokenName) {
 void CSSTokenizer::emitToken(CSSToken* token) {
   if (token == nullptr)
     return;
-  std::cout << "token.getValue() ->" << token->getValue() << "<" << std::endl;
+  ToyScopyUtil::logUtil("emitted token: >%s<", token->getValue().c_str());
   tokenQueue.push_back(token);
 }
 
@@ -80,7 +80,7 @@ bool CSSTokenizer::isEmpty() {
 
 bool CSSTokenizer::canTakeNextToken() {
   ToyScopyUtil::logUtil("token queue !empty:: %d", !tokenQueue.empty());
-  return !tokenQueue.empty();
+  return !isEmpty();
 }
 
 CSSToken* CSSTokenizer::nextToken() {
@@ -102,13 +102,13 @@ bool CSSTokenizer::pumpToken() {
     token->appendValue('\0');
     emitToken(token);
     isEOF = true;
-    ToyScopyUtil::logUtil("EOF token emmited");
+    ToyScopyUtil::logUtil("EOF token emitted");
     return false;
   }
 
   char c = nextInputCharacter();
 
-  std::cout << "C: >" << c << "<" << std::endl;
+  // ToyScopyUtil::logUtil("tokenizer current character: %c", c);
 
   // TODO: consume comments
   // whitespace
@@ -333,8 +333,7 @@ bool CSSTokenizer::pumpToken() {
 }
 
 void CSSTokenizer::consumeToken() {
-  std::cout << "size:" << tokenQueue.size() << std::endl;
-  if (!tokenQueue.empty() && !isEOF) {
+  if (!tokenQueue.empty()) {
     tokenQueue.pop_front();
   }
 }
