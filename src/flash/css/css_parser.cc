@@ -16,7 +16,7 @@ CSSParser::~CSSParser() {
 }
 
 CSS::CSSStyleDeclaration* CSSParser::consumeAListOfDeclarations() {
-  ToyScopyUtil::logUtil("start consume a list of declarations");
+  ToyScopyUtil::logUtil("## start consume a list of declarations");
   CSS::CSSStyleDeclaration* block = new CSS::CSSStyleDeclaration();
   while (tokenizer->pumpToken()) {
     auto token = tokenizer->nextToken();
@@ -39,14 +39,14 @@ CSS::CSSStyleDeclaration* CSSParser::consumeAListOfDeclarations() {
 }
 
 CSS::CSSStyleDeclaration* CSSParser::consumeASimpleBlock() {
-  ToyScopyUtil::logUtil("start consume a simple block");
+  ToyScopyUtil::logUtil("## start consume a simple block");
   // Determin Ending token
   CSSToken::CSSTokenType endingToken;
-  if (currentEndingToken->getTokenType() == CSSToken::LeftBlockBracketToken) {
+  if (currentBlockToken->getTokenType() == CSSToken::LeftBlockBracketToken) {
     endingToken = CSSToken::RightBlockBracketToken;
-  } else if (currentEndingToken->getTokenType() == CSSToken::LeftBracketToken) {
+  } else if (currentBlockToken->getTokenType() == CSSToken::LeftBracketToken) {
     endingToken = CSSToken::RightBracketToken;
-  } else if (currentEndingToken->getTokenType() ==
+  } else if (currentBlockToken->getTokenType() ==
              CSSToken::LeftCurlyBracketToken) {
     endingToken = CSSToken::RightCurlyBracketToken;
   }
@@ -54,32 +54,42 @@ CSS::CSSStyleDeclaration* CSSParser::consumeASimpleBlock() {
   // create a simple block
   CSS::CSSStyleDeclaration* block = new CSS::CSSStyleDeclaration();
   // empty list
-  while (tokenizer->pumpToken()) {
+  while (tokenizer->pumpToken() || tokenizer->canTakeNextToken()) {
     CSSToken* token = tokenizer->nextToken();
     tokenizer->consumeToken();
     CSSToken::CSSTokenType tokenType = token->getTokenType();
+    ToyScopyUtil::logUtil("tokenValue: >%s<", token->getValue().c_str());
+    ToyScopyUtil::logUtil("tokenType: %d", tokenType);
+    ToyScopyUtil::logUtil("endingTokenType: %d", endingToken);
     if (tokenType == endingToken) {
+      ToyScopyUtil::logUtil("--- end simple block --- ");
       return block;
     } else if (tokenType == CSSToken::EOFToken) {
       // this is a parse error.
       return block;
     } else {
       tokenizer->reconsumeToken();
-      auto Something = consumeAComponentValue();
-      // append this to the value of the block
+      CSSToken* value = consumeAComponentValue();
+      ToyScopyUtil::logUtil("** token value: >%s<", value->getValue().c_str());
+      ToyScopyUtil::logUtil("** token type: %d", value->getTokenType());
+      // TODO: append this to the value of the block
     }
   }
-  return nullptr;
+  return block;
 }
 
 CSSToken* CSSParser::consumeAComponentValue() {
-  ToyScopyUtil::logUtil("start consume a component value");
+  ToyScopyUtil::logUtil("## start consume a component value");
   if (!tokenizer->canTakeNextToken()) {
     return nullptr;
   }
+  ToyScopyUtil::logUtil("tokenizer next token");
   CSSToken* token = tokenizer->nextToken();
+  ToyScopyUtil::logUtil("consumetoken");
   tokenizer->consumeToken();
+  ToyScopyUtil::logUtil("gettokentype");
   CSSToken::CSSTokenType tokenType = token->getTokenType();
+  ToyScopyUtil::logUtil("type: %d", tokenType);
 
   if (tokenType == CSSToken::LeftCurlyBracketToken ||
       tokenType == CSSToken::LeftBlockBracketToken ||
@@ -89,21 +99,21 @@ CSSToken* CSSParser::consumeAComponentValue() {
   } else if (tokenType == CSSToken::FunctionToken) {
     // consume a function and return it
   } else {
-    ToyScopyUtil::logUtil("returned component value > type: %d: value: %s",
+    ToyScopyUtil::logUtil(">>> returned component value > type: %d: value: %s",
                           token->getTokenType(), token->getValue().c_str());
     return token;
   }
-  return nullptr;
+  return token;
 }
 
 CSS::CSSStyleRule* CSSParser::consumeAQualifiedRule() {
-  ToyScopyUtil::logUtil("start consume a qualified rule");
+  ToyScopyUtil::logUtil("## start consume a qualified rule");
   CSS::CSSStyleRule* cssStyleRule = new CSS::CSSStyleRule();
 
   // it depends on the context
   unsigned short prelude = CSS::CSSRule::STYLE_RULE;
 
-  while (tokenizer->pumpToken()) {
+  while (tokenizer->pumpToken() || tokenizer->canTakeNextToken()) {
     CSSToken* token = tokenizer->nextToken();
 
     tokenizer->consumeToken();
@@ -115,11 +125,13 @@ CSS::CSSStyleRule* CSSParser::consumeAQualifiedRule() {
     } else if (tokenType == CSSToken::LeftCurlyBracketToken) {
       // consume a simple block and assign it to the qualified rule's block
       // return the qualified rule
-      setCurrentEndingToken(token);
+      setCurrentBlockToken(token);
       CSS::CSSStyleDeclaration* declaration = consumeASimpleBlock();
       cssStyleRule->appendDeclarations(declaration);
+      return cssStyleRule;
     } else if (isSimpleBlockWithAnAssociatedToken()) {
     } else {
+      ToyScopyUtil::logUtil(">>> a qualified else\n");
       tokenizer->reconsumeToken();
       CSSToken* selectorToken = consumeAComponentValue();
       // append the rules prelude
@@ -130,17 +142,18 @@ CSS::CSSStyleRule* CSSParser::consumeAQualifiedRule() {
 }
 
 CSS::CSSRuleList* CSSParser::consumeAListOfRule() {
-  ToyScopyUtil::logUtil("start consume a list of rule");
+  ToyScopyUtil::logUtil("## start consume a list of rule");
   CSS::CSSRuleList* cssRuleList = new CSS::CSSRuleList();
 
   while (tokenizer->pumpToken()) {
     CSSToken* token = tokenizer->nextToken();
-    ToyScopyUtil::logUtil("token:: %s", token->getValue().c_str());
     tokenizer->consumeToken();
     CSSToken::CSSTokenType tokenType = token->getTokenType();
+    ToyScopyUtil::logUtil("token:: %d", tokenType);
     if (tokenType == CSSToken::WhitespaceToken) {
       // Do nothing
     } else if (tokenType == CSSToken::EOFToken) {
+      std::cout << "kotira************" << std::endl;
       return cssRuleList;
     } else if (tokenType == CSSToken::CDOToken ||
                tokenType == CSSToken::CDCToken) {
@@ -148,17 +161,21 @@ CSS::CSSRuleList* CSSParser::consumeAListOfRule() {
     } else if (tokenType == CSSToken::AtKeywordToken) {
       // TODO: Consume an at rule
     } else {
+      ToyScopyUtil::logUtil("a list of else\n");
       // re-consume the current input token
       tokenizer->reconsumeToken();
-      consumeAQualifiedRule();
-      // consume a component value
+      CSS::CSSStyleRule* rule = consumeAQualifiedRule();
+      // append it to the list of rules
+      cssRuleList->pushRule(rule);
     }
   }
-  return nullptr;
+  std::cout << "koko????????????" << std::endl;
+  return cssRuleList;
 }
 
 // parse a stylesheet
 CSS::CSSStyleSheet* CSSParser::parseAStyleSheet() {
+  ToyScopyUtil::logUtil("## start parse a style sheet");
   CSS::CSSStyleSheet* sheet = new CSS::CSSStyleSheet();
   // Consume a list of rule
   // TODO: set top level flag
@@ -169,15 +186,12 @@ CSS::CSSStyleSheet* CSSParser::parseAStyleSheet() {
 }
 
 CSS::CSSStyleSheet* CSSParser::parse() {
-  std::cout << "css parse started" << std::endl;
-  ToyScopyUtil::logUtil("start consume a simple block");
-  // while (tokenizer->pumpToken())
-  //  ;
+  ToyScopyUtil::logUtil("## parse");
 
   CSS::CSSStyleSheet* sheet = parseAStyleSheet();
 
-  std::cout << "parse completed" << std::endl;
+  ToyScopyUtil::logUtil("## parse completed");
 
-  return nullptr;
+  return sheet;
 }
 }  // namespace Flash

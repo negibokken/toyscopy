@@ -57,7 +57,7 @@ class CSSStyleRule : public CSSRule {
  public:
   CSSStyleRule() : CSSRule(CSSRule::STYLE_RULE), selectorText("") {}
   CSSStyleRule(CSSRule* rule) : CSSRule(CSSRule::STYLE_RULE) {
-    auto text = rule->getCSSText();
+    std::string text = rule->getCSSText();
     this->selectorText = text;
   };
   ~CSSStyleRule();
@@ -188,7 +188,13 @@ class CSSRuleList {
   unsigned long length;
 
  public:
-  CSSRule* operator[](unsigned long index) { return items[index]; }
+  const CSSRule* operator[](unsigned long index) const {
+    if (index < 0 || index > length) {
+      return nullptr;
+    }
+
+    return items[index];
+  }
   CSSRuleList() : length(0){};
   ~CSSRuleList(){};
   inline CSSRule* item(unsigned long index) {
@@ -200,7 +206,7 @@ class CSSRuleList {
     length++;
     items[index] = cssRule;
   }
-  void pushRule(CSSRule* cssRule, unsigned long index) {
+  void pushRule(CSSRule* cssRule) {
     length++;
     items.push_back(cssRule);
   }
