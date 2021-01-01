@@ -1,15 +1,16 @@
+#include <utility>
+
 #include "../../../flash/css/css_tokenizer.h"
 #include "gtest/gtest.h"
 
-#include <utility>
-
 TEST(CSSTokenizerTest, ParseSimpleText) {
   Flash::CSSTokenizer* t = new Flash::CSSTokenizer(" 'hello'");
-  const std::pair<Flash::CSSToken::CSSTokenType, std::string> expected[] = {
-      {Flash::CSSToken::WhitespaceToken, " "},
-      {Flash::CSSToken::StringToken, "hello"},
-      {Flash::CSSToken::EOFToken, "\0"},
-  };
+  const std::vector<std::pair<Flash::CSSToken::CSSTokenType, std::string>>
+      expected = {
+          {Flash::CSSToken::WhitespaceToken, " "},
+          {Flash::CSSToken::StringToken, "hello"},
+          {Flash::CSSToken::EOFToken, "\0"},
+      };
 
   // parse all
   while (t->pumpToken())
@@ -17,10 +18,11 @@ TEST(CSSTokenizerTest, ParseSimpleText) {
 
   int cnt = 0;
   while (t->canTakeNextToken()) {
+    ASSERT_TRUE(cnt < expected.size());
     Flash::CSSToken* token = t->nextToken();
     t->consumeToken();
-    EXPECT_EQ(token->getTokenType(), expected[cnt].first);
-    EXPECT_STREQ(token->getValue().c_str(), expected[cnt].second.c_str());
+    ASSERT_EQ(token->getTokenType(), expected[cnt].first);
+    ASSERT_STREQ(token->getValue().c_str(), expected[cnt].second.c_str());
     cnt++;
   }
 }
@@ -46,14 +48,14 @@ TEST(CSSTokenizerTest, ParseSimpleStyle) {
   while (t->pumpToken())
     ;
 
-  return;
-
   int cnt = 0;
   while (t->canTakeNextToken()) {
+    // std::cout << ">>>>>>" << cnt << ", " << expected.size() << std::endl;
+    ASSERT_TRUE(cnt < expected.size());
     Flash::CSSToken* token = t->nextToken();
     t->consumeToken();
-    EXPECT_EQ(token->getTokenType(), expected[cnt].first);
-    EXPECT_STREQ(token->getValue().c_str(), expected[cnt].second.c_str());
+    ASSERT_EQ(token->getTokenType(), expected[cnt].first);
+    ASSERT_STREQ(token->getValue().c_str(), expected[cnt].second.c_str());
     cnt++;
   }
   EXPECT_EQ(cnt, expected.size());

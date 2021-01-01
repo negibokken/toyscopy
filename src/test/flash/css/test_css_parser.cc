@@ -1,24 +1,16 @@
 #include "../../../flash/css/css_parser.h"
 #include "gtest/gtest.h"
 
-TEST(CSSParserTest, Simple) {
-  // const std::string src = " span {color:#ff0000; }";
-  // Flash::CSSParser* parser = new Flash::CSSParser(src);
+TEST(CSSParserTest, SimpleTextColor) {
+  using namespace Flash;
+  const std::string src = " span {color:#ff0000; }";
+  CSSParser* parser = new Flash::CSSParser(src);
+  CSS::CSSStyleSheet* sheet = parser->parse();
 
-  // parser->parse();
+  ASSERT_TRUE(sheet != nullptr);
 
-  // const std::vector<std::pair<Flash::CSSToken::CSSTokenType, std::string>>
-  //    expected = {
-  //        {Flash::CSSToken::WhitespaceToken, " "},
-  //        {Flash::CSSToken::IdentToken, "span"},
-  //        {Flash::CSSToken::WhitespaceToken, " "},
-  //        {Flash::CSSToken::LeftCurlyBracketToken, "{"},
-  //        {Flash::CSSToken::IdentToken, "color"},
-  //        {Flash::CSSToken::ColonToken, ":"},
-  //        {Flash::CSSToken::HashToken, "#ff0000"},
-  //        {Flash::CSSToken::SemicolonToken, ";"},
-  //        {Flash::CSSToken::WhitespaceToken, " "},
-  //        {Flash::CSSToken::RightCurlyBracketToken, "}"},
-  //        {Flash::CSSToken::EOFToken, "\0"},
-  //    };
+  CSS::CSSRuleList list = *sheet->getCSSRules();
+  for (int i = 0; i < list.size(); i++) {
+    const CSS::CSSRule* rule = list[i];
+  }
 }
