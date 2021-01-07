@@ -126,18 +126,20 @@ inline std::ostream& operator<<(std::ostream& os, Element& e) {
 
 class CharacterData : public Node {
   unsigned long length;
-  std::string data = "";
+  std::string data;
 
  public:
   CharacterData(std::string txt) : Node(NodeType::TEXT_NODE) { data = txt; };
-  inline std::string getData() { return data; }
+  std::string getData() { return data; }
   inline void setData(std::string data) { data = data; }
   void appendData(std::string data) { this->data.append(data); }
 };
 
 class Text : public CharacterData {
  public:
-  Text(std::string txt) : CharacterData(txt){};
+  Text(std::string txt) : CharacterData(txt) {
+    std::cout << "txt: " << txt << std::endl;
+  };
   std::string wholeText() { return getData(); };
 };
 
@@ -175,6 +177,8 @@ class Document : public Node {
   Element* createElement(std::string name) { return new Element(name); };
   Text* createText(std::string data) { return new Text(data); };
 };
+
+std::string nodeType2str(NodeType type);
 
 }  // namespace DOM
 }  // namespace Flash

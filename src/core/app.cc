@@ -67,8 +67,9 @@ void ToyScopyApp::set_url(std::string _url) {
 
 void ToyScopyApp::load() {
   // Call HTML Renderer
-  if (src.empty())
+  if (src.empty()) {
     src = defaultSrc;
+  }
   Flash::HTMLDocumentParser* hdp = new Flash::HTMLDocumentParser(src);
   ToyScopyUtil::logUtil("start parsing");
   hdp->parse();
@@ -113,22 +114,46 @@ void ToyScopyApp::load() {
     }
   }
   ToyScopyUtil::logUtil("=== body ===");
+  std::cout << ("=== body ===") << std::endl;
   // traverse
   {
     Flash::DOM::Node* cur;
     std::stack<Flash::DOM::Node*> q;
     q.push(hdp->document);
+    int nodeNum = 0;
+    std::stack<int> parentNodeNum;
     while (!q.empty()) {
       cur = q.top();
       q.pop();
+      // for output json to debug
+      std::cout << "{" << std::endl;
+      std::cout << "\t\"id\": " << nodeNum << "," << std::endl;
+      std::cout << "\t\"type\": "
+                << "\""
+                << Flash::DOM::nodeType2str(
+                       (Flash::DOM::NodeType)(cur->nodeType))
+                << "\"," << std::endl;
+      // std::cout << "name: " << (cur)->nodeName << std::endl;
+      if (!parentNodeNum.empty()) {
+        int parent = parentNodeNum.top();
+        parentNodeNum.pop();
+        std::cout << "\t\"parentId\": " << parent;
+      } else {
+        std::cout << "\t\"parentId\": "
+                  << "null";
+      }
+
       switch (cur->nodeType) {
         case Flash::DOM::ELEMENT_NODE: {
           Flash::DOM::Element* element = static_cast<Flash::DOM::Element*>(cur);
           ToyScopyUtil::logUtil("tag: ", element->getTagName().c_str());
+          std::cout << "," << std::endl;
+          std::cout << "\t\"element_name\": \"" << element->getTagName()
+                    << "\"";
         }
         case Flash::DOM::TEXT_NODE: {
           Flash::DOM::Text* textnode = static_cast<Flash::DOM::Text*>(cur);
-          ToyScopyUtil::logUtil("text: ", textnode->wholeText().c_str());
+          // ToyScopyUtil::logUtil("text: ", textnode->wholeText().c_str());
           break;
         }
         case Flash::DOM::DOCUMENT_NODE: {
@@ -142,10 +167,21 @@ void ToyScopyApp::load() {
       std::vector<Flash::DOM::Node*> children = cur->childNodes;
       for (auto i = children.rbegin(); i != children.rend(); i++) {
         q.push(*i);
+        parentNodeNum.push(nodeNum);
       }
+      nodeNum++;
+
+      // for output json to debug
+      std::cout << std::endl << "}";
+      if (!(q.empty() && cur->childNodes.size() == 0)) {
+        std::cout << ",";
+      }
+      std::cout << std::endl;
+
       ToyScopyUtil::logUtil("---");
     }
   }
+  return;
   ToyScopyUtil::logUtil("=== analyzed ===");
   // TODO: make COSMO
 

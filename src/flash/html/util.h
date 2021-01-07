@@ -27,9 +27,13 @@ inline bool isASCIIAlphabet(char cc) {
   return ('a' <= cc && cc <= 'z') || ('A' <= cc && cc <= 'Z');
 }
 
-inline bool isASCIIUpper(char cc) { return ('A' <= cc && cc <= 'Z'); }
+inline bool isASCIIUpper(char cc) {
+  return ('A' <= cc && cc <= 'Z');
+}
 
-inline bool isASCIILower(char cc) { return ('a' <= cc && cc <= 'z'); }
+inline bool isASCIILower(char cc) {
+  return ('a' <= cc && cc <= 'z');
+}
 
 }  // namespace ToyScopyUtil
 

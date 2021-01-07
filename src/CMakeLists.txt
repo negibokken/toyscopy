@@ -1,8 +1,11 @@
+project(toyscopy)
+
+#set(CMAKE_OSX_SYSROOT macosx11.1)
+
 set (CMAKE_CXX_STANDARD 17)
-set(CMAKE_OSX_SYSROOT macosx11.1)
 # set(CMAKE_OSX_DEPLOYMENT_TARGET "10.5")
 
-SET(CMAKE_CXX_FLAGS  "${CMAKE_CXX_FLAGS} --coverage")
+SET(CMAKE_CXX_FLAGS  "${CMAKE_CXX_FLAGS} --coverage --debug")
 SET(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} --coverage")
 SET(DCMAKE_EXPORT_COMPILE_COMMANDS "ON")
 
@@ -37,24 +40,23 @@ INCLUDE_DIRECTORIES(${CMAKE_CURRENT_BINARY_DIR}/googletest-src/googletest/includ
 # dependencies automatically when using CMake 2.8.11 or
 # later. Otherwise we have to add them here ourselves.
 cmake_minimum_required(VERSION 3.10)
-project(toyscopy)
 if (CMAKE_VERSION VERSION_LESS 2.8.11)
   include_directories("${gtest_SOURCE_DIR}/include")
 endif()
 
 # Glib
-FIND_PACKAGE(PkgConfig REQUIRED)
-PKG_CHECK_MODULES(GLIB REQUIRED glib-2.0)
-INCLUDE_DIRECTORIES(${GLIB_INCLUDE_DIRS})
-LINK_DIRECTORIES(${GLIB_LIBRARY_DIRS})
-ADD_DEFINITIONS(${GLIB_CFLAGS_OTHER})
+# FIND_PACKAGE(PkgConfig REQUIRED)
+# PKG_CHECK_MODULES(GLIB REQUIRED glib-2.0)
+# INCLUDE_DIRECTORIES(${GLIB_INCLUDE_DIRS})
+# LINK_DIRECTORIES(${GLIB_LIBRARY_DIRS})
+# ADD_DEFINITIONS(${GLIB_CFLAGS_OTHER})
 
 # Pangomm
-FIND_PACKAGE(PkgConfig REQUIRED)
-PKG_CHECK_MODULES(PANGOMM REQUIRED pangomm-1.4)
-INCLUDE_DIRECTORIES(${PANGOMM_INCLUDE_DIRS})
-LINK_DIRECTORIES(${PANGOMM_LIBRARY_DIRS})
-ADD_DEFINITIONS(${PANGOMM_CFLAGS_OTHER})
+# FIND_PACKAGE(PkgConfig REQUIRED)
+# PKG_CHECK_MODULES(PANGOMM REQUIRED pangomm-2.48)
+# INCLUDE_DIRECTORIES(${PANGOMM_INCLUDE_DIRS})
+# LINK_DIRECTORIES(${PANGOMM_LIBRARY_DIRS})
+# ADD_DEFINITIONS(${PANGOMM_CFLAGS_OTHER})
 
 
 # Gtk3.0
@@ -72,8 +74,8 @@ LINK_DIRECTORIES(${GTKMM_LIBRARY_DIRS})
 ADD_DEFINITIONS(${GTKMM_CFLAGS_OTHER})
 
 # libcurl
-find_package(CURL REQUIRED)
-# add_executable (curl-demo convert.cpp)
+FIND_PACKAGE(PkgConfig REQUIRED)
+PKG_CHECK_MODULES(CURL REQUIRED libcurl)
 INCLUDE_DIRECTORIES(${CURL_INCLUDE_DIR})
 LINK_DIRECTORIES(${CURL_LIBRARY_DIR})
 ADD_DEFINITIONS(${CURL_CFLAGS_OTHER})
@@ -84,7 +86,9 @@ ADD_DEFINITIONS(${CURL_CFLAGS_OTHER})
 # add_executable(main core/test.cc)
 add_library(
   flash flash/html/html_document_parser.cc flash/html/renderer.cc
-  flash/html/html_tokenizer.cc flash/html/token.cc
+  flash/html/html_tokenizer.cc
+  flash/html/token.cc
+  flash/html/dom.cc
   flash/css/css_tokenizer.cc
   flash/css/css_parser.cc
   flash/css/css.cc

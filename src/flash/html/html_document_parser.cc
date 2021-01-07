@@ -139,6 +139,7 @@ void HTMLDocumentParser::parse() {
       }
       case Mode::text: {
         if (isToken(Tag::Token::Type::Character)) {
+          std::cout << "text: >" << token->getValue() << "<" << std::endl;
           appendCharacterToken(token->getValue());
           htmlTokenizer->consumeToken();
         } else if (isToken(Tag::Token::Type::EndTag,
@@ -219,6 +220,7 @@ void HTMLDocumentParser::parse() {
           htmlTokenizer->consumeToken();
         } else if (isToken(Tag::Token::Type::StartTag)) {
           ToyScopyUtil::logUtil("start tag");
+          ToyScopyUtil::logUtil("tagname: %s", token->getTagName().c_str());
           DOM::Node* n = document->createElement(token->getTagName());
           appendAttributesToCurrentNode(n);
           appendToCurrentNode(n);
@@ -402,8 +404,10 @@ void HTMLDocumentParser::appendCharacterToken(std::string data) {
     node = document->createText("");
     ToyScopyUtil::logUtil("**********");
     DOM::Node* last = lastOpenElement();
-    if (last == nullptr)
+    if (last == nullptr) {
+      ToyScopyUtil::logUtil("last node is empty so skipped");
       return;
+    }
     DOM::Element* ele = static_cast<DOM::Element*>(last);
     ToyScopyUtil::logUtil("type: %d", ele->nodeType);
     ToyScopyUtil::logUtil("tag: %s", ele->getTagName().c_str());
