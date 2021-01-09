@@ -3,7 +3,7 @@
 namespace Flash {
 namespace DOM {
 
-std::string nodeType2str(NodeType type) {
+std::string nodeType2strbase(unsigned short type) {
   switch (type) {
     case ELEMENT_NODE: {
       return "ELEMENT_NODE";
@@ -46,5 +46,14 @@ std::string nodeType2str(NodeType type) {
     }
   };
 }
+
+std::string nodeType2str(NodeType type) {
+  return nodeType2strbase(type);
+}
+
+std::string nodeType2str(unsigned short type) {
+  return nodeType2strbase(type);
+}
+
 }  // namespace DOM
 }  // namespace Flash

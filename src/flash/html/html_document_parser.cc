@@ -378,16 +378,11 @@ DOM::Node* HTMLDocumentParser::findTextNode() {
   for (int i = open_elements.size() - 1; i >= 0; i--) {
     if (open_elements[i]->nodeType == DOM::NodeType::TEXT_NODE) {
       ToyScopyUtil::logUtil("found text node!!");
-      ToyScopyUtil::logUtil("%s", open_elements[i]->nodeName.c_str());
-      ToyScopyUtil::logUtil(
-          "%s", static_cast<DOM::Text*>(open_elements[i])->nodeName.c_str());
-      ToyScopyUtil::logUtil(
-          "%s", static_cast<DOM::Text*>(open_elements[i])->wholeText().c_str());
       return open_elements[i];
     }
   }
   ToyScopyUtil::logUtil("text node is not found");
-  return NULL;
+  return nullptr;
 }
 
 DOM::Node* HTMLDocumentParser::lastOpenElement() {
@@ -397,26 +392,26 @@ DOM::Node* HTMLDocumentParser::lastOpenElement() {
 }
 
 void HTMLDocumentParser::appendCharacterToken(std::string data) {
-  ToyScopyUtil::logUtil("### append character token");
+  ToyScopyUtil::logUtil("## append character token");
   DOM::Node* node = findTextNode();
   if (node == NULL) {
     ToyScopyUtil::logUtil("text node is null create text node");
     node = document->createText("");
-    ToyScopyUtil::logUtil("**********");
     DOM::Node* last = lastOpenElement();
     if (last == nullptr) {
       ToyScopyUtil::logUtil("last node is empty so skipped");
       return;
     }
     DOM::Element* ele = static_cast<DOM::Element*>(last);
-    ToyScopyUtil::logUtil("type: %d", ele->nodeType);
-    ToyScopyUtil::logUtil("tag: %s", ele->getTagName().c_str());
+    // ToyScopyUtil::logUtil("type: %d", ele->nodeType);
+    ToyScopyUtil::logUtil("text is appended to tag: %s",
+                          ele->getTagName().c_str());
     last->appendChild(node);
     // FIX Here
     pushOpenElement(node);
   }
   DOM::Text* textNode = (static_cast<DOM::Text*>(node));
-  ToyScopyUtil::logUtil("node: >>%s<<", textNode->wholeText().c_str());
+  // ToyScopyUtil::logUtil("node: >>%s<<", textNode->wholeText().c_str());
   textNode->appendData(data);
   // ToyScopyUtil::logUtil("%s", textNode->data.c_str());
 }

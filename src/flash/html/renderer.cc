@@ -77,12 +77,12 @@ void Renderer::render() {
 
     ToyScopyUtil::logUtil("======");
     ToyScopyUtil::logUtil("nodeType: %d", node->nodeType);
-    ToyScopyUtil::logUtil(
-        "textnode: %s", reinterpret_cast<DOM::Text*>(node)->getData().c_str());
 
     // Process CSS Style
     CSS::Style s;
     if (node->nodeType == DOM::NodeType::TEXT_NODE) {
+      ToyScopyUtil::logUtil("textnode: %s",
+                            static_cast<DOM::Text*>(node)->getData().c_str());
       s = CSS::Style::INLINE;
     } else if (node->nodeType == DOM::NodeType::DOCUMENT_NODE) {
       s = CSS::Style::BLOCK;
@@ -99,8 +99,8 @@ void Renderer::render() {
         break;
       }
       case CSS::Style::INLINE: {
-        ToyScopyUtil::logUtil("%d", node->nodeType);
-        RenderInline* ele = reinterpret_cast<RenderInline*>(ro);
+        ToyScopyUtil::logUtil("%s", DOM::nodeType2str(node->nodeType).c_str());
+        RenderInline* ele = static_cast<RenderInline*>(ro);
         ele->container = container;
         ele->layout();
         ele->paint();
