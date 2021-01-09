@@ -10,26 +10,27 @@ ToyScopy is a toy browser written in C++.
 
 ## development
 
-1. install gtk+3.0
+1. install gtk+3.0, gtkmm3 and adwaita-icon-theme
 
    ```sh
-   brew install gtk+3.0 adwaita-icon-theme
+   brew install gtk+3.0 gtkmm3 adwaita-icon-theme
    ```
-
-2. execute cmake under src directory
+2. install libcurl
+  - [ref](https://stackoverflow.com/questions/41580504/how-to-install-libcurl-under-macos10-12-and-use-for-xcode)
+3. execute cmake under src directory
 
    ```sh
    cd src
    cmake .
    ```
 
-3. make binary
+4. make binary
 
    ```sh
    make
    ```
 
-4. execute ToyScopy
+5. execute ToyScopy
 
    ```sh
    ./main
