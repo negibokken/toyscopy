@@ -35,6 +35,10 @@ enum NodeType {
   NOTATION_NODE = 12,
 };
 
+std::string nodeType2str(NodeType type);
+
+std::string nodeType2str(unsigned short type);
+
 class Node {
  public:
   unsigned short nodeType;
@@ -49,7 +53,9 @@ class Node {
   std::vector<Node*> childNodes;
 
   virtual Node appendChild(Node* node) {
-    ToyScopyUtil::logUtil("node type: %d", node->nodeType);
+    ToyScopyUtil::logUtil("appended %s to node : %s",
+                          nodeType2str(node->nodeType).c_str(),
+                          nodeType2str(nodeType).c_str());
     node->parentNode = this;
 
     this->isConnected = true;
@@ -110,7 +116,13 @@ class Element : public Node {
     return names;
   };
   virtual Node appendChild(Node* node) {
-    ToyScopyUtil::logUtil("node type: %d", node->nodeType);
+    ToyScopyUtil::logUtil("appended node's type: %s",
+                          nodeType2str(node->nodeType).c_str());
+    if (node->nodeType == ELEMENT_NODE) {
+      Element* ele = static_cast<Element*>(node);
+      ToyScopyUtil::logUtil("element %s is appended  to %s",
+                            ele->getTagName().c_str(), getTagName().c_str());
+    }
     Node::appendChild(node);
     node->parentElement = this;
     return *node;
@@ -129,7 +141,7 @@ class CharacterData : public Node {
   std::string data;
 
  public:
-  CharacterData(std::string txt) : Node(NodeType::TEXT_NODE) { data = txt; };
+  CharacterData(std::string txt) : Node(NodeType::TEXT_NODE), data(txt){};
   std::string getData() { return data; }
   inline void setData(std::string data) { data = data; }
   void appendData(std::string data) { this->data.append(data); }
@@ -137,9 +149,7 @@ class CharacterData : public Node {
 
 class Text : public CharacterData {
  public:
-  Text(std::string txt) : CharacterData(txt) {
-    std::cout << "txt: " << txt << std::endl;
-  };
+  Text(std::string txt) : CharacterData(txt){};
   std::string wholeText() { return getData(); };
 };
 
@@ -177,8 +187,6 @@ class Document : public Node {
   Element* createElement(std::string name) { return new Element(name); };
   Text* createText(std::string data) { return new Text(data); };
 };
-
-std::string nodeType2str(NodeType type);
 
 }  // namespace DOM
 }  // namespace Flash

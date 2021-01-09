@@ -55,9 +55,10 @@ class HTMLTokenizer {
     return hasNextToken;
   };
   void consumeToken() {
-    ToyScopyUtil::logUtil("--- consume ---");
+    // ToyScopyUtil::logUtil("--- consume ---");
     ToyScopyUtil::logUtil(
-        "type: %c", Tag::Token::TagTypeName(nextToken()->getTagType()).c_str());
+        "consumed token type: %c",
+        Tag::Token::TagTypeName(nextToken()->getTagType()).c_str());
     tokenQueue.pop();
     token = NULL;
   }
@@ -90,8 +91,8 @@ class HTMLTokenizer {
   void reconsumeToken() { index--; };
 
   void emitToken() {
-    ToyScopyUtil::logUtil("----");
-    ToyScopyUtil::logUtil("emit: %s", token->getTagName().c_str());
+    // ToyScopyUtil::logUtil("----");
+    // ToyScopyUtil::logUtil("emit: %s", token->getTagName().c_str());
     // token->setTagType();
     tokenQueue.push(token);
     if (token->getTagType() == Tag::Token::StartTag) {

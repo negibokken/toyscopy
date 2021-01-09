@@ -75,5 +75,6 @@ class Token {
   Attribute* currentAttribute();
   void setTagType();
 };
+
 }  // namespace Tag
 #endif
