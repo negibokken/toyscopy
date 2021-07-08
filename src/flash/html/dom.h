@@ -9,6 +9,12 @@
 
 #include "../../utils/log_util.h"
 
+namespace Flash {
+
+namespace CSS {
+class StyleSheetList;
+}
+
 namespace DOM {
 
 class Element;
@@ -29,6 +35,10 @@ enum NodeType {
   NOTATION_NODE = 12,
 };
 
+std::string nodeType2str(NodeType type);
+
+std::string nodeType2str(unsigned short type);
+
 class Node {
  public:
   unsigned short nodeType;
@@ -43,7 +53,9 @@ class Node {
   std::vector<Node*> childNodes;
 
   virtual Node appendChild(Node* node) {
-    ToyScopyUtil::logUtil("node type: %d", node->nodeType);
+    ToyScopyUtil::logUtil("appended %s to node : %s",
+                          nodeType2str(node->nodeType).c_str(),
+                          nodeType2str(nodeType).c_str());
     node->parentNode = this;
 
     this->isConnected = true;
@@ -104,7 +116,13 @@ class Element : public Node {
     return names;
   };
   virtual Node appendChild(Node* node) {
-    ToyScopyUtil::logUtil("node type: %d", node->nodeType);
+    ToyScopyUtil::logUtil("appended node's type: %s",
+                          nodeType2str(node->nodeType).c_str());
+    if (node->nodeType == ELEMENT_NODE) {
+      Element* ele = static_cast<Element*>(node);
+      ToyScopyUtil::logUtil("element %s is appended  to %s",
+                            ele->getTagName().c_str(), getTagName().c_str());
+    }
     Node::appendChild(node);
     node->parentElement = this;
     return *node;
@@ -120,11 +138,11 @@ inline std::ostream& operator<<(std::ostream& os, Element& e) {
 
 class CharacterData : public Node {
   unsigned long length;
-  std::string data = "";
+  std::string data;
 
  public:
-  CharacterData(std::string txt) : Node(NodeType::TEXT_NODE) { data = txt; };
-  inline std::string getData() { return data; }
+  CharacterData(std::string txt) : Node(NodeType::TEXT_NODE), data(txt){};
+  std::string getData() { return data; }
   inline void setData(std::string data) { data = data; }
   void appendData(std::string data) { this->data.append(data); }
 };
@@ -152,6 +170,9 @@ class DOMImplementation {
 enum DocumentReadyState { loading, interactive, complete };
 
 class Document : public Node {
+ private:
+  CSS::StyleSheetList* styleSheets;
+
  public:
   DOMImplementation* implementation;
   Document() : Node(NodeType::DOCUMENT_NODE){};
@@ -168,4 +189,5 @@ class Document : public Node {
 };
 
 }  // namespace DOM
+}  // namespace Flash
 #endif

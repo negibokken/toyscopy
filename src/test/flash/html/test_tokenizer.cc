@@ -1,8 +1,8 @@
-#include "../../../flash/html/tokenizer.h"
+#include "../../../flash/html/html_tokenizer.h"
 #include "gtest/gtest.h"
 
-TEST(TokenizerTest, Simple) {
-  Tokenizer::Tokenizer *t = new Tokenizer::Tokenizer("<html>hello</html>");
+TEST(HTMLTokenizerTest, Simple) {
+  Flash::HTMLTokenizer* t = new Flash::HTMLTokenizer("<html>hello</html>");
 
   int tokenNum = 0;
   while (t->pumpToken()) {
@@ -15,9 +15,9 @@ TEST(TokenizerTest, Simple) {
   EXPECT_EQ(7, tokenNum);
 }
 
-TEST(TokenizerTest, SimpleWithDocType) {
-  Tokenizer::Tokenizer *t =
-      new Tokenizer::Tokenizer("<!DOCTYPE html><html>hello</html>");
+TEST(HTMLTokenizerTest, SimpleWithDocType) {
+  Flash::HTMLTokenizer* t =
+      new Flash::HTMLTokenizer("<!DOCTYPE html><html>hello</html>");
 
   int tokenNum = 0;
   while (t->pumpToken()) {
@@ -30,8 +30,8 @@ TEST(TokenizerTest, SimpleWithDocType) {
   EXPECT_EQ(8, tokenNum);
 }
 
-TEST(TokenizerTest, SimpleWithSelfClosingTag) {
-  Tokenizer::Tokenizer *t = new Tokenizer::Tokenizer("<html>hello<br/></html>");
+TEST(HTMLTokenizerTest, SimpleWithSelfClosingTag) {
+  Flash::HTMLTokenizer* t = new Flash::HTMLTokenizer("<html>hello<br/></html>");
 
   int tokenNum = 0;
   while (t->pumpToken()) {
@@ -44,10 +44,10 @@ TEST(TokenizerTest, SimpleWithSelfClosingTag) {
   EXPECT_EQ(8, tokenNum);
 }
 
-TEST(TokenizerTest, SimpleWithWiredDocType) {
+TEST(HTMLTokenizerTest, SimpleWithWiredDocType) {
   // Note: <!DOCTYPE  html> includes two spaces in front of name and it's Html.
-  Tokenizer::Tokenizer *t =
-      new Tokenizer::Tokenizer("<!DOCTYPE  HTml><html>hello</html>");
+  Flash::HTMLTokenizer* t =
+      new Flash::HTMLTokenizer("<!DOCTYPE  HTml><html>hello</html>");
 
   int tokenNum = 0;
   while (t->pumpToken()) {
@@ -60,14 +60,14 @@ TEST(TokenizerTest, SimpleWithWiredDocType) {
   EXPECT_EQ(8, tokenNum);
 }
 
-TEST(TokenizerTest, NoneToken) {
-  Tokenizer::Tokenizer *t = new Tokenizer::Tokenizer("");
-  Tag::Token *tok = t->nextToken();
+TEST(HTMLTokenizerTest, NoneToken) {
+  Flash::HTMLTokenizer* t = new Flash::HTMLTokenizer("");
+  Tag::Token* tok = t->nextToken();
   EXPECT_EQ(nullptr, tok);
 }
 
-TEST(TokenizerTest, AttributeSimpleTest) {
-  Tokenizer::Tokenizer *t = new Tokenizer::Tokenizer(
+TEST(HTMLTokenizerTest, AttributeSimpleTest) {
+  Flash::HTMLTokenizer* t = new Flash::HTMLTokenizer(
       "<html><head><meta "
       " charset=\"utf-8\" />"
       "</head>hello</html>");
@@ -83,9 +83,9 @@ TEST(TokenizerTest, AttributeSimpleTest) {
   EXPECT_EQ(10, tokenNum);
 }
 
-TEST(TokenizerTest, RAWTextIncludeLessThanSignTest) {
+TEST(HTMLTokenizerTest, RAWTextIncludeLessThanSignTest) {
   // Note: style tag include Capital Character
-  Tokenizer::Tokenizer *t = new Tokenizer::Tokenizer(
+  Flash::HTMLTokenizer* t = new Flash::HTMLTokenizer(
       "<sTyLe> body { } a::after { content: \"<\"; } </sTyLe>");
 
   int tokenNum = 0;
@@ -94,39 +94,39 @@ TEST(TokenizerTest, RAWTextIncludeLessThanSignTest) {
       t->consumeToken();
       tokenNum++;
     }
-    // After <style>, set state of tokenizer to RAWText
+    // After <style>, set state of htmlTokenizer to RAWText
     if (tokenNum == 1) {
-      t->setState(Tokenizer::Tokenizer::RAWTEXTState);
+      t->setState(Flash::HTMLTokenizer::RAWTEXTState);
     }
   }
   // 2 Tag Token + 37 Character in RAWTEXT
   EXPECT_EQ(39, tokenNum);
 }
 
-TEST(TokenizerTest, RAWTextIncludeLessThanSignAndSlashTest) {
+TEST(HTMLTokenizerTest, RAWTextIncludeLessThanSignAndSlashTest) {
   // Note: style tag include Capital Character
-  Tokenizer::Tokenizer *t = new Tokenizer::Tokenizer(
+  Flash::HTMLTokenizer* t = new Flash::HTMLTokenizer(
       "<sTyLe> body { } a::after { content: \"</\"; } </sTyLe>");
 
   int tokenNum = 0;
   while (t->pumpToken()) {
     if (t->canTakeNextToken()) {
-      Tag::Token *tok = t->nextToken();
+      Tag::Token* tok = t->nextToken();
       t->consumeToken();
       tokenNum++;
     }
-    // After <style>, set state of tokenizer to RAWText
+    // After <style>, set state of htmlTokenizer to RAWText
     if (tokenNum == 1) {
-      t->setState(Tokenizer::Tokenizer::RAWTEXTState);
+      t->setState(Flash::HTMLTokenizer::RAWTEXTState);
     }
   }
   // 2 Tag Token + 38 Character in RAWTEXT
   EXPECT_EQ(40, tokenNum);
 }
 
-TEST(TokenizerTest, SimpleWithAnchor) {
+TEST(HTMLTokenizerTest, SimpleWithAnchor) {
   // Note: second attribute value should be Capital
-  Tokenizer::Tokenizer *t = new Tokenizer::Tokenizer(
+  Flash::HTMLTokenizer* t = new Flash::HTMLTokenizer(
       "<html><a HRef =\"https://example.com\" "
       "href=\"https://example.com\"><test test=\"test\"/><test "
       "test>hello</a></html>");
@@ -142,8 +142,8 @@ TEST(TokenizerTest, SimpleWithAnchor) {
   EXPECT_EQ(11, tokenNum);
 }
 
-TEST(TokenizerTest, SimpleWeirdTag) {
-  Tokenizer::Tokenizer *t = new Tokenizer::Tokenizer(
+TEST(HTMLTokenizerTest, SimpleWeirdTag) {
+  Flash::HTMLTokenizer* t = new Flash::HTMLTokenizer(
       "<html><invalidtag true content= 'single_quoted' "
       "content=unquoted content=unquoted2>hello</invalid></html>");
 

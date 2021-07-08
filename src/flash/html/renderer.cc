@@ -1,5 +1,6 @@
 #include "renderer.h"
 
+namespace Flash {
 namespace Render {
 
 RenderObject* RenderObject::createObject(DOM::Node* node, RenderStyle* style) {
@@ -39,7 +40,7 @@ void RenderInline::layout() {
   label->set_selectable(true);
   label->set_xalign(0.0);
   label->set_line_wrap(true);
-  // label->override_color(Gdk::RGBA("#ff0000"));
+  label->override_color(Gdk::RGBA("#ff0000"));
   widget = label;
 }
 
@@ -76,15 +77,19 @@ void Renderer::render() {
 
     ToyScopyUtil::logUtil("======");
     ToyScopyUtil::logUtil("nodeType: %d", node->nodeType);
-    ToyScopyUtil::logUtil(
-        "textnode: %s", reinterpret_cast<DOM::Text*>(node)->getData().c_str());
 
     // Process CSS Style
     CSS::Style s;
     if (node->nodeType == DOM::NodeType::TEXT_NODE) {
+      ToyScopyUtil::logUtil("textnode: %s",
+                            static_cast<DOM::Text*>(node)->getData().c_str());
       s = CSS::Style::INLINE;
     } else if (node->nodeType == DOM::NodeType::DOCUMENT_NODE) {
       s = CSS::Style::BLOCK;
+    } else if (node->nodeType == DOM::NodeType::ELEMENT_NODE) {
+      s = CSS::Style::BLOCK;
+      DOM::Element* ele = static_cast<DOM::Element*>(node);
+      ToyScopyUtil::logUtil("%s", ele->getTagName().c_str());
     } else {
       s = CSS::Style::BLOCK;
     }
@@ -94,8 +99,8 @@ void Renderer::render() {
         break;
       }
       case CSS::Style::INLINE: {
-        ToyScopyUtil::logUtil("%d", node->nodeType);
-        RenderInline* ele = reinterpret_cast<RenderInline*>(ro);
+        ToyScopyUtil::logUtil("%s", DOM::nodeType2str(node->nodeType).c_str());
+        RenderInline* ele = static_cast<RenderInline*>(ro);
         ele->container = container;
         ele->layout();
         ele->paint();
@@ -111,3 +116,4 @@ void Renderer::render() {
 }
 
 }  // namespace Render
+}  // namespace Flash

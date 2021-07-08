@@ -8,10 +8,11 @@
 
 #include "../../utils/log_util.h"
 #include "dom.h"
+#include "html_tokenizer.h"
 #include "token.h"
-#include "tokenizer.h"
 #include "util.h"
 
+namespace Flash {
 class HTMLDocumentParser {
  public:
   // described here:
@@ -30,10 +31,11 @@ class HTMLDocumentParser {
   HTMLDocumentParser(std::string _doc) {
     ToyScopyUtil::logUtil("loaded document");
     ToyScopyUtil::logUtil("%s", _doc.c_str());
+    // TODO: Modify spaces to a space in _doc
     this->doc = _doc;
     this->document = new DOM::Document();
     this->frameset_ok = "ok";
-    this->tokenizer = new Tokenizer::Tokenizer(this->doc);
+    this->htmlTokenizer = new Flash::HTMLTokenizer(this->doc);
     this->insertion_mode = Mode::initial;
   };
   void parse();
@@ -55,7 +57,7 @@ class HTMLDocumentParser {
   std::vector<DOM::Node*> open_elements = std::vector<DOM::Node*>(0);
 
   std::string frameset_ok = "";
-  Tokenizer::Tokenizer* tokenizer;
+  Flash::HTMLTokenizer* htmlTokenizer;
 
   std::string document_title = "";
 
@@ -78,5 +80,6 @@ class HTMLDocumentParser {
   DOM::Node* lastOpenElement();
   DOM::Node* findTextNode();
 };
+};  // namespace Flash
 
 #endif

@@ -43,6 +43,8 @@ void Token::setTagType() {
     elementType = ElementType::body;
   } else if (tagName == "p") {
     elementType = ElementType::p;
+  } else if (tagName == "span") {
+    elementType = ElementType::span;
   } else if (tagName == "div") {
     elementType = ElementType::div;
   } else if (tagName == "h1") {

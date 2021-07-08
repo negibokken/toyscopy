@@ -29,7 +29,7 @@ class Token {
  public:
   // clang-format off
   enum Type { DOCTYPE, StartTag, EndTag, Comment, Character, };
-  enum ElementType { html, head, meta, style, script, body, title, div, h1, h2, h3, h4, h5, h6, p, a, br, input, none };
+  enum ElementType { html, head, meta, style, script, body, title, div, h1, h2, h3, h4, h5, h6, p, span, a, br, input, none };
   // clang-format on
 
   Token(Type t = Type::StartTag) { type = t; }
@@ -75,5 +75,6 @@ class Token {
   Attribute* currentAttribute();
   void setTagType();
 };
+
 }  // namespace Tag
 #endif

@@ -1,5 +1,5 @@
-#ifndef Tokenizer_h
-#define Tokenizer_h
+#ifndef HTMLTokenizer_h
+#define HTMLTokenizer_h
 
 #include <iostream>
 #include <queue>
@@ -9,9 +9,9 @@
 #include "token.h"
 #include "util.h"
 
-namespace Tokenizer {
+namespace Flash {
 
-class Tokenizer {
+class HTMLTokenizer {
  public:
   enum State {
     DataState,
@@ -39,7 +39,7 @@ class Tokenizer {
     RCDATAState
   };
 
-  Tokenizer(std::string stream);
+  HTMLTokenizer(std::string stream);
   bool pumpToken();
   Tag::Token* nextToken() {
     if (!canTakeNextToken()) {
@@ -55,9 +55,10 @@ class Tokenizer {
     return hasNextToken;
   };
   void consumeToken() {
-    ToyScopyUtil::logUtil("--- consume ---");
+    // ToyScopyUtil::logUtil("--- consume ---");
     ToyScopyUtil::logUtil(
-        "type: %c", Tag::Token::TagTypeName(nextToken()->getTagType()).c_str());
+        "consumed token type: %c",
+        Tag::Token::TagTypeName(nextToken()->getTagType()).c_str());
     tokenQueue.pop();
     token = NULL;
   }
@@ -90,8 +91,8 @@ class Tokenizer {
   void reconsumeToken() { index--; };
 
   void emitToken() {
-    ToyScopyUtil::logUtil("----");
-    ToyScopyUtil::logUtil("emit: %s", token->getTagName().c_str());
+    // ToyScopyUtil::logUtil("----");
+    // ToyScopyUtil::logUtil("emit: %s", token->getTagName().c_str());
     // token->setTagType();
     tokenQueue.push(token);
     if (token->getTagType() == Tag::Token::StartTag) {
@@ -106,5 +107,5 @@ class Tokenizer {
   }
 };
 
-}  // namespace Tokenizer
+}  // namespace Flash
 #endif

@@ -1,11 +1,13 @@
 #include "html_document_parser.h"
 
+namespace Flash {
+
 void HTMLDocumentParser::parse() {
-  while (tokenizer->pumpToken()) {
-    if (!tokenizer->canTakeNextToken())
+  while (htmlTokenizer->pumpToken()) {
+    if (!htmlTokenizer->canTakeNextToken())
       continue;
 
-    Tag::Token* token = tokenizer->nextToken();
+    Tag::Token* token = htmlTokenizer->nextToken();
 
     if (token->getTagType() == Tag::Token::Type::StartTag ||
         token->getTagType() == Tag::Token::Type::EndTag) {
@@ -23,7 +25,7 @@ void HTMLDocumentParser::parse() {
                   token->getTagName(), "", "");
           document->appendChild(doctype);
           setInsertionMode(Mode::before_html);
-          tokenizer->consumeToken();
+          htmlTokenizer->consumeToken();
         } else {
           setInsertionMode(Mode::before_html);
         }
@@ -38,7 +40,7 @@ void HTMLDocumentParser::parse() {
           pushOpenElement(n);
 
           setInsertionMode(Mode::before_head);
-          tokenizer->consumeToken();
+          htmlTokenizer->consumeToken();
         }
         break;
       }
@@ -49,7 +51,7 @@ void HTMLDocumentParser::parse() {
           DOM::Node* n = this->document->createElement("head");
           head_pointer = n;
           setInsertionMode(Mode::in_head);
-          tokenizer->consumeToken();
+          htmlTokenizer->consumeToken();
         } else {
           DOM::Node* n = this->document->createElement("head");
           head_pointer = n;
@@ -63,7 +65,7 @@ void HTMLDocumentParser::parse() {
         if (isToken(Tag::Token::Character)) {
           // FIXME:
           appendCharacterToken(token->getValue());
-          tokenizer->consumeToken();
+          htmlTokenizer->consumeToken();
         } else if (isToken(Tag::Token::Type::StartTag,
                            // if (isToken(Tag::Token::Type::StartTag,
                            Tag::Token::ElementType::title)) {
@@ -75,7 +77,7 @@ void HTMLDocumentParser::parse() {
           std::cout << "after append" << std::endl;
           setOriginalInsertionMode(Mode::in_head);
           setInsertionMode(Mode::text);
-          tokenizer->consumeToken();
+          htmlTokenizer->consumeToken();
         } else if (isToken(Tag::Token::Type::StartTag,
                            Tag::Token::ElementType::meta)) {
           ToyScopyUtil::logUtil("=============");
@@ -106,7 +108,7 @@ void HTMLDocumentParser::parse() {
             document->contentType = ct;
             this->contentType = ct;
           }
-          tokenizer->consumeToken();
+          htmlTokenizer->consumeToken();
         } else if (isToken(Tag::Token::Type::StartTag,
                            Tag::Token::ElementType::style)) {
           ToyScopyUtil::logUtil("style");
@@ -115,20 +117,20 @@ void HTMLDocumentParser::parse() {
           head_pointer->appendChild(n);
           pushOpenElement(n);
           appendAttributesToCurrentNode(n);
-          tokenizer->setState(Tokenizer::Tokenizer::RAWTEXTState);
+          htmlTokenizer->setState(Flash::HTMLTokenizer::RAWTEXTState);
           setOriginalInsertionMode(Mode::in_head);
           setInsertionMode(Mode::text);
-          tokenizer->consumeToken();
+          htmlTokenizer->consumeToken();
         } else if (isToken(Tag::Token::Type::EndTag,
                            Tag::Token::ElementType::title)) {
           ToyScopyUtil::logUtil("pop title->");
           popOpenElementIf("title");
-          tokenizer->consumeToken();
+          htmlTokenizer->consumeToken();
         } else if (isToken(Tag::Token::Type::EndTag,
                            Tag::Token::ElementType::head)) {
           ToyScopyUtil::logUtil("go to after head");
           setInsertionMode(Mode::after_head);
-          tokenizer->consumeToken();
+          htmlTokenizer->consumeToken();
         } else {
           popOpenElementIf("head");
           setInsertionMode(Mode::after_head);
@@ -137,8 +139,9 @@ void HTMLDocumentParser::parse() {
       }
       case Mode::text: {
         if (isToken(Tag::Token::Type::Character)) {
+          std::cout << "text: >" << token->getValue() << "<" << std::endl;
           appendCharacterToken(token->getValue());
-          tokenizer->consumeToken();
+          htmlTokenizer->consumeToken();
         } else if (isToken(Tag::Token::Type::EndTag,
                            Tag::Token::ElementType::script)) {
         } else if (isToken(Tag::Token::Type::EndTag,
@@ -151,14 +154,14 @@ void HTMLDocumentParser::parse() {
           popOpenElementIf("title");
           setDocumentTitle(textNode->wholeText());
           setInsertionMode(original_insertion_mode);
-          tokenizer->consumeToken();
+          htmlTokenizer->consumeToken();
         } else if (isToken(Tag::Token::Type::EndTag)) {
           // Text Node
           popOpenElementIf(DOM::NodeType::TEXT_NODE);
           // Some Element
           popOpenElement();
           setInsertionMode(original_insertion_mode);
-          tokenizer->consumeToken();
+          htmlTokenizer->consumeToken();
         }
         break;
       }
@@ -174,7 +177,7 @@ void HTMLDocumentParser::parse() {
           setFramesetOkFlag("not ok");
 
           setInsertionMode(Mode::in_body);
-          tokenizer->consumeToken();
+          htmlTokenizer->consumeToken();
         } else {
           ToyScopyUtil::logUtil("body tag not exists");
           DOM::Node* n = document->createElement("body");
@@ -189,17 +192,17 @@ void HTMLDocumentParser::parse() {
         if (isToken(Tag::Token::Type::Character)) {
           ToyScopyUtil::logUtil("character");
           appendCharacterToken(token->getValue());
-          tokenizer->consumeToken();
+          htmlTokenizer->consumeToken();
         } else if (isToken(Tag::Token::Type::EndTag,
                            Tag::Token::ElementType::body)) {
           popOpenElementIf("title");
           setInsertionMode(Mode::after_body);
-          tokenizer->consumeToken();
+          htmlTokenizer->consumeToken();
         } else if (isToken(Tag::Token::Type::EndTag)) {
           ToyScopyUtil::logUtil("end tag");
           popOpenElementIf(DOM::NodeType::TEXT_NODE);
           popOpenElement();
-          tokenizer->consumeToken();
+          htmlTokenizer->consumeToken();
         } else if (isToken(Tag::Token::Type::StartTag) &&
                    (isToken(Tag::Token::ElementType::h1) ||
                     isToken(Tag::Token::ElementType::h2) ||
@@ -214,14 +217,15 @@ void HTMLDocumentParser::parse() {
           appendAttributesToCurrentNode(n);
           appendToCurrentNode(n);
           pushOpenElement(n);
-          tokenizer->consumeToken();
+          htmlTokenizer->consumeToken();
         } else if (isToken(Tag::Token::Type::StartTag)) {
           ToyScopyUtil::logUtil("start tag");
+          ToyScopyUtil::logUtil("tagname: %s", token->getTagName().c_str());
           DOM::Node* n = document->createElement(token->getTagName());
           appendAttributesToCurrentNode(n);
           appendToCurrentNode(n);
           pushOpenElement(n);
-          tokenizer->consumeToken();
+          htmlTokenizer->consumeToken();
         }
         break;
       }
@@ -229,7 +233,7 @@ void HTMLDocumentParser::parse() {
         ToyScopyUtil::logUtil("6");
         if (isToken(Tag::Token::Type::EndTag, Tag::Token::ElementType::html)) {
           setInsertionMode(Mode::after_after_body);
-          tokenizer->consumeToken();
+          htmlTokenizer->consumeToken();
         }
         break;
       }
@@ -239,7 +243,7 @@ void HTMLDocumentParser::parse() {
         return;
       }
       default: {
-        tokenizer->consumeToken();
+        htmlTokenizer->consumeToken();
         break;
       }
     }
@@ -358,32 +362,27 @@ void HTMLDocumentParser::appendToCurrentNode(DOM::Node* n) {
 
 bool HTMLDocumentParser::isToken(Tag::Token::Type type,
                                  Tag::Token::ElementType eleType) {
-  Tag::Token* token = tokenizer->nextToken();
+  Tag::Token* token = htmlTokenizer->nextToken();
   return token->getTagType() == type && token->getTagElementType() == eleType;
 }
 
 bool HTMLDocumentParser::isToken(Tag::Token::ElementType type) {
-  return tokenizer->nextToken()->getTagElementType() == type;
+  return htmlTokenizer->nextToken()->getTagElementType() == type;
 }
 
 bool HTMLDocumentParser::isToken(Tag::Token::Type type) {
-  return tokenizer->nextToken()->getTagType() == type;
+  return htmlTokenizer->nextToken()->getTagType() == type;
 }
 
 DOM::Node* HTMLDocumentParser::findTextNode() {
   for (int i = open_elements.size() - 1; i >= 0; i--) {
     if (open_elements[i]->nodeType == DOM::NodeType::TEXT_NODE) {
       ToyScopyUtil::logUtil("found text node!!");
-      ToyScopyUtil::logUtil("%s", open_elements[i]->nodeName.c_str());
-      ToyScopyUtil::logUtil(
-          "%s", static_cast<DOM::Text*>(open_elements[i])->nodeName.c_str());
-      ToyScopyUtil::logUtil(
-          "%s", static_cast<DOM::Text*>(open_elements[i])->wholeText().c_str());
       return open_elements[i];
     }
   }
   ToyScopyUtil::logUtil("text node is not found");
-  return NULL;
+  return nullptr;
 }
 
 DOM::Node* HTMLDocumentParser::lastOpenElement() {
@@ -393,24 +392,26 @@ DOM::Node* HTMLDocumentParser::lastOpenElement() {
 }
 
 void HTMLDocumentParser::appendCharacterToken(std::string data) {
-  ToyScopyUtil::logUtil("### append character token");
+  ToyScopyUtil::logUtil("## append character token");
   DOM::Node* node = findTextNode();
   if (node == NULL) {
     ToyScopyUtil::logUtil("text node is null create text node");
     node = document->createText("");
-    ToyScopyUtil::logUtil("**********");
     DOM::Node* last = lastOpenElement();
-    if (last == nullptr)
+    if (last == nullptr) {
+      ToyScopyUtil::logUtil("last node is empty so skipped");
       return;
+    }
     DOM::Element* ele = static_cast<DOM::Element*>(last);
-    ToyScopyUtil::logUtil("type: %d", ele->nodeType);
-    ToyScopyUtil::logUtil("tag: %s", ele->getTagName().c_str());
+    // ToyScopyUtil::logUtil("type: %d", ele->nodeType);
+    ToyScopyUtil::logUtil("text is appended to tag: %s",
+                          ele->getTagName().c_str());
     last->appendChild(node);
     // FIX Here
     pushOpenElement(node);
   }
   DOM::Text* textNode = (static_cast<DOM::Text*>(node));
-  ToyScopyUtil::logUtil("node: >>%s<<", textNode->wholeText().c_str());
+  // ToyScopyUtil::logUtil("node: >>%s<<", textNode->wholeText().c_str());
   textNode->appendData(data);
   // ToyScopyUtil::logUtil("%s", textNode->data.c_str());
 }
@@ -423,7 +424,7 @@ void HTMLDocumentParser::appendAttributesToCurrentNode(DOM::Node* n) {
   ToyScopyUtil::logUtil("appendAttributesToCurrentNode");
   DOM::Element* ele = static_cast<DOM::Element*>(n);
 
-  Tag::Token* token = tokenizer->nextToken();
+  Tag::Token* token = htmlTokenizer->nextToken();
   for (auto a : token->getAttributes()) {
     ToyScopyUtil::logUtil("attr: %s : %s", a->getName().c_str(),
                           a->getValue().c_str());
@@ -432,3 +433,5 @@ void HTMLDocumentParser::appendAttributesToCurrentNode(DOM::Node* n) {
 }
 
 void HTMLDocumentParser::stopParsing() {}
+
+}  // namespace Flash
